@@ -1,5 +1,5 @@
-local utils = import('plug.animation.utils')
-local HSL=import('plug.animation.hsl')
+local utils = require('wlanimation.utils')
+local HSL = require('wlanimation.hsl')
 
 ---@class AnimationOption
 local default_option = {

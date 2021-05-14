@@ -67,9 +67,9 @@ local flashyL = function(jump )
 end
 
 
-local list_color = function(list_color)
+local list_color = function(list_color, start)
     local tbl = {}
-    local idx = 1
+    local idx = start or 1
     for _, color in pairs(list_color) do
         table.insert(tbl, utils.rgb_to_hsl(color))
     end
@@ -96,14 +96,14 @@ local blackwhite = function ()
     return flashyL(1)
 end
 
--- we need a different value per animation but we cache a value on if it is same
+-- we need a different value per animation but we cache a value if it is same
 -- key ontick.
 -- it need to sure animation have different per color name
 local wrap = function (fnc)
     return function (...)
-        local opt = ...
+        local opt={...}
         return function()
-            return fnc(opt)
+            return fnc(unpack (opt))
         end
     end
 end

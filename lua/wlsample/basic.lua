@@ -121,7 +121,7 @@ basic.terminal_mode =  {
 
 
 local terminal = {
-    filetypes = {'toggleterm'},
+    filetypes = {'toggleterm','terminal'},
     active = {
         basic.terminal_mode,
         basic.terminal_name,
@@ -131,27 +131,6 @@ local terminal = {
         basic.progress_inactive,
     },
     show_in_active = true
-}
-
-vim.g.windlinecount = 10
-local count = {
-  hl_colors = {
-        countRed     = {'black', 'red'},
-        countNormal  = {'black', 'green'}
-  },
-  hl = function(hl_colors)
-      if vim.g.windlinecount > 50 then
-        return hl_colors.countRed
-      end
-      return hl_colors.countNormal
-  end,
-  text = function(bufnr)
-    vim.g.windlinecount = vim.g.windlinecount + 1
-    if vim.g.windlinecount > 99 then
-      vim.g.windlinecount = 10
-    end
-    return ' ' .. vim.fn.strftime("%H:%M:%S") .. ' '
-  end,
 }
 
 local default = {
@@ -186,6 +165,7 @@ local default = {
 
 windline.setup({
     colors_name = function(colors)
+        -- ADD MORE COLOR HERE ----
         colors.FilenameFg = colors.white_light
         colors.FilenameBg = colors.black_light
         return colors
@@ -203,7 +183,7 @@ animation.animation({
         {'red_light',efffects.rainbow()},
         {'green_light',efffects.rainbow()},
         {'cyan_light',efffects.blackwhite()},
-        {'FilenameBg',efffects.rainbow()},
+        {'FilenameBg',efffects.rainbow()}, --- animation for filename only
         {'FilenameFg',efffects.blackwhite()}
     },
     timeout = nil,
@@ -211,3 +191,5 @@ animation.animation({
     interval = 100,
 })
 
+
+vim.api.nvim_set_keymap('n','<leader>x',':luafile %<cr>',{})

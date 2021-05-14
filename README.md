@@ -50,11 +50,15 @@ windline.setup({
 ```
 
 ![basic](./assets/demo/basic.gif)
-```lua
- require('wlsample.basic')
-```
+[code](./lua/wlsample/basic.lua)
+
+
+![wind](./assets/demo/demo_wave.gif)
+[code](./lua/wlsample/wind.lua)
+
 
 # statusline
+
 you need to define a default statusline it will apply to all filetypes.
 ```lua
 local default = {

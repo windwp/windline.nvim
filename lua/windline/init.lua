@@ -113,7 +113,8 @@ end
 
 M.get_colors = function()
     local colors = themes.load_theme()
-    colors = M.state.config.colors_name(colors)
+    colors = M.state.config.colors_name(colors) or colors
+    assert( colors ~= nil, "a colors_name on setup function should return a value")
     return colors
 end
 

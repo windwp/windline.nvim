@@ -9,7 +9,7 @@ M.load_theme = function(name)
     if cache_theme[name] then
         return cache_theme[name]
     end
-    local ok, colors = pcall(require, 'windline.themes' .. name)
+    local ok, colors = pcall(require, 'windline.themes.' .. name)
     if not ok then
         ok, colors = pcall(M.generate_theme)
         if  not ok then

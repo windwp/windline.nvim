@@ -1,4 +1,4 @@
-local hsl = import('plug.animation.hsl')
+local hsl = require('wlanimation.hsl')
 local M = {}
 
 M.get_hl_color = function(hl)
