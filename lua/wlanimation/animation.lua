@@ -136,20 +136,24 @@ function Animation:stop()
     for _, value in pairs(self.__hl) do
         utils.highlight(value.name, value.fg, value.bg)
     end
-    for index,ani in pairs(_G.__animation_list) do
-        if ani.uid == self.uid then
-            table.remove(_G.__animation_list, index)
-        end
-    end
+    _G.__animation_list = vim.tbl_filter(function(ani)
+        if ani.uid == self.uid then return false end
+        return true
+    end,_G.__animation_list)
     return self
 end
 
 
 local function stop_all()
     if _G.__animation_list then
-        for _, ani in pairs(_G.__animation_list) do
+        local tmp = {}
+        for _, value in pairs(_G.__animation_list) do
+            table.insert(tmp, value)
+        end
+        for _, ani in pairs(tmp) do
             ani:stop()
         end
+        tmp = nil
     end
     _G.__animation_list = {}
 end
