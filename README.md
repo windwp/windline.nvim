@@ -49,7 +49,7 @@ windline.setup({
 
 ```
 
-![basic](./assets/demo/basic.gif)
+![basic](./assets/demo/demo_basic.gif)
 [code](./lua/wlsample/basic.lua)
 
 
