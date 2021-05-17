@@ -81,7 +81,7 @@ local list_color = function(list_color, start)
     end
 end
 
-local rainbow = function()
+local rainbow = function(start)
     return list_color({
         "#FF0000",
         "#FF8F00",
@@ -90,8 +90,9 @@ local rainbow = function()
         "#0000FF",
         "#2E2B5F",
         "#8B00FF"
-    })
+    },start)
 end
+
 local blackwhite = function ()
     return flashyL(1)
 end

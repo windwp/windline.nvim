@@ -159,13 +159,14 @@ M.add_status = function(lines)
             end
         end
     end
-    -- verify default and remove it
-    for index, cline in pairs(M.statusline_ft) do
+    M.statusline_ft = vim.tbl_filter(function (cline)
         if utils.is_in_table(cline.filetypes, 'default') then
             M.default_line = cline
-            table.remove(M.statusline_ft, index)
+            return false
         end
-    end
+        return true
+    end, M.statusline_ft)
+
     setup_hightlight()
 end
 
