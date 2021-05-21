@@ -10,12 +10,13 @@
 
 Firstly create a statusline in lua is easy and you can do it with some line
 code. There are many lua statusline but they do the samething of vimscript statusline.
-Sadly but true It doesn't have anything new :)
+Sadly but true It doesn't have anything new
 
-Windline is a first statusline support change statusline per filetype. You can
-write a statusline for any filetype.
+Windline is a first statusline support change statusline per filetype.
+You can write a statusline for any filetype.
 `terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
-If you write a plugin you can define a statusline for your plugin
+If you write a plugin you can define a statusline for your plugin.
+It support to update on inactive window
 
 ```lua
 
@@ -36,8 +37,7 @@ It is not loaded if you don't use animation
 
 
  **Warning**
- We don't have anything call provider so you need to do it :).
- If you want a easy statusline try another statusline.
+ We don't have anything call provider so you need to do it.
 
 # Setup
 
@@ -77,7 +77,7 @@ local explorer = {
         {'  ', {'white', 'black'} },
     },
     show_in_active = true
-    -- set this mean if it is in active it still display same as active mode
+    -- set this mean if it is inactive it still display same as active mode
 }
 
 ```
