@@ -135,16 +135,18 @@ M.setup = function(opts)
     opts = vim.tbl_extend('force', default_config, opts)
     themes.default_theme = opts.theme
     M.state.config.colors_name = opts.colors_name
-    M.add_status(opts.statuslines)
-    vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
-    api.nvim_exec(
-        [[augroup WindLine
-            au!
-            au BufEnter * call v:lua.WindLine.on_enter(expand('<abuf>'))
-            au ColorScheme * call v:lua.WindLine.on_colorscheme()
-        augroup END]],
-        false
-    )
+    vim.defer_fn(function ()
+        M.add_status(opts.statuslines)
+        vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
+        api.nvim_exec(
+            [[augroup WindLine
+                au!
+                au BufEnter * call v:lua.WindLine.on_enter(expand('<abuf>'))
+                au ColorScheme * call v:lua.WindLine.on_colorscheme()
+            augroup END]],
+            false
+        )
+    end, 1)
 end
 
 M.add_status = function(lines)
