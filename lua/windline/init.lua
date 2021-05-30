@@ -136,7 +136,6 @@ M.setup = function(opts)
     themes.default_theme = opts.theme
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)
-    setup_hightlight()
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
     api.nvim_exec(
         [[augroup WindLine
