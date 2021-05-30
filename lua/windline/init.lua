@@ -14,7 +14,6 @@ M.state = {
     config = {},
 }
 
-
 local mode = utils.mode
 
 M.statusline_ft = {}
@@ -155,11 +154,11 @@ M.add_status = function(lines)
     else
         for _, value in pairs(lines) do
             if value.filetypes then
-                table.insert(M.statusline_ft,value)
+                table.insert(M.statusline_ft, value)
             end
         end
     end
-    M.statusline_ft = vim.tbl_filter(function (cline)
+    M.statusline_ft = vim.tbl_filter(function(cline)
         if utils.is_in_table(cline.filetypes, 'default') then
             M.default_line = cline
             return false

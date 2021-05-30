@@ -9,13 +9,18 @@ M.load_theme = function(name)
     if cache_theme[name] then
         return cache_theme[name]
     end
+    if not name then
+        return M.default_theme or require('windline.themes.wind')
+    end
+
     local ok, colors = pcall(require, 'windline.themes.' .. name)
     if not ok then
         ok, colors = pcall(M.generate_theme)
-        if  not ok then
+        if not ok then
             colors = M.default_theme or require('windline.themes.wind')
         end
     end
+
     cache_theme[name] = colors
     return colors
 end
@@ -29,6 +34,8 @@ end
 
 
 M.generate_theme = function ()
+
+    local default = M.default_theme or require('windline.themes.wind')
     local colors = {
         black                  = vim.g.terminal_color_0,
         red                    = vim.g.terminal_color_1,
@@ -56,7 +63,7 @@ M.generate_theme = function ()
     colors.ActiveFg = fgActive or colors.white
     colors.ActiveBg = bgActive or colors.black
 
-    return colors
+    return vim.tbl_extend('force',default,colors)
 end
 
 return M
