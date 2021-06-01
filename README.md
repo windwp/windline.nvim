@@ -100,7 +100,9 @@ local default = {
 ```
 
 **Every component have own hightlight name define in hl_colors function**
+
 **A hl function return a name in hl_colors function you can use it to toggle mode**
+
 **A text function has a bufnr parameter and you can use it to get data from buffer**
 
 you can define a component like this.
