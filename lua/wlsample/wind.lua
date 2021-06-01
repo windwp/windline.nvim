@@ -62,7 +62,7 @@ basic.file_name = {
 
 local wave_left={
     hl_colors = {
-        wave_blue1 = {'black', 'waveleft1'},
+        wave_blue1 = {'black_light', 'waveleft1'},
         wave_blue2 = {'waveleft1', 'waveleft2'},
         wave_blue3 = {'waveleft2', 'waveleft3'},
         wave_blue4 = {'waveleft3', 'waveleft4'},
@@ -134,17 +134,17 @@ windline.setup({
         colors.FilenameFg = colors.white_light
         colors.FilenameBg = colors.black_light
         colors.wavewhite = colors.white
-        colors.waveleft1 = colors.blue
-        colors.waveleft2 = colors.blue
-        colors.waveleft3 = colors.blue
-        colors.waveleft4 = colors.blue
-        colors.waveleft5 = colors.blue
+        colors.waveleft1 = colors.white
+        colors.waveleft2 = colors.white
+        colors.waveleft3 = colors.white
+        colors.waveleft4 = colors.white
+        colors.waveleft5 = colors.white
 
-        colors.waveright1 = colors.blue
-        colors.waveright2 = colors.blue
-        colors.waveright3 = colors.blue
-        colors.waveright4 = colors.blue
-        colors.waveright5 = colors.blue
+        colors.waveright1 = colors.white
+        colors.waveright2 = colors.white
+        colors.waveright3 = colors.white
+        colors.waveright4 = colors.white
+        colors.waveright5 = colors.white
         return colors
     end,
     statuslines = {
@@ -172,7 +172,7 @@ animation.animation({
         {'waveleft4',efffects.list_color(blue_colors,3)},
         {'waveleft5',efffects.list_color(blue_colors,2)},
     },
-    timeout = 100,
+    timeout = 10,
     delay = 200,
     interval = 150,
 })
@@ -187,7 +187,7 @@ animation.animation({
         {'waveright4',efffects.list_color(blue_colors,5)},
         {'waveright5',efffects.list_color(blue_colors,6)},
     },
-    timeout = 100,
+    timeout = 10,
     delay = 200,
     interval = 150,
 })
