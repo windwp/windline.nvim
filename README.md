@@ -6,6 +6,8 @@
  * change colors with colorscheme
  * simple syntax
 
+ ![Mutlifiletype](./assets/demo/mutli_filetype.gif)
+
 # Intro
 
 Firstly create a statusline in lua is easy and you can do it with some line

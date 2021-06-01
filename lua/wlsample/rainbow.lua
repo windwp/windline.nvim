@@ -51,8 +51,8 @@ basic.vi_mode_sep =  {
 }
 
 basic.file_name = {
-    text = function ()
-        local name     = vim.fn.expand('%:p:t')
+    text = function (bufnr)
+        local name     =  vim.fn.fnamemodify(vim.fn.bufname(bufnr),":t")
         if name == '' then name = '[No Name]' end
         return name..  ' '
     end,
@@ -61,44 +61,44 @@ basic.file_name = {
 
 
 
-local wave_left={
+local arrow_left={
     hl_colors = {
-        wave_blue1 = {'black', 'waveleft1'},
-        wave_blue2 = {'waveleft1', 'waveleft2'},
-        wave_blue3 = {'waveleft2', 'waveleft3'},
-        wave_blue4 = {'waveleft3', 'waveleft4'},
-        wave_blue5 = {'waveleft4', 'waveleft5'},
-        wave_blue6 = {'waveleft5', 'wavewhite'},
+        arrow_blue1 = {'black_light', 'arrowleft1'},
+        arrow_blue2 = {'arrowleft1', 'arrowleft2'},
+        arrow_blue3 = {'arrowleft2', 'arrowleft3'},
+        arrow_blue4 = {'arrowleft3', 'arrowleft4'},
+        arrow_blue5 = {'arrowleft4', 'arrowleft5'},
+        arrow_blue6 = {'arrowleft5', 'arrowwhite'},
     },
     text = function()
         return {
-            {sep.right_filled .. '        ', 'wave_blue1'},
-            {sep.right_filled .. '        ', 'wave_blue2'},
-            {sep.right_filled .. '        ', 'wave_blue3'},
-            {sep.right_filled .. '        ', 'wave_blue4'},
-            {sep.right_filled .. '        ', 'wave_blue5'},
-            {sep.right_filled .. '        ', 'wave_blue6'},
+            {sep.right_filled .. '  ', 'arrow_blue1'},
+            {sep.right_filled .. '  ', 'arrow_blue2'},
+            {sep.right_filled .. '  ', 'arrow_blue3'},
+            {sep.right_filled .. '  ', 'arrow_blue4'},
+            {sep.right_filled .. '  ', 'arrow_blue5'},
+            {sep.right_filled .. '  ', 'arrow_blue6'},
         }
     end
 }
 
-local wave_right={
+local arrow_right={
     hl_colors = {
-        wave_blue1 = {'waveright1', 'wavewhite'},
-        wave_blue2 = {'waveright2', 'waveright1'},
-        wave_blue3 = {'waveright3', 'waveright2'},
-        wave_blue4 = {'waveright4', 'waveright3'},
-        wave_blue5 = {'waveright5', 'waveright4'},
-        wave_blue6 = {'black', 'waveright5'},
+        arrow_blue1 = {'arrowright1', 'arrowwhite'},
+        arrow_blue2 = {'arrowright2', 'arrowright1'},
+        arrow_blue3 = {'arrowright3', 'arrowright2'},
+        arrow_blue4 = {'arrowright4', 'arrowright3'},
+        arrow_blue5 = {'arrowright5', 'arrowright4'},
+        arrow_blue6 = {'black', 'arrowright5'},
     },
     text = function()
         return {
-            {'       '..sep.left_filled , 'wave_blue1'},
-            {'       '..sep.left_filled , 'wave_blue2'},
-            {'       '..sep.left_filled , 'wave_blue3'},
-            {'       '..sep.left_filled , 'wave_blue4'},
-            {'       '..sep.left_filled , 'wave_blue5'},
-            {'       '..sep.slant_left , 'wave_blue6'},
+            {'  '..sep.left_filled , 'arrow_blue1'},
+            {'  '..sep.left_filled , 'arrow_blue2'},
+            {'  '..sep.left_filled , 'arrow_blue3'},
+            {'  '..sep.left_filled , 'arrow_blue4'},
+            {'  '..sep.left_filled , 'arrow_blue5'},
+            {'  '..sep.slant_left , 'arrow_blue6'},
         }
     end
 }
@@ -111,10 +111,10 @@ local default = {
         basic.vi_mode_sep,
         {' ',''},
         basic.file_name,
-        wave_left,
-        {' ',{'FilenameBg', 'wavewhite'}},
+        arrow_left,
+        {' ',{'FilenameBg', 'arrowwhite'}},
         basic.divider,
-        wave_right,
+        arrow_right,
         basic.line_col,
         basic.progress
 
@@ -130,11 +130,89 @@ local default = {
 }
 
 
+local wave_left={
+    hl_colors = {
+        wave_blue1 = {'black_light', 'waveleft1'},
+        wave_blue2 = {'waveleft1', 'waveleft2'},
+        wave_blue3 = {'waveleft2', 'waveleft3'},
+        wave_blue4 = {'waveleft3', 'waveleft4'},
+        wave_blue5 = {'waveleft4', 'waveleft5'},
+        wave_blue6 = {'waveleft5', 'black_light'},
+    },
+    text = function()
+        return {
+            {sep.right_rounded .. ' ', 'wave_blue1'},
+            {sep.right_rounded .. ' ', 'wave_blue2'},
+            {sep.right_rounded .. ' ', 'wave_blue3'},
+            {sep.right_rounded .. ' ', 'wave_blue4'},
+            {sep.right_rounded .. ' ', 'wave_blue5'},
+            {sep.right_rounded .. ' ', 'wave_blue6'},
+        }
+    end
+}
 
+local wave_right={
+    hl_colors = {
+        wave_blue1 = {'waveright1', 'black_light'},
+        wave_blue2 = {'waveright2', 'waveright1'},
+        wave_blue3 = {'waveright3', 'waveright2'},
+        wave_blue4 = {'waveright4', 'waveright3'},
+        wave_blue5 = {'waveright5', 'waveright4'},
+        wave_blue6 = {'black_light', 'waveright5'},
+    },
+    text = function()
+        return {
+            {' '..sep.left_rounded , 'wave_blue1'},
+            {' '..sep.left_rounded , 'wave_blue2'},
+            {' '..sep.left_rounded , 'wave_blue3'},
+            {' '..sep.left_rounded , 'wave_blue4'},
+            {' '..sep.left_rounded , 'wave_blue5'},
+            {' '..sep.left_rounded , 'wave_blue6'},
+        }
+    end
+}
+
+local markdown = {
+    filetypes={'markdown'},
+    active={
+        {sep.right_rounded,{'red','black_light'}},
+        {' ',{'black_light','black_light'}},
+        basic.divider,
+        wave_right,
+        basic.file_name,
+        wave_left,
+        basic.divider,
+        {sep.left_rounded,{'red','black_light'}},
+    },
+    show_in_active=true,
+    in_active={
+        basic.file_name_inactive,
+        basic.divider,
+        basic.divider,
+        basic.line_col_inactive,
+        {'',{'white', 'InactiveBg'}},
+        basic.progress_inactive,
+    }
+}
 windline.setup({
     colors_name = function(colors)
         colors.FilenameFg = colors.white_light
         colors.FilenameBg = colors.black_light
+        colors.arrowwhite = colors.black_light
+
+
+        colors.arrowleft1 = colors.white
+        colors.arrowleft2 = colors.white
+        colors.arrowleft3 = colors.white
+        colors.arrowleft4 = colors.white
+        colors.arrowleft5 = colors.white
+
+        colors.arrowright1 = colors.white
+        colors.arrowright2 = colors.white
+        colors.arrowright3 = colors.white
+        colors.arrowright4 = colors.white
+        colors.arrowright5 = colors.white
+
         colors.wavewhite = colors.white
         colors.waveleft1 = colors.white
         colors.waveleft2 = colors.white
@@ -150,7 +228,9 @@ windline.setup({
         return colors
     end,
     statuslines = {
-        default
+        default,
+        markdown
+
     }
 })
 local blue_colors={
@@ -165,14 +245,15 @@ local blue_colors={
 }
 
 
+
 animation.stop_all()
 animation.animation({
    data = {
-        {'waveleft1',efffects.rainbow(6)},
-        {'waveleft2',efffects.rainbow(5)},
-        {'waveleft3',efffects.rainbow(4)},
-        {'waveleft4',efffects.rainbow(3)},
-        {'waveleft5',efffects.rainbow(2)},
+        {'arrowleft1',efffects.rainbow(6)},
+        {'arrowleft2',efffects.rainbow(5)},
+        {'arrowleft3',efffects.rainbow(4)},
+        {'arrowleft4',efffects.rainbow(3)},
+        {'arrowleft5',efffects.rainbow(2)},
     },
     timeout = 100,
     delay = 200,
@@ -183,11 +264,11 @@ animation.animation({
 
 animation.animation({
    data = {
-        {'waveright1',efffects.rainbow(2)},
-        {'waveright2',efffects.rainbow(3)},
-        {'waveright3',efffects.rainbow(4)},
-        {'waveright4',efffects.rainbow(5)},
-        {'waveright5',efffects.rainbow(6)},
+        {'arrowright1',efffects.rainbow(2)},
+        {'arrowright2',efffects.rainbow(3)},
+        {'arrowright3',efffects.rainbow(4)},
+        {'arrowright4',efffects.rainbow(5)},
+        {'arrowright5',efffects.rainbow(6)},
     },
     timeout = 100,
     delay = 200,
@@ -195,3 +276,31 @@ animation.animation({
 })
 
 
+
+animation.animation({
+   data = {
+        {'waveleft1',efffects.list_color(blue_colors,6)},
+        {'waveleft2',efffects.list_color(blue_colors,5)},
+        {'waveleft3',efffects.list_color(blue_colors,4)},
+        {'waveleft4',efffects.list_color(blue_colors,3)},
+        {'waveleft5',efffects.list_color(blue_colors,2)},
+    },
+    timeout = 100,
+    delay = 200,
+    interval = 150,
+})
+
+
+
+animation.animation({
+   data = {
+        {'waveright1',efffects.list_color(blue_colors,2)},
+        {'waveright2',efffects.list_color(blue_colors,3)},
+        {'waveright3',efffects.list_color(blue_colors,4)},
+        {'waveright4',efffects.list_color(blue_colors,5)},
+        {'waveright5',efffects.list_color(blue_colors,6)},
+    },
+    timeout = 100,
+    delay = 200,
+    interval = 150,
+})
