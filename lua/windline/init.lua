@@ -23,6 +23,7 @@ local render = function(bufnr, items)
     for _, comp in pairs(items) do
         status = status .. comp:render(bufnr)
     end
+    M.state.cache_status = status
     return status
 end
 
@@ -69,8 +70,7 @@ M.show = function(bufnr)
             return render(bufnr, line.active)
         end
     end
-    M.state.cache_status = render(bufnr, M.default_line.active)
-    return M.state.cache_status
+    return render(bufnr, M.default_line.active)
 end
 
 M.on_enter = function(bufnr)

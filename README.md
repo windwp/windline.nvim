@@ -6,8 +6,11 @@
  * change colors with colorscheme
  * simple syntax
 
+## demo
+This demo display an animation statusline to markdown and lua file.
  ![Mutlifiletype](./assets/demo/mutli_filetype.gif)
 
+ 
 # Intro
 
 Firstly create a statusline in lua is easy and you can do it with some line
@@ -18,7 +21,7 @@ Windline is a first statusline support change statusline per filetype.
 You can write a statusline for any filetype.
 `terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
 If you write a plugin you can define a statusline for your plugin.
-It support to update on inactive window
+It support to update on **inactive window**
 
 ```lua
 
@@ -35,7 +38,7 @@ local yourstatus = {
 
 We offfer an builtin animation color library for stausline.
 I know it is not useful but why not :).
-It is not loaded if you don't use animation
+It is not loaded if you don't use animation.
 
 
  **Warning**
