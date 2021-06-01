@@ -121,6 +121,14 @@ M.on_colorscheme = function()
     setup_hightlight(M.get_colors())
 end
 
+-- reload color to ensure it match with theme
+M.on_vimenter = function()
+    vim.defer_fn(function()
+        themes.clear_cache()
+        M.on_colorscheme()
+    end,10)
+end
+
 ---@class WLConfig
 local default_config = {
     default_colors = nil,
@@ -135,18 +143,17 @@ M.setup = function(opts)
     opts = vim.tbl_extend('force', default_config, opts)
     themes.default_theme = opts.theme
     M.state.config.colors_name = opts.colors_name
-    vim.defer_fn(function ()
-        M.add_status(opts.statuslines)
-        vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
-        api.nvim_exec(
-            [[augroup WindLine
-                au!
-                au BufEnter * call v:lua.WindLine.on_enter(expand('<abuf>'))
-                au ColorScheme * call v:lua.WindLine.on_colorscheme()
-            augroup END]],
-            false
-        )
-    end, 1)
+    M.add_status(opts.statuslines)
+    vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
+    api.nvim_exec(
+        [[augroup WindLine
+            au!
+            au BufEnter * call v:lua.WindLine.on_enter(expand('<abuf>'))
+            au VimEnter * call v:lua.WindLine.on_vimenter()
+            au ColorScheme * call v:lua.WindLine.on_colorscheme()
+        augroup END]],
+        false
+    )
 end
 
 M.add_status = function(lines)

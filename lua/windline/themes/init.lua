@@ -3,6 +3,7 @@ local M = {}
 local cache_theme = {}
 
 M.default_them = nil
+M.count = 1
 
 M.load_theme = function(name)
     name = name or vim.g.colors_name
@@ -25,6 +26,7 @@ M.load_theme = function(name)
     return colors
 end
 
+M.clear_cache = function() cache_theme = {}end
 M.get_hl_color = function(hl)
     local cmd = vim.api.nvim_exec('highlight ' .. hl, true)
     local _, _, bg = string.find(cmd, "guibg%=(%#%w*)")
