@@ -8,9 +8,11 @@
 
 ## demo
 This demo display an animation statusline to markdown and lua file.
+
  ![Mutlifiletype](./assets/demo/mutli_filetype.gif)
 
- 
+ ![spectre](./assets/demo/demo_spectre.png)
+
 # Intro
 
 Firstly create a statusline in lua is easy and you can do it with some line
@@ -41,8 +43,6 @@ I know it is not useful but why not :).
 It is not loaded if you don't use animation.
 
 
- **Warning**
- We don't have anything call provider so you need to do it.
 
 # Setup
 
@@ -133,8 +133,8 @@ local count = {
 }
 ```
 
-A text function can return a group of child component,
-child component shared hl_colors data with parent component
+A text function can return a group of child component.
+child component share hl_colors data with parent component.
 
 
 ```lua

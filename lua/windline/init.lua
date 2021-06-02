@@ -8,22 +8,25 @@ local Comp = require('windline.component')
 
 M.lastBuff = 0
 
-M.state = {
+M.state = M.state or {
     mode = {}, -- vim mode {normal insert}
     comp = {}, -- component state it will reset on begin render
     config = {},
+    buf_enter_events = nil,
 }
 
 local mode = utils.mode
 
 M.statusline_ft = {}
 
-local render = function(bufnr, items)
+local render = function(bufnr, items, cache)
     local status = ''
     for _, comp in pairs(items) do
         status = status .. comp:render(bufnr)
     end
-    M.state.cache_status = status
+    if cache then
+        M.state.cache_status = status
+    end
     return status
 end
 
@@ -38,7 +41,7 @@ end
 
 M.show = function(bufnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
-    M.state.comp = {} --reset comp
+    M.state.comp = {} --reset component data
     M.state.mode = mode()
     local line = M.get_statusline(bufnr)
 
@@ -67,14 +70,34 @@ M.show = function(bufnr)
         M.bufnr = bufnr
         M.last_win = win_id
         if line and line.active then
-            return render(bufnr, line.active)
+            return render(bufnr, line.active, true)
         end
     end
-    return render(bufnr, M.default_line.active)
+    return render(bufnr, M.default_line.active, true)
 end
 
 M.on_enter = function(bufnr)
     vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s)', bufnr)
+    -- some helper function to define a cache value on state
+    if M.state.buf_enter_events ~= nil then
+        for _,buf_enter in pairs (M.state.buf_enter_events) do
+            buf_enter(bufnr)
+        end
+    end
+end
+
+M.add_buf_enter_event = function(func)
+    if M.state.buf_enter_events == nil then
+        M.state.buf_enter_events = {}
+    end
+    table.insert(M.state.buf_enter_events,func)
+end
+
+M.add_render_event = function(func)
+    if M.state.buf_enter_events == nil then
+        M.state.buf_enter_events = {}
+    end
+    table.insert(M.state.buf_enter_events, func)
 end
 
 local setup_hightlight = function(colors)
@@ -118,15 +141,15 @@ M.get_colors = function()
 end
 
 M.on_colorscheme = function()
-    setup_hightlight(M.get_colors())
+    -- some lua theme use async method to load color
+    vim.defer_fn(function()
+        setup_hightlight(M.get_colors())
+    end, 10)
 end
 
--- reload color to ensure it match with theme
 M.on_vimenter = function()
-    vim.defer_fn(function()
-        themes.clear_cache()
-        M.on_colorscheme()
-    end,10)
+    themes.clear_cache()
+    M.on_colorscheme()
 end
 
 ---@class WLConfig

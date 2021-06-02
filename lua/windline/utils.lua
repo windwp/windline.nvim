@@ -40,6 +40,9 @@ M.mode = function()
   return mode_map[mode_code]
 end
 
+M.change_mode_name = function(new_mode)
+    mode_map = new_mode
+end
 
 M.is_in_table = function(tbl, val)
   if tbl == nil then return false end

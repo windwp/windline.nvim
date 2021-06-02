@@ -1,6 +1,8 @@
 
 local windline = require('windline')
-local helper = require('wlsample.helpers')
+local helper = require('windline.helpers')
+local b_comps = require('windline.components.basic')
+
 local sep = helper.separators
 local animation = require('wlanimation')
 local efffects = require('wlanimation.effects')
@@ -51,11 +53,7 @@ basic.vi_mode_sep =  {
 }
 
 basic.file_name = {
-    text = function (bufnr)
-        local name     =  vim.fn.fnamemodify(vim.fn.bufname(bufnr),":t")
-        if name == '' then name = '[No Name]' end
-        return name..  ' '
-    end,
+    text = b_comps.file_name(),
     hl_colors = {'FilenameFg', 'FilenameBg'}
 }
 

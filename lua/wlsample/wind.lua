@@ -1,5 +1,6 @@
 local windline = require('windline')
-local helper = require('wlsample.helpers')
+local helper = require('windline.helpers')
+
 local sep = helper.separators
 local animation = require('wlanimation')
 local efffects = require('wlanimation.effects')
@@ -21,6 +22,7 @@ basic.bg                    = {" ", 'StatusLine'}
 basic.file_name_inactive    = {"%f", hl_list.Inactive}
 basic.line_col_inactive     = {[[ %3l:%-2c ]], hl_list.Inactive}
 basic.progress_inactive     = {[[%3p%% ]], hl_list.Inactive}
+
 
 basic.vi_mode= {
     name = 'vi_mode',
@@ -67,7 +69,7 @@ local wave_left={
         wave_blue3 = {'waveleft2', 'waveleft3'},
         wave_blue4 = {'waveleft3', 'waveleft4'},
         wave_blue5 = {'waveleft4', 'waveleft5'},
-        wave_blue6 = {'waveleft5', 'wavewhite'},
+        wave_blue6 = {'waveleft5', 'wavedefault'},
     },
     text = function()
         return {
@@ -83,7 +85,7 @@ local wave_left={
 
 local wave_right={
     hl_colors = {
-        wave_blue1 = {'waveright1', 'wavewhite'},
+        wave_blue1 = {'waveright1', 'wavedefault'},
         wave_blue2 = {'waveright2', 'waveright1'},
         wave_blue3 = {'waveright3', 'waveright2'},
         wave_blue4 = {'waveright4', 'waveright3'},
@@ -111,7 +113,7 @@ local default = {
         {' ',''},
         basic.file_name,
         wave_left,
-        {' ',{'FilenameBg', 'wavewhite'}},
+        {' ',{'FilenameBg', 'wavedefault'}},
         basic.divider,
         wave_right,
         basic.line_col,
@@ -131,20 +133,18 @@ local default = {
 
 windline.setup({
     colors_name = function(colors)
-        colors.FilenameFg = colors.white_light
-        colors.FilenameBg = colors.black_light
-        colors.wavewhite = colors.white
-        colors.waveleft1 = colors.white
-        colors.waveleft2 = colors.white
-        colors.waveleft3 = colors.white
-        colors.waveleft4 = colors.white
-        colors.waveleft5 = colors.white
+        colors.wavedefault = colors.white_light
+        colors.waveleft1 = colors.wavedefault
+        colors.waveleft2 = colors.wavedefault
+        colors.waveleft3 = colors.wavedefault
+        colors.waveleft4 = colors.wavedefault
+        colors.waveleft5 = colors.wavedefault
 
-        colors.waveright1 = colors.white
-        colors.waveright2 = colors.white
-        colors.waveright3 = colors.white
-        colors.waveright4 = colors.white
-        colors.waveright5 = colors.white
+        colors.waveright1 = colors.wavedefault
+        colors.waveright2 = colors.wavedefault
+        colors.waveright3 = colors.wavedefault
+        colors.waveright4 = colors.wavedefault
+        colors.waveright5 = colors.wavedefault
         return colors
     end,
     statuslines = {

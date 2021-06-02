@@ -1,5 +1,8 @@
 local windline = require('windline')
-local helper = require('wlsample.helpers')
+
+local b_components = require('windline.components.basic')
+
+local helper = require('windline.helpers')
 local sep = helper.separators
 local animation = require('wlanimation')
 local efffects = require('wlanimation.effects')
@@ -15,14 +18,17 @@ local hl_list = {
 }
 local basic = {}
 
-basic.divider             = {"%=", ''}
+basic.divider             = {b_components.divider, ''}
 basic.space                 = {' ', ''}
-basic.line_col              = {[[ %3l:%-2c ]],hl_list.Black }
-basic.progress              = {[[%3p%% ]], hl_list.Black}
+basic.line_col              = {b_components.line_col, hl_list.Black }
+basic.progress              = {b_components.progress, hl_list.Black}
 basic.bg                    = {" ", 'StatusLine'}
-basic.file_name_inactive    = {"%f", hl_list.Inactive}
-basic.line_col_inactive     = {[[ %3l:%-2c ]], hl_list.Inactive}
-basic.progress_inactive     = {[[%3p%% ]], hl_list.Inactive}
+basic.file_name_inactive    = {b_components.full_file_name, hl_list.Inactive}
+basic.line_col_inactive     = {b_components.line_col, hl_list.Inactive}
+basic.progress_inactive     = {b_components.progress, hl_list.Inactive}
+
+-- basic.file_format = {b_components.file_format({icon = true}), hl_list.Black}
+-- basic.file_size = {b_components.file_size(), hl_list.Black}
 
 basic.vi_mode= {
     name = 'vi_mode',
@@ -140,7 +146,7 @@ local default = {
         basic.vi_mode_sep,
         {' ',''},
         basic.file_name,
-        {sep.slant_right,{'FilenameBg', 'ActiveBg'}},
+        {sep.slant_right,{'FilenameBg', 'black_light'}},
         basic.divider,
         {sep.slant_right,{'ActiveBg', 'black_light'}},
         {sep.slant_right,{'black_light', 'green_light'}},
@@ -149,6 +155,7 @@ local default = {
         {sep.slant_right,{'red_light', 'cyan_light'}},
         {sep.slant_right,{'cyan_light', 'black'}},
         basic.line_col,
+        {sep.slant_right_thin,{'white', 'black'}},
         basic.progress
 
     },
@@ -191,5 +198,5 @@ animation.animation({
     interval = 100,
 })
 
-
+-- run <leader>x to update color
 vim.api.nvim_set_keymap('n','<leader>x',':luafile %<cr>',{})
