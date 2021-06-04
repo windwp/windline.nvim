@@ -76,7 +76,12 @@ M.show = function(bufnr)
     return render(bufnr, M.default_line.active, true)
 end
 
-M.on_enter = function(bufnr)
+-- for quickfix
+M.on_buf_win_enter = function(bufnr)
+    vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s)', bufnr)
+end
+
+M.on_buf_enter = function(bufnr)
     vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s)', bufnr)
     -- some helper function to define a cache value on state
     if M.state.buf_enter_events ~= nil then
@@ -91,13 +96,6 @@ M.add_buf_enter_event = function(func)
         M.state.buf_enter_events = {}
     end
     table.insert(M.state.buf_enter_events,func)
-end
-
-M.add_render_event = function(func)
-    if M.state.buf_enter_events == nil then
-        M.state.buf_enter_events = {}
-    end
-    table.insert(M.state.buf_enter_events, func)
 end
 
 local setup_hightlight = function(colors)
@@ -171,7 +169,8 @@ M.setup = function(opts)
     api.nvim_exec(
         [[augroup WindLine
             au!
-            au BufEnter * call v:lua.WindLine.on_enter(expand('<abuf>'))
+            au BufEnter * call v:lua.WindLine.on_buf_enter(expand('<abuf>'))
+            au BufWinEnter * call v:lua.WindLine.on_buf_win_enter(expand('<abuf>'))
             au VimEnter * call v:lua.WindLine.on_vimenter()
             au ColorScheme * call v:lua.WindLine.on_colorscheme()
         augroup END]],

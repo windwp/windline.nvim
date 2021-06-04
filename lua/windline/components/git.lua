@@ -15,7 +15,7 @@ M.git_branch = function(opt)
     end)
 
     return function()
-        if #state.git_branch > 1 then
+        if  state.git_branch and #state.git_branch > 1 then
             return '  ' .. state.git_branch .. ' '
         end
         return state.git_branch or ''

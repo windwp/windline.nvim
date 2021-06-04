@@ -23,7 +23,7 @@ Windline is a first statusline support change statusline per filetype.
 You can write a statusline for any filetype.
 `terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
 If you write a plugin you can define a statusline for your plugin.
-It support to update on **inactive window**
+It support to display status on **inactive window**
 
 ```lua
 
@@ -110,7 +110,7 @@ local default = {
 
 you can define a component like this.
 ```lua
-vim.g.windlinecount = 1
+time_count = 1
 
 local count = {
   hl_colors = {
@@ -118,15 +118,15 @@ local count = {
         countNormal  = {'black', 'green'}
   },
   hl = function(hl_colors)
-      if vim.g.windlinecount > 50 then
+      if time_count > 50 then
         return hl_colors.countRed
       end
       return hl_colors.countNormal
   end,
   text = function(bufnr)
-    vim.g.windlinecount = vim.g.windlinecount + 1
-    if vim.g.windlinecount > 99 then
-      vim.g.windlinecount = 1
+    time_count = time_count + 1
+    if time_count > 99 then
+      time_count = 1
     end
     return ' ' .. vim.fn.strftime("%H:%M:%S") .. ' '
   end,
