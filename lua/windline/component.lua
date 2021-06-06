@@ -81,7 +81,7 @@ function Comp:render(bufnr)
         for _,child in pairs(childs) do
             local text,hl = child[1],child[2]
             if type(text) == 'function' then
-                text = child[1]()
+                text = child[1](bufnr)
             end
             if type(hl) == 'string' then
                 hl = hl_data[hl]

@@ -1,6 +1,6 @@
 local windline = require('windline')
 local helper = require('windline.helpers')
-
+local utils = require('windline.utils')
 local sep = helper.separators
 local animation = require('wlanimation')
 local efffects = require('wlanimation.effects')
@@ -23,6 +23,37 @@ basic.file_name_inactive    = {"%f", hl_list.Inactive}
 basic.line_col_inactive     = {[[ %3l:%-2c ]], hl_list.Inactive}
 basic.progress_inactive     = {[[%3p%% ]], hl_list.Inactive}
 
+utils.change_mode_name({
+    ['n'] = { ' NORMAL', 'Normal' },
+    ['no'] = { ' O-PENDING', 'Visual' },
+    ['nov'] = { ' O-PENDING', 'Visual' },
+    ['noV'] = { ' O-PENDING', 'Visual' },
+    ['no'] = { ' O-PENDING', 'Visual' },
+    ['niI'] = { ' NORMAL', 'Normal' },
+    ['niR'] = { ' NORMAL', 'Normal' },
+    ['niV'] = { ' NORMAL', 'Normal' },
+    ['v'] = { ' VISUAL', 'Visual' },
+    ['V'] = { ' V-LINE', 'Visual' },
+    [''] = { ' V-BLOCK', 'Visual' },
+    ['s'] = { ' SELECT', 'Visual' },
+    ['S'] = { ' S-LINE', 'Visual' },
+    [''] = { ' S-BLOCK', 'Visual' },
+    ['i'] = { ' INSERT', 'Insert' },
+    ['ic'] = { ' INSERT', 'Insert' },
+    ['ix'] = { ' INSERT', 'Insert' },
+    ['R'] = { ' REPLACE', 'Replace' },
+    ['Rc'] = { ' REPLACE', 'Replace' },
+    ['Rv'] = { 'V-REPLACE', 'Normal' },
+    ['Rx'] = { ' REPLACE', 'Normal' },
+    ['c'] = { ' COMMAND', 'Command' },
+    ['cv'] = { ' COMMAND', 'Command' },
+    ['ce'] = { ' COMMAND', 'Command' },
+    ['r'] = { ' REPLACE', 'Replace' },
+    ['rm'] = { ' MORE', 'Normal' },
+    ['r?'] = { ' CONFIRM', 'Normal' },
+    ['!'] = { ' SHELL', 'Normal' },
+    ['t'] = { ' TERMINAL', 'Command' },
+})
 
 basic.vi_mode= {
     name = 'vi_mode',
@@ -133,6 +164,9 @@ local default = {
 
 windline.setup({
     colors_name = function(colors)
+        colors.FilenameFg = colors.white_light
+        colors.FilenameBg = colors.black_light
+
         colors.wavedefault = colors.white_light
         colors.waveleft1 = colors.wavedefault
         colors.waveleft2 = colors.wavedefault

@@ -5,7 +5,6 @@ local helper = require('windline.helpers')
 M.divider = '%='
 M.line_col = [[ %3l:%-2c ]]
 M.progress = [[%3p%%]]
-M.file_modified = '%m'
 M.full_file_name = '%f'
 
 M.file_name = function(opt)
@@ -25,7 +24,7 @@ M.file_type = function(opt)
     local default = opt.default or '  '
     return function(bufnr)
         local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
-        local file_ext = vim.fn.fnamemodify(file_name, vim.fn.expand("%:e"))
+        local file_ext = vim.fn.fnamemodify(file_name, ":e")
         local icon = opt.icon and helper.get_icon(file_name, file_ext) or ''
         local filetype = vim.bo.filetype
         if filetype == '' then
@@ -69,4 +68,23 @@ M.file_format = function(opt)
     end
 end
 
+M.file_icon = function(default)
+    default = default or ''
+    return function (bufnr)
+        local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
+        local file_ext = vim.fn.fnamemodify(file_name, ":e")
+        return helper.get_icon(file_name, file_ext) or default
+    end
+end
+
+M.file_modified = function(icon)
+    if icon then
+        return function()
+            if vim.bo.modified or vim.bo.modifiable == false then
+                return icon
+            end
+        end
+    end
+    return '%m'
+end
 return M

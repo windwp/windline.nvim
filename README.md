@@ -54,12 +54,16 @@ windline.setup({
 
 ```
 
-![basic](./assets/demo/demo_basic.gif)
+![bubble](./assets/demo/demo_bubble.png)
+[code](./lua/wlsample/bubble.lua)
+
+![basic animation](./assets/demo/demo_basic.gif)
 [code](./lua/wlsample/basic.lua)
 
 
-![wind](./assets/demo/demo_wave.gif)
+![wind animation](./assets/demo/demo_wave.gif)
 [code](./lua/wlsample/wind.lua)
+
 
 
 # statusline
@@ -96,11 +100,16 @@ local default = {
     filetypes={'default'},
     active={
       --- component...
-      {'',{'white', 'InactiveBg'}},
-      {"%=", ''}
+      {'[',{'red', 'black'}},
+      {'%f',{'green','black'}},
+      {']',{'red','black'}},
+      -- use empty mean It use same color with component above
+      {"%=", ''} ,
+      {' %3l:%-2c ',{'white','black'}}
     },
 }
 ```
+![demo](./assets/demo/simple_comp.png)
 
 **Every component have own hightlight name define in hl_colors function**
 
@@ -114,14 +123,14 @@ time_count = 1
 
 local count = {
   hl_colors = {
-        countRed     = {'black', 'red'},
-        countNormal  = {'black', 'green'}
+     countRed     = {'black', 'red'},
+     countGreen  = {'black', 'green'}
   },
   hl = function(hl_colors)
       if time_count > 50 then
         return hl_colors.countRed
       end
-      return hl_colors.countNormal
+      return hl_colors.countGreen
   end,
   text = function(bufnr)
     time_count = time_count + 1
@@ -136,36 +145,33 @@ local count = {
 A text function can return a group of child component.
 child component share hl_colors data with parent component.
 
-
 ```lua
-local terminal_mode =  {
-    name='terminal',
-    text = function ()
-        if
-            vim.g.statusline_winid == vim.api.nvim_get_current_win()
-            and state.mode[1] == 'TERMINAL'
-        then
+local lsp_comps = require('windline.components.lsp')
+local check_lsp_status = lsp_comps.check_lsp({})
+basic.lsp_diagnos = {
+    name = 'diagnostic',
+    hl_colors = {
+        red = { 'red', 'black' },
+        yellow = { 'yellow', 'black' },
+        blue = { 'blue', 'black' },
+    },
+    text = function()
+        if check_lsp_status() then
             return {
-                {' ⚡ ', function(hl_data) return hl_data[state.mode[2]] end},
-                {'', 'sep'}
+                { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
+                { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
+                { lsp_comps.lsp_hint({ format = '  %s' }), 'blue' },
             }
         end
-        return {
-            {' ⚡ ','empty'} -- empty come from hl_colors
-        }
+        return ''
     end,
-    hl_colors = {
-        Normal  = {'ActiveFg', 'ActiveBg'   } ,
-        sep     = {'red', 'InactiveBg'},
-        Command = {'white', 'red' } ,
-        empty   = {'white', 'black'},
-    },
 }
 ```
 
 # Colors
-windline use a terminal color.It generate from your colorscheme terminal.
-Every time you change colorschemes it will be generate.
+windline use a terminal color. It generate from your colorscheme terminal.
+Every time you change colorschemes it will be generate a new colors to map
+with your colorscheme
 
 color name is use to define component and animation
 
