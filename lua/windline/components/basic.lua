@@ -30,7 +30,10 @@ M.file_type = function(opt)
         if filetype == '' then
             return default
         end
-        return string.format(" %s %s ", icon, filetype):lower()
+        if icon~= '' then
+            return icon .. ' ' .. filetype
+        end
+        return filetype;
     end
 end
 
@@ -68,6 +71,13 @@ M.file_format = function(opt)
     end
 end
 
+
+function M.file_encoding()
+    return function()
+        local enc = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc
+        return enc:upper()
+    end
+end
 M.file_icon = function(default)
     default = default or ''
     return function (bufnr)

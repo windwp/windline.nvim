@@ -57,6 +57,10 @@ M.generate_theme = function ()
         white_light            = vim.g.terminal_color_15,
     }
 
+    local fgNormal,bgNormal = M.get_hl_color('Normal')
+    colors.NormalFg = fgNormal or colors.white_light
+    colors.NormalBg = bgNormal or colors.black_light
+
     local fgInactive,bgInactive = M.get_hl_color('StatusLineNC')
     colors.InactiveFg = fgInactive or colors.white_light
     colors.InactiveBg = bgInactive or colors.black_light

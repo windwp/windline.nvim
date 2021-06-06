@@ -16,6 +16,8 @@ local colors = {
   cyan_light    = '#00ffff',
   white_light   = "#928b95",
 
+  NormalBg      = '#002635',
+  NormalFg      = '#e6e6dc',
   ActiveFg      = '#928b95',
   ActiveBg      = '#262626',
   InactiveFg    = '#928b95',

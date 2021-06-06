@@ -57,6 +57,12 @@ windline.setup({
 ![bubble](./assets/demo/demo_bubble.png)
 [code](./lua/wlsample/bubble.lua)
 
+![evilline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/eviline.png)
+[code](./lua/wlsample/evil_line.lua)
+
+![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
+[code](./lua/wlsample/airline.lua)
+
 ![basic animation](./assets/demo/demo_basic.gif)
 [code](./lua/wlsample/basic.lua)
 
@@ -197,6 +203,8 @@ local colors = {
   cyan_light    = "",
   white_light   = "",
 
+  NormalFg      = "",
+  NormalBg      = "",
   ActiveFg      = "",
   ActiveBg      = "",
   InactiveFg    = "",

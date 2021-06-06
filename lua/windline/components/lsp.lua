@@ -19,6 +19,7 @@ local function is_lsp()
 end
 
 local lsp_client_names = function(opt)
+    opt = opt or {}
     local clients = {}
     local icon = opt.icon or ' '
     local sep = opt.seprator or ' '
@@ -56,9 +57,9 @@ M.check_lsp = function(opt)
     end
 end
 
-M.lsp_name = function()
+M.lsp_name = function(opt)
     windline.add_buf_enter_event(function()
-        vim.b.lsp_server_name = lsp_client_names()
+        vim.b.lsp_server_name = lsp_client_names(opt)
     end)
 
     return function()
