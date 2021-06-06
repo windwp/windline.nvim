@@ -173,6 +173,8 @@ windline use a terminal color. It generate from your colorscheme terminal.
 Every time you change colorschemes it will be generate a new colors to map
 with your colorscheme
 
+![demo](./assets/demo/demo_colorscheme.gif)
+
 color name is use to define component and animation
 
 ``` lua
