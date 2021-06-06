@@ -2,7 +2,7 @@
  The next generation statusline for neovim
 
  * custom statusline for filetype
- * builtin animation library
+ * built-in animation library
  * change colors with colorscheme
  * simple syntax
 
@@ -16,8 +16,8 @@ This demo display an animation statusline to markdown and lua file.
 # Intro
 
 Firstly create a statusline in lua is easy and you can do it with some line
-code. There are many lua statusline but they do the samething of vimscript statusline.
-Sadly but true It doesn't have anything new
+code. There are many lua statusline but they do the same thing of vimscript statusline.
+Sadly but true It doesn't have anything ne
 
 Windline is a first statusline support change statusline per filetype.
 You can write a statusline for any filetype.
@@ -38,7 +38,7 @@ local yourstatus = {
 
 ```
 
-We offfer an builtin animation color library for stausline.
+We offer an built-in animation color library for statusline.
 I know it is not useful but why not :).
 It is not loaded if you don't use animation.
 
@@ -49,32 +49,32 @@ It is not loaded if you don't use animation.
 ```lua
 local windline = require('windline')
 windline.setup({
-  statuslines = {--- you need define your statusline here }
+  statuslines = {--- you need define your status line here }
 })
 
 ```
 
-![bubble](./assets/demo/demo_bubble.png)
-[code](./lua/wlsample/bubble.lua)
+![Bubble](./assets/demo/demo_bubble.png)
+[bubble line](./lua/wlsample/bubble.lua)
 
 ![evilline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/eviline.png)
-[code](./lua/wlsample/evil_line.lua)
+[evil line](./lua/wlsample/evil_line.lua)
 
 ![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
-[code](./lua/wlsample/airline.lua)
+[airline](./lua/wlsample/airline.lua)
 
 ![basic animation](./assets/demo/demo_basic.gif)
-[code](./lua/wlsample/basic.lua)
+[basic animation](./lua/wlsample/basic.lua)
 
 
 ![wind animation](./assets/demo/demo_wave.gif)
-[code](./lua/wlsample/wind.lua)
+[wind animation](./lua/wlsample/wind.lua)
 
 
 
-# statusline
+# Status line
 
-you need to define a default statusline it will apply to all filetypes.
+You need to define a default statusline it will apply to all filetypes.
 ```lua
 local default = {
     filetypes={'default'},
@@ -117,13 +117,13 @@ local default = {
 ```
 ![demo](./assets/demo/simple_comp.png)
 
-**Every component have own hightlight name define in hl_colors function**
+**Every component have own hightlight name define in `hl_colors` function**
 
-**A hl function return a name in hl_colors function you can use it to toggle mode**
+**A `hl` function return a name in `hl_colors` function you can use it to toggle mode**
 
 **A text function has a bufnr parameter and you can use it to get data from buffer**
 
-you can define a component like this.
+You can define a component like this.
 ```lua
 time_count = 1
 
@@ -149,7 +149,7 @@ local count = {
 ```
 
 A text function can return a group of child component.
-child component share hl_colors data with parent component.
+Child component share `hl_colors` data with parent component.
 
 ```lua
 local lsp_comps = require('windline.components.lsp')
@@ -175,13 +175,13 @@ basic.lsp_diagnos = {
 ```
 
 # Colors
-windline use a terminal color. It generate from your colorscheme terminal.
+Windline use a terminal color. It generate from your colorscheme terminal.
 Every time you change colorschemes it will be generate a new colors to map
 with your colorscheme
 
 ![demo](./assets/demo/demo_colorscheme.gif)
 
-color name is use to define component and animation
+Color name is use to define component and animation
 
 ``` lua
 -- sample
@@ -213,7 +213,7 @@ local colors = {
 return colors
 ```
 
-if you need to define a new name of color to use on animation you need define
+If you need to define a new name of color to use on animation you need define
 on colors_name function
 
 ```lua
@@ -247,7 +247,7 @@ animation.animation({
     interval = 100,
 })
 
-you can create a multi animation but only list of data on animation is sync
+you can create multi animation but only list of data on animation is sync
 ```
 
 ### effects

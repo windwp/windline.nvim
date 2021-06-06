@@ -1,5 +1,9 @@
 local Hsl = require('wlanimation.hsl')
 local utils = require('wlanimation.utils')
+
+-- local c_status = string.gsub(state.cache_status, "%#WL.*%#", ' ')
+-- c_status = string.gsub(c_status, "%%[%-%w]*", ' ')
+-- local max_text_length = vim.fn.winwidth(0) - vim.fn.strwidth(c_status)
 -- local function iter_text(text, max_length, sep)
 --     sep = sep or ' '
 --     local idx = 0
@@ -92,7 +96,6 @@ local rainbow = function(start)
         "#8B00FF"
     },start)
 end
-
 local blackwhite = function ()
     return flashyL(1)
 end
