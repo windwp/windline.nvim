@@ -116,6 +116,7 @@ local default = {
     },
     in_active = {
         { b_components.full_file_name, hl_list.Inactive },
+        basic.file_name_inactive,
         basic.divider,
         basic.divider,
         { b_components.line_col, hl_list.Inactive },

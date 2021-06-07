@@ -22,13 +22,9 @@ basic.divider             = {b_components.divider, ''}
 basic.space                 = {' ', ''}
 basic.line_col              = {b_components.line_col, hl_list.Black }
 basic.progress              = {b_components.progress, hl_list.Black}
-basic.bg                    = {" ", 'StatusLine'}
 basic.file_name_inactive    = {b_components.full_file_name, hl_list.Inactive}
 basic.line_col_inactive     = {b_components.line_col, hl_list.Inactive}
 basic.progress_inactive     = {b_components.progress, hl_list.Inactive}
-
--- basic.file_format = {b_components.file_format({icon = true}), hl_list.Black}
--- basic.file_size = {b_components.file_size(), hl_list.Black}
 
 basic.vi_mode= {
     name = 'vi_mode',

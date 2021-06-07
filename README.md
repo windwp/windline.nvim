@@ -11,7 +11,6 @@ This demo display an animation statusline to markdown and lua file.
 
  ![Mutlifiletype](./assets/demo/mutli_filetype.gif)
 
- ![spectre](./assets/demo/demo_spectre.png)
 
 # Intro
 
@@ -71,6 +70,8 @@ windline.setup({
 [wind animation](./lua/wlsample/wind.lua)
 
 
+Remember windline can change status line per filetype so you can have bubble
+line for markdown or latex file and airline for your working file.
 
 # Status line
 
@@ -178,6 +179,8 @@ basic.lsp_diagnos = {
     end,
 }
 ```
+Windline doesn't have a component condition just return it to empty or nil to
+make it disappear
 
 # Colors
 Windline use a terminal color. It generate from your colorscheme terminal.

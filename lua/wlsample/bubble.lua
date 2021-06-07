@@ -1,6 +1,7 @@
 local windline = require('windline')
 local helper = require('windline.helpers')
 local sep = helper.separators
+local vim_components = require('windline.components.vim')
 
 local b_components = require('windline.components.basic')
 local state = _G.WindLine.state
@@ -129,6 +130,7 @@ local default = {
         { ' ', hl_list.Black },
         basic.vi_mode,
         basic.file,
+        {vim_components.search_count(),{"red", "white"}},
         { sep.right_rounded, hl_list.Black },
         basic.lsp_diagnos,
         basic.git,

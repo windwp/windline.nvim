@@ -34,7 +34,7 @@ M.diff_added = function(opt)
     return function()
         local git_dict = vim.b.gitsigns_status_dict
         if git_dict and git_dict.head and #git_dict.head > 0 then
-            local value = git_dict.added
+            local value = git_dict.added or 0
             if value > 0 or value == 0 and opt.show_zero == true then
                 return string.format(format, value)
             end
@@ -50,7 +50,7 @@ M.diff_removed = function(opt)
     return function()
         local git_dict = vim.b.gitsigns_status_dict
         if git_dict and git_dict.head and #git_dict.head > 0 then
-            local value = git_dict.removed
+            local value = git_dict.removed or 0
             if value > 0 or value == 0 and opt.show_zero == true then
                 return string.format(format, value)
             end
@@ -65,7 +65,7 @@ M.diff_changed = function(opt)
     return function()
         local git_dict = vim.b.gitsigns_status_dict
         if git_dict and git_dict.head and #git_dict.head > 0 then
-            local value = git_dict.changed
+            local value = git_dict.changed or 0
             if value > 0 or value == 0 and opt.show_zero == true then
                 return string.format(format, value)
             end

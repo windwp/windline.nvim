@@ -2,7 +2,7 @@ local Comp = {}
 local utils=require('windline.utils')
 
 local render_text = function (text, highlight)
-    if text == nil then text = "" end
+    if text == nil or text == "" then return "" end
     if highlight == '' or highlight == nil then return text end
     return string.format('%%#%s#%s', highlight, text)
 end

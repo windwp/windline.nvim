@@ -206,7 +206,7 @@ animation.animation({
         {'waveleft4',efffects.list_color(blue_colors,3)},
         {'waveleft5',efffects.list_color(blue_colors,2)},
     },
-    timeout = 10,
+    timeout = 100,
     delay = 200,
     interval = 150,
 })
@@ -221,7 +221,7 @@ animation.animation({
         {'waveright4',efffects.list_color(blue_colors,5)},
         {'waveright5',efffects.list_color(blue_colors,6)},
     },
-    timeout = 10,
+    timeout = 100,
     delay = 200,
     interval = 150,
 })

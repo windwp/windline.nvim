@@ -3,6 +3,7 @@ local helper = require('windline.helpers')
 local sep = helper.separators
 local b_components = require('windline.components.basic')
 local state = _G.WindLine.state
+local vim_components = require('windline.components.vim')
 
 local lsp_comps = require('windline.components.lsp')
 local git_comps = require('windline.components.git')
@@ -10,13 +11,13 @@ local git_comps = require('windline.components.git')
 local hl_list = {
     Black = { 'white', 'black' },
     White = { 'black', 'white' },
+    Normal = {'NormalFg', 'NormalBg'},
     Inactive = { 'InactiveFg', 'InactiveBg' },
     Active = { 'ActiveFg', 'ActiveBg' },
 }
 local basic = {}
 
-basic.divider = { b_components.divider, '' }
-basic.bg = { ' ', 'StatusLine' }
+basic.divider = { b_components.divider, hl_list.Normal }
 
 local colors_mode_light = {
     Normal = { 'magenta', 'black_light' },
@@ -94,7 +95,6 @@ basic.right_sep = {
         }
     end,
 }
-
 local default = {
     filetypes = { 'default' },
     active = {
@@ -105,6 +105,7 @@ local default = {
         { b_components.file_name(), '' },
         { sep.right_filled, { 'black_light', 'NormalBg' } },
         basic.lsp_diagnos,
+        {vim_components.search_count(),{"cyan", "NormalBg"}},
         basic.divider,
         { sep.left_filled, { 'black_light', 'NormalBg' } },
         { ' ', { 'white_light', 'black_light' } },
