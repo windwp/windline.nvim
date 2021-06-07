@@ -40,8 +40,8 @@ local yourstatus = {
 
 We offer an built-in animation color library for statusline.
 I know it is not useful but why not :).
-It is not loaded if you don't use animation.
 
+It is not loaded if you don't use animation.
 
 
 # Setup
@@ -109,8 +109,13 @@ local default = {
       {'[',{'red', 'black'}},
       {'%f',{'green','black'}},
       {']',{'red','black'}},
-      -- use empty mean It use same color with component above
+
+      -- use empty mean it use same color with component above
       {"%=", ''} ,
+
+      -- use a hightlight group
+      {' ','StatusLine'},
+
       {' %3l:%-2c ',{'white','black'}}
     },
 }
@@ -186,29 +191,29 @@ Color name is use to define component and animation
 ``` lua
 -- sample
 local colors = {
-  black         = "",
-  red           = "",
-  green         = "",
-  yellow        = "",
-  blue          = "",
-  magenta       = "",
-  cyan          = "",
-  white         = "",
-  black_light   = "",
-  red_light     = "",
-  yellow_light  = "",
-  blue_light    = "",
-  magenta_light = "",
-  green_light   = "",
-  cyan_light    = "",
-  white_light   = "",
+  black         = "",  -- terminal_color_0,
+  red           = "",  -- terminal_color_1,
+  green         = "",  -- terminal_color_2,
+  yellow        = "",  -- terminal_color_3,
+  blue          = "",  -- terminal_color_4,
+  magenta       = "",  -- terminal_color_5,
+  cyan          = "",  -- terminal_color_6,
+  white         = "",  -- terminal_color_7,
+  black_light   = "",  -- terminal_color_8,
+  red_light     = "",  -- terminal_color_9,
+  yellow_light  = "",  -- terminal_color_10,
+  blue_light    = "",  -- terminal_color_11,
+  magenta_light = "",  -- terminal_color_12,
+  green_light   = "",  -- terminal_color_13,
+  cyan_light    = "",  -- terminal_color_14,
+  white_light   = "",  -- terminal_color_15,
 
-  NormalFg      = "",
-  NormalBg      = "",
-  ActiveFg      = "",
-  ActiveBg      = "",
-  InactiveFg    = "",
-  InactiveBg    = "",
+  NormalFg      = "",  -- hightlight Normal fg
+  NormalBg      = "",  -- hightlight Normal bg
+  ActiveFg      = "",  -- hightlight StatusLine fg
+  ActiveBg      = "",  -- hightlight StatusLine bg
+  InactiveFg    = "",  -- hightlight StatusLineNc fg
+  InactiveBg    = "",  -- hightlight StatusLineNc bg
 }
 return colors
 ```
@@ -223,8 +228,12 @@ local windline = require('windline')
 windline.setup({
 
   colors_name = function(colors)
-      colors.FilenameFg = colors.white_light    --- add more color
+      --- add more color
+      colors.FilenameFg = colors.white_light
       colors.FilenameBg = colors.black
+
+      -- this color will not update if you change a colorscheme
+      colors.gray = "#fefefe"
       return colors
   end,
 
