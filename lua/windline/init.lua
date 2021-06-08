@@ -138,10 +138,10 @@ M.get_colors = function()
     return colors
 end
 
-M.on_colorscheme = function()
+M.on_colorscheme = function(colors )
     -- some lua theme use async method to load color
     vim.defer_fn(function()
-        setup_hightlight(M.get_colors())
+        setup_hightlight(colors or M.get_colors())
     end, 10)
 end
 
