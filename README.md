@@ -16,7 +16,7 @@ This demo display an animation statusline to markdown and lua file.
 
 Firstly create a statusline in lua is easy and you can do it with some line
 code. There are many lua statusline but they do the same thing of vimscript statusline.
-Sadly but true It doesn't have anything ne
+It doesn't have anything new
 
 Windline is a first statusline support change statusline per filetype.
 You can write a statusline for any filetype.
