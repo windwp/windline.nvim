@@ -42,7 +42,7 @@ M.search_count = function(opt)
             if result.total > result.maxcount and result.current > result.maxcount then
                 return string.format(" >%d/>%d ", result.current, result.total)
             elseif result.total > result.maxcount then
-                return string.format(" >%d/>%d ", result.current, result.total)
+                return string.format(" %d/>%d ", result.current, result.total)
             end
         end
         return string.format(" %d/%d ", result.current, result.total)

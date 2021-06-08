@@ -22,6 +22,17 @@ local utils = require('wlanimation.utils')
 --     end
 -- end
 
+
+local list_text = function(tbl, start)
+    local idx = start or 1
+    return function(_)
+        local value = tbl[idx]
+        idx = idx + 1
+        if idx > #tbl then idx = 1 end
+        return value
+    end
+end
+
 local flashyH = function(jump)
     local step = jump or 1
     return function(color)
@@ -115,6 +126,7 @@ end
 return {
     rainbow    = wrap(rainbow),
     list_color = wrap(list_color),
+    list_text  = list_text,
     flashyL    = wrap(flashyL),
     flashyS    = wrap(flashyS),
     flashyH    = wrap(flashyH),

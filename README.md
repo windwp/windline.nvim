@@ -69,6 +69,8 @@ windline.setup({
 ![wind animation](./assets/demo/demo_wave.gif)
 [wind animation](./lua/wlsample/wind.lua)
 
+![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
+[luffy](./lua/wlsample/airline_luffy.lua)
 
 Remember windline can change status line per filetype so you can have bubble
 line for markdown or latex file and airline for your working file.

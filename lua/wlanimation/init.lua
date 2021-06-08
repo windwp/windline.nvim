@@ -46,15 +46,30 @@ M.animation = function(opts)
         end
     end
 
-    local bg_ani = Animation.new({
+    local anim = Animation.new({
+        type = 'highlight',
         highlights = hl_list,
         interval = opts.interval,
         delay = opts.delay,
         timeout = opts.timeout,
     })
+
     _G.WindLine.stop = Animation.stop_all
-    return bg_ani:run()
+    return anim:run()
 end
-M.stop_all=Animation.stop_all
+
+M.basic_animation = function(opts)
+    local anim = Animation.new({
+        type = 'text',
+        on_tick = opts.on_tick,
+        effect = opts.effect,
+        interval = opts.interval,
+        delay = opts.delay,
+        timeout = opts.timeout,
+    })
+    return anim:run()
+end
+
+M.stop_all = Animation.stop_all
 
 return M
