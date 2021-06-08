@@ -9,7 +9,7 @@
 ## demo
 This demo display an animation statusline to markdown and lua file.
 
- ![Mutlifiletype](./assets/demo/mutli_filetype.gif)
+ ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
 
 
 # Intro
@@ -53,7 +53,7 @@ windline.setup({
 
 ```
 
-![Bubble](./assets/demo/demo_bubble.png)
+![Bubble](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble.png)
 [bubble line](./lua/wlsample/bubble.lua)
 
 ![evilline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/eviline.png)
@@ -62,11 +62,11 @@ windline.setup({
 ![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
 [airline](./lua/wlsample/airline.lua)
 
-![basic animation](./assets/demo/demo_basic.gif)
+![basic animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_basic.gif)
 [basic animation](./lua/wlsample/basic.lua)
 
 
-![wind animation](./assets/demo/demo_wave.gif)
+![wind animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_wave.gif)
 [wind animation](./lua/wlsample/wind.lua)
 
 ![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
@@ -74,6 +74,7 @@ windline.setup({
 
 Remember windline can change status line per filetype so you can have bubble
 line for markdown or latex file and airline for your working file.
+![Swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap.gif)
 
 # Status line
 
@@ -123,7 +124,7 @@ local default = {
     },
 }
 ```
-![demo](./assets/demo/simple_comp.png)
+![demo](https://github.com/windwp/windline.nvim/wiki/screenshot/simple_comp.png)
 
 **Every component have own hightlight name define in `hl_colors` function**
 
@@ -189,7 +190,7 @@ Windline use a terminal color. It generate from your colorscheme terminal.
 Every time you change colorschemes it will be generate a new colors to map
 with your colorscheme
 
-![demo](./assets/demo/demo_colorscheme.gif)
+![demo](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_colorscheme.gif)
 
 Color name is use to define component and animation
 
