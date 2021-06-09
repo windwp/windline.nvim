@@ -8,6 +8,7 @@
 
 ## demo
   display 3 different status line on lua vim and markdown file
+
  ![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
 
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
@@ -76,6 +77,7 @@ windline.setup({
 
 Remember windline can change status line per filetype so you can have bubble
 line for markdown or latex file and airline for your working file.
+
 ![Swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap.gif)
 
 # Status line
