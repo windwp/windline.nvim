@@ -57,13 +57,6 @@ M.animation = function(opts)
     if M.is_enter == true then
         return anim:run()
     end
-    vim.api.nvim_exec(
-        [[augroup WLAnimation
-            au!
-            au VimEnter * lua  require('wlanimation').on_vimenter()
-        augroup END]],
-        false
-    )
     return anim
 end
 
@@ -72,6 +65,7 @@ M.is_enter = false
 M.on_vimenter = function()
     M.is_enter = true
     -- need to wait on colorscheme finish
+    -- do that because we don't need WindLine require this animation lib
     vim.defer_fn(function()
         _G.WindLine.stop = Animation.stop_all
     end,100)
@@ -91,5 +85,13 @@ M.basic_animation = function(opts)
 end
 
 M.stop_all = Animation.stop_all
+
+vim.api.nvim_exec(
+    [[augroup WLAnimation
+    au!
+    au VimEnter * lua require('wlanimation').on_vimenter()
+    augroup END]],
+    false
+)
 
 return M
