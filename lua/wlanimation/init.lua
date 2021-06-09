@@ -54,8 +54,28 @@ M.animation = function(opts)
         timeout = opts.timeout,
     })
 
-    _G.WindLine.stop = Animation.stop_all
-    return anim:run()
+    if M.is_enter == true then
+        return anim:run()
+    end
+    vim.api.nvim_exec(
+        [[augroup WLAnimation
+            au!
+            au VimEnter * lua  require('wlanimation').on_vimenter()
+        augroup END]],
+        false
+    )
+    return anim
+end
+
+M.is_enter = false
+
+M.on_vimenter = function()
+    M.is_enter = true
+    -- need to wait on colorscheme finish
+    vim.defer_fn(function()
+        _G.WindLine.stop = Animation.stop_all
+    end,100)
+    Animation.run_all()
 end
 
 M.basic_animation = function(opts)

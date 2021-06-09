@@ -88,19 +88,24 @@ end
 
 local function stop_all()
     if _G.__animation_list then
-        local tmp = {}
-        for _, value in pairs(_G.__animation_list) do
-            table.insert(tmp, value)
-        end
-        for _, ani in pairs(tmp) do
+        for _, ani in pairs(_G.__animation_list) do
             ani:stop()
         end
-        tmp = nil
     end
     _G.__animation_list = {}
+end
+
+-- only use on_vimenter
+local function run_all()
+    if _G.__animation_list then
+        for _, ani in pairs(_G.__animation_list) do
+            ani:run()
+        end
+    end
 end
 
 return {
     new = Animation.new,
     stop_all = stop_all,
+    run_all = run_all,
 }
