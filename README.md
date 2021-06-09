@@ -7,9 +7,11 @@
  * simple syntax
 
 ## demo
-This demo display an animation statusline to markdown and lua file.
+  display 3 different status line on lua vim and markdown file
+ ![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
 
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
+  display an animation statusline to markdown and lua file.
 
 
 # Intro
