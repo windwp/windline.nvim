@@ -7,7 +7,7 @@
  * simple syntax
 
 ## demo
-  display 3 different status line on lua vim and markdown file
+  display 3 different status line on lua, vim and markdown file
 
  ![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
 
