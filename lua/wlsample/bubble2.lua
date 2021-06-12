@@ -47,7 +47,6 @@ basic.vi_mode = {
         return {
             { sep.left_rounded, state.mode[2] .. 'Before' },
             { state.mode[1] .. ' ', state.mode[2] },
-            { sep.left_rounded, state.mode[2] .. 'After' },
         }
     end,
 }
@@ -75,10 +74,11 @@ basic.lsp_diagnos = {
 basic.file = {
     name = 'file',
     hl_colors = {
-        default = hl_list.White,
+        default = { 'white', 'black_light' },
     },
     text = function()
         return {
+            { ' ', '' },
             { b_components.file_icon(''), 'default' },
             { ' ', '' },
             { b_components.file_name(''), '' },
@@ -89,16 +89,13 @@ basic.file = {
 }
 basic.right = {
     hl_colors = {
-        sep_before = { 'black_light', 'black' },
-        sep_after = { 'black_light', 'black' },
-        text = { 'white', 'black_light' },
+        sep_before = { 'black_light', 'white_light' },
+        sep_after = { 'white_light', 'black' },
+        text = { 'black', 'white_light' },
     },
     text = function()
         return {
-            { sep.left_rounded, 'sep_before' },
-            { 'l/n', 'text' },
-            { b_components.line_col, 'text' },
-            { '', 'text' },
+            -- { b_components.line_col, 'text' },
             { b_components.progress, 'text' },
             { sep.right_rounded, 'sep_after' },
         }
@@ -123,20 +120,33 @@ basic.git = {
         return ''
     end,
 }
+basic.logo = {
+    hl_colors = {
+        sep_before = { 'blue', 'black' },
+        default = { 'black', 'blue' },
+    },
+    text = function()
+        return {
+            { sep.left_rounded, 'sep_before' },
+            { ' ', 'default' },
+        }
+    end,
+}
 
 local default = {
     filetypes = { 'default' },
     active = {
         { ' ', hl_list.Black },
-        basic.vi_mode,
+        basic.logo,
         basic.file,
         { vim_components.search_count(), { 'red', 'white' } },
-        { sep.right_rounded, hl_list.Black },
+        { sep.right_rounded, { 'black_light', 'black' } },
         basic.lsp_diagnos,
         basic.git,
         basic.divider,
         { git_comps.git_branch({ icon = '  ' }), { 'green', 'black' } },
-        { ' ', hl_list.Black },
+        {' ', hl_list.Black },
+        basic.vi_mode,
         basic.right,
         { ' ', hl_list.Black },
     },
@@ -150,38 +160,6 @@ local default = {
     },
 }
 
-local quickfix = {
-    filetypes = { 'qf', 'Trouble' },
-    active = {
-        { '🚦 Quickfix ', { 'white', 'black' } },
-        { helper.separators.slant_right, { 'black', 'black_light' } },
-        {
-            function()
-                return vim.fn.getqflist({ title = 0 }).title
-            end,
-            { 'cyan', 'black_light' },
-        },
-        { ' Total : %L ', { 'cyan', 'black_light' } },
-        { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
-        { ' ', { 'InactiveFg', 'InactiveBg' } },
-        basic.divider,
-        { helper.separators.slant_right, { 'InactiveBg', 'black' } },
-        { '🧛 ', { 'white', 'black' } },
-    },
-    show_in_active = true,
-}
-
-local explorer = {
-    filetypes = { 'fern', 'NvimTree', 'lir' },
-    active = {
-        { '  ', { 'white', 'black' } },
-        { helper.separators.slant_right, { 'black', 'black_light' } },
-        basic.divider,
-        { b_components.file_name(''), { 'white', 'black_light' } },
-    },
-    show_in_active = true,
-}
-
 windline.setup({
     colors_name = function(colors)
         -- ADD MORE COLOR HERE ----
@@ -189,7 +167,5 @@ windline.setup({
     end,
     statuslines = {
         default,
-        explorer,
-        quickfix,
     },
 })

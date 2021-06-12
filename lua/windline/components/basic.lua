@@ -8,7 +8,7 @@ M.progress = [[%3p%%]]
 M.full_file_name = '%f'
 
 M.file_name = function(opt)
-    opt = opt or{}
+    opt = opt or {}
     local default = opt.default or '[No Name]'
     return function(bufnr)
         local name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
@@ -20,29 +20,33 @@ M.file_name = function(opt)
 end
 
 M.file_type = function(opt)
-    opt = opt or{}
+    opt = opt or {}
     local default = opt.default or '  '
     return function(bufnr)
         local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
-        local file_ext = vim.fn.fnamemodify(file_name, ":e")
+        local file_ext = vim.fn.fnamemodify(file_name, ':e')
         local icon = opt.icon and helper.get_icon(file_name, file_ext) or ''
         local filetype = vim.bo.filetype
         if filetype == '' then
             return default
         end
-        if icon~= '' then
+        if icon ~= '' then
             return icon .. ' ' .. filetype
         end
-        return filetype;
+        return filetype
     end
 end
 
 M.file_size = function()
     return function()
+        local file = vim.fn.expand('%:p')
+        if string.len(file) == 0 then
+            return ''
+        end
         local suffix = { 'b', 'k', 'M', 'G', 'T', 'P', 'E' }
         local index = 1
 
-        local fsize = fn.getfsize(fn.expand('%:p'))
+        local fsize = fn.getfsize(file)
 
         while fsize > 1024 and index < 7 do
             fsize = fsize / 1024
@@ -56,11 +60,11 @@ end
 local format_icons = {
     unix = '', -- e712
     dos = '', -- e70f
-    mac = '',  -- e711
+    mac = '', -- e711
 }
 
 M.file_format = function(opt)
-    opt = opt or{}
+    opt = opt or {}
     if opt.icon then
         return function()
             return format_icons[vim.bo.fileformat] or vim.bo.fileformat
@@ -71,7 +75,6 @@ M.file_format = function(opt)
     end
 end
 
-
 function M.file_encoding()
     return function()
         local enc = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc
@@ -80,9 +83,9 @@ function M.file_encoding()
 end
 M.file_icon = function(default)
     default = default or ''
-    return function (bufnr)
+    return function(bufnr)
         local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
-        local file_ext = vim.fn.fnamemodify(file_name, ":e")
+        local file_ext = vim.fn.fnamemodify(file_name, ':e')
         return helper.get_icon(file_name, file_ext) or default
     end
 end
