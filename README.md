@@ -55,37 +55,38 @@ windline.setup({
 })
 
 ```
-you can use some of sample line above
+
 ![Bubble](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble.png)
 [bubble line](./lua/wlsample/bubble.lua)
 ```lua 
 require('wlsample.bubble') 
 ```
-
+---
 ![evilline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/eviline.png)
 [evil line](./lua/wlsample/evil_line.lua)
 ```lua 
 require('wlsample.evil_line') 
 ```
+---
 ![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
 [airline](./lua/wlsample/airline.lua)
 ```lua 
 require('wlsample.airline') 
 ```
-
+---
 ![basic animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_basic.gif)
 [basic animation](./lua/wlsample/basic.lua)
 ```lua 
 require('wlsample.basic') 
 ```
-
+---
 ![wind animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_wave.gif)
 [wind animation](./lua/wlsample/wind.lua)
 
 ```lua 
 require('wlsample.wind') 
 ```
-
+---
 ![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
 [luffy](./lua/wlsample/airline_luffy.lua)
 
