@@ -58,40 +58,46 @@ windline.setup({
 
 ![Bubble](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble.png)
 [bubble line](./lua/wlsample/bubble.lua)
-```lua 
-require('wlsample.bubble') 
+```lua
+require('wlsample.bubble')
+```
+---
+![Bubble2](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble2.png)
+[bubble line](./lua/wlsample/bubble2.lua)
+```lua
+require('wlsample.bubble2')
 ```
 ---
 ![evilline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/eviline.png)
 [evil line](./lua/wlsample/evil_line.lua)
-```lua 
-require('wlsample.evil_line') 
+```lua
+require('wlsample.evil_line')
 ```
 ---
 ![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
 [airline](./lua/wlsample/airline.lua)
-```lua 
-require('wlsample.airline') 
+```lua
+require('wlsample.airline')
 ```
 ---
 ![basic animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_basic.gif)
 [basic animation](./lua/wlsample/basic.lua)
-```lua 
-require('wlsample.basic') 
+```lua
+require('wlsample.basic')
 ```
 ---
 ![wind animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_wave.gif)
 [wind animation](./lua/wlsample/wind.lua)
 
-```lua 
-require('wlsample.wind') 
+```lua
+require('wlsample.wind')
 ```
 ---
 ![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
 [luffy](./lua/wlsample/airline_luffy.lua)
 
-```lua 
-require('wlsample.airline_luffy') 
+```lua
+require('wlsample.airline_luffy')
 ```
 
 Remember windline can change status line per filetype so you can have bubble
