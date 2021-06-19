@@ -55,7 +55,6 @@ basic.vi_mode_sep_left = {
     end,
 }
 
-local check_lsp_status = lsp_comps.check_lsp({})
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
@@ -64,7 +63,7 @@ basic.lsp_diagnos = {
         blue = { 'blue', 'NormalBg' },
     },
     text = function()
-        if hide_in_width() and check_lsp_status() then
+        if hide_in_width() and lsp_comps.check_lsp() then
             return {
                 { ' ', 'red' },
                 { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
@@ -95,6 +94,39 @@ basic.right_sep = {
         }
     end,
 }
+
+local quickfix = {
+    filetypes = { 'qf', 'Trouble' },
+    active = {
+        { '🚦 Quickfix ', { 'white', 'black' } },
+        { helper.separators.slant_right, { 'black', 'black_light' } },
+        {
+            function()
+                return vim.fn.getqflist({ title = 0 }).title
+            end,
+            { 'cyan', 'black_light' },
+        },
+        { ' Total : %L ', { 'cyan', 'black_light' } },
+        { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
+        { ' ', { 'InactiveFg', 'InactiveBg' } },
+        basic.divider,
+        { helper.separators.slant_right, { 'InactiveBg', 'black' } },
+        { '🧛 ', { 'white', 'black' } },
+    },
+    show_in_active = true,
+}
+
+local explorer = {
+    filetypes = { 'fern', 'NvimTree', 'lir' },
+    active = {
+        { '  ', { 'white', 'black' } },
+        { helper.separators.slant_right, { 'black', 'black_light' } },
+        { b_components.divider, '' },
+        { b_components.file_name(''), { 'white', 'black_light' } },
+    },
+    show_in_active = true,
+}
+
 local default = {
     filetypes = { 'default' },
     active = {
@@ -129,5 +161,7 @@ local default = {
 windline.setup({
     statuslines = {
         default,
+        quickfix,
+        explorer,
     },
 })

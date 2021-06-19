@@ -191,16 +191,17 @@ Child component share `hl_colors` data with parent component.
 
 ```lua
 local lsp_comps = require('windline.components.lsp')
-local check_lsp_status = lsp_comps.check_lsp({})
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
+        -- we need define color name here to cache value
+        -- then use it on child of group
         red = { 'red', 'black' },
         yellow = { 'yellow', 'black' },
         blue = { 'blue', 'black' },
     },
     text = function()
-        if check_lsp_status() then
+        if lsp_comps.check_lsp() then
             return {
                 { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },

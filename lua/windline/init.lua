@@ -86,7 +86,7 @@ M.on_buf_enter = function(bufnr)
     -- some helper function to define a cache value on state
     if M.state.buf_enter_events ~= nil then
         for _,buf_enter in pairs (M.state.buf_enter_events) do
-            buf_enter(bufnr)
+            buf_enter(tonumber(bufnr))
         end
     end
 end

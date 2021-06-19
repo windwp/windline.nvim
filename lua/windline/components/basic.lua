@@ -26,7 +26,7 @@ M.file_type = function(opt)
         local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
         local file_ext = vim.fn.fnamemodify(file_name, ':e')
         local icon = opt.icon and helper.get_icon(file_name, file_ext) or ''
-        local filetype = vim.bo.filetype
+        local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
         if filetype == '' then
             return default
         end

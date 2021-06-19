@@ -18,20 +18,19 @@ local function is_lsp()
     return next(lsp.buf_get_clients()) ~= nil
 end
 
-local lsp_client_names = function(opt)
+local lsp_client_names = function(bufnr, opt)
     opt = opt or {}
     local clients = {}
     local icon = opt.icon or ' '
     local sep = opt.seprator or ' '
 
-    for _, client in pairs(lsp.buf_get_clients()) do
+    for _, client in pairs(lsp.buf_get_clients(bufnr or 0)) do
         clients[#clients + 1] = icon .. client.name
     end
     return table.concat(clients, sep)
 end
 
--- it make sure we only call the diagnostic 1 time on render function
-M.check_lsp = function(opt)
+M.check_custom_lsp = function(opt)
     opt = opt or {}
     local lsp_check = opt.func_check or is_lsp
 
@@ -57,9 +56,12 @@ M.check_lsp = function(opt)
     end
 end
 
+-- it make sure we only call the diagnostic 1 time on render function
+M.check_lsp = M.check_custom_lsp()
+
 M.lsp_name = function(opt)
-    windline.add_buf_enter_event(function()
-        vim.b.lsp_server_name = lsp_client_names(opt)
+    windline.add_buf_enter_event(function(bufnr)
+        vim.b.lsp_server_name = lsp_client_names(bufnr, opt)
     end)
 
     return function()

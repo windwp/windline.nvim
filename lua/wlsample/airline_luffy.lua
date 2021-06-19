@@ -58,7 +58,6 @@ basic.vi_mode_sep_left = {
     end,
 }
 
-local check_lsp_status = lsp_comps.check_lsp({})
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
@@ -67,7 +66,7 @@ basic.lsp_diagnos = {
         blue = { 'blue', 'NormalBg' },
     },
     text = function()
-        if hide_in_width() and check_lsp_status() then
+        if hide_in_width() and lsp_comps.check_lsp() then
             return {
                 { ' ', 'red' },
                 { lsp_comps.lsp_error({ format = ' %s', show_zero = false }), 'red' },
@@ -135,7 +134,7 @@ windline.setup({
         default,
     },
 })
--- new to use font family: Fira Code iCursive S12
+-- need to use font family: Fira Code iCursive S12
 -- https://github.com/windwp/windline.nvim/wiki/fonts/FiraCodeiCursiveS12-Regular.ttf
 local luffy = { '􏾾', '􏾿', '􏿀', '􏿁', '􏿂', '􏿃' }
 animation.stop_all()

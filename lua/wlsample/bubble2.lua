@@ -51,7 +51,6 @@ basic.vi_mode = {
     end,
 }
 
-local check_lsp_status = lsp_comps.check_lsp({})
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
@@ -60,7 +59,7 @@ basic.lsp_diagnos = {
         blue = { 'blue', 'black' },
     },
     text = function()
-        if check_lsp_status() then
+        if lsp_comps.check_lsp() then
             return {
                 { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
@@ -139,7 +138,7 @@ local default = {
         { ' ', hl_list.Black },
         basic.logo,
         basic.file,
-        { vim_components.search_count(), { 'red', 'white' } },
+        { vim_components.search_count(), { 'red', 'black_light' } },
         { sep.right_rounded, { 'black_light', 'black' } },
         basic.lsp_diagnos,
         basic.git,
@@ -160,6 +159,37 @@ local default = {
     },
 }
 
+local quickfix = {
+    filetypes = { 'qf', 'Trouble' },
+    active = {
+        { '🚦 Quickfix ', { 'white', 'black' } },
+        { helper.separators.slant_right, { 'black', 'black_light' } },
+        {
+            function()
+                return vim.fn.getqflist({ title = 0 }).title
+            end,
+            { 'cyan', 'black_light' },
+        },
+        { ' Total : %L ', { 'cyan', 'black_light' } },
+        { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
+        { ' ', { 'InactiveFg', 'InactiveBg' } },
+        basic.divider,
+        { helper.separators.slant_right, { 'InactiveBg', 'black' } },
+        { '🧛 ', { 'white', 'black' } },
+    },
+    show_in_active = true,
+}
+
+local explorer = {
+    filetypes = { 'fern', 'NvimTree', 'lir' },
+    active = {
+        { '  ', { 'white', 'black' } },
+        { helper.separators.slant_right, { 'black', 'black_light' } },
+        { b_components.divider, '' },
+        { b_components.file_name(''), { 'white', 'black_light' } },
+    },
+    show_in_active = true,
+}
 windline.setup({
     colors_name = function(colors)
         -- ADD MORE COLOR HERE ----
@@ -167,5 +197,7 @@ windline.setup({
     end,
     statuslines = {
         default,
+        quickfix,
+        explorer,
     },
 })

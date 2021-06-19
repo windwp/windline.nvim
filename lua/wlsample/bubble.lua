@@ -52,7 +52,6 @@ basic.vi_mode = {
     end,
 }
 
-local check_lsp_status = lsp_comps.check_lsp({})
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
@@ -61,7 +60,7 @@ basic.lsp_diagnos = {
         blue = { 'blue', 'black' },
     },
     text = function()
-        if check_lsp_status() then
+        if lsp_comps.check_lsp() then
             return {
                 { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
@@ -176,7 +175,7 @@ local explorer = {
     active = {
         { '  ', { 'white', 'black' } },
         { helper.separators.slant_right, { 'black', 'black_light' } },
-        basic.divider,
+        { b_components.divider, '' },
         { b_components.file_name(''), { 'white', 'black_light' } },
     },
     show_in_active = true,

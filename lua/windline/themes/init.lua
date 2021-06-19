@@ -8,11 +8,12 @@ M.count = 1
 
 M.load_theme = function(name)
     name = name or vim.g.colors_name
-    if cache_theme[name] then
-        return cache_theme[name]
-    end
     if not name then
         return M.default_theme or wind_theme
+    end
+    local cache_name = name .. '_' .. (vim.o.background or '')
+    if cache_theme[cache_name] then
+        return cache_theme[cache_name]
     end
 
     local ok, colors = pcall(require, 'windline.themes.' .. name)
@@ -23,7 +24,7 @@ M.load_theme = function(name)
         end
     end
 
-    cache_theme[name] = colors
+    cache_theme[cache_name] = colors
     return colors
 end
 
@@ -32,6 +33,9 @@ M.get_hl_color = function(hl)
     local cmd = vim.api.nvim_exec('highlight ' .. hl, true)
     local _, _, bg = string.find(cmd, "guibg%=(%#%w*)")
     local _, _, fg = string.find(cmd, "guifg%=(%#%w*)")
+    if string.match(cmd,'gui%=reverse') then
+        return bg, fg
+    end
     return fg, bg
 end
 
