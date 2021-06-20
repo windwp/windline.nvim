@@ -86,7 +86,11 @@ local list_color = function(list_color, start)
     local tbl = {}
     local idx = start or 1
     for _, color in pairs(list_color) do
-        table.insert(tbl, utils.rgb_to_hsl(color))
+        if type(color)=='string' then
+            table.insert(tbl, utils.rgb_to_hsl(color))
+        else
+            table.insert(tbl, color)
+        end
     end
     return function(_)
         local value = tbl[idx]
