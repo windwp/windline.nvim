@@ -300,11 +300,5 @@ animation.animation({
 ```
 
 ## Tabline
-add tabline config in setup then it will enable a tabline
-```lua
-windline.setup({
-  tabline = {}
-})
+[view](https://github.com/windwp/windline.nvim/wiki/tabline)
 
-
-[config tabline](./lua/wltabline/init.lua)

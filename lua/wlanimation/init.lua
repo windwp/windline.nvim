@@ -53,16 +53,22 @@ M.animation = function(opts)
         delay = opts.delay,
         timeout = opts.timeout,
     })
-
+    -- we need to animation run after vim enter
     if M.is_enter == true then
         return anim:run()
     end
+    vim.defer_fn(function()
+      -- if user call animation libary after vimenter then
+      -- we wait a bit to  call anim
+        M.on_vimenter()
+    end, 200)
     return anim
 end
 
 M.is_enter = false
 
 M.on_vimenter = function()
+    if M.is_enter then return true end
     M.is_enter = true
     -- need to wait on colorscheme finish
     -- do that because we don't need WindLine require this animation lib

@@ -27,7 +27,6 @@ M.setup_hightlight = function(colors)
     end
     windline.create_comp_list({ state.tabline.tab_template }, colors)
     windline.create_comp_list(state.tabline.tab_end, colors)
-
 end
 
 local last_tab_name = {}
@@ -71,7 +70,7 @@ M.show = function()
         result = result .. tab_data.tab_template:render(data)
     end
     for _, comp in pairs(tab_data.tab_end) do
-        result = result .. comp:render()
+        result = result .. comp:render(tabSelect)
     end
     return result
 end
@@ -86,7 +85,7 @@ local default_config = {
         normal_start  = { ' '                         , { 'white_light' , 'black_light' } },
         normal_end    = { ' '                         , { 'white_light' , 'black_light' } },
         normal_select = { ' '                         , { 'white_light' , 'black_light' } },
-        normal_fill   = { ' '                         , { 'white_light' , 'black_light' } },
+        normal_last   = { ' '                         , { 'white_light' , 'black_light' } },
     },
     click = true,
     tab_end = {
@@ -105,37 +104,40 @@ local tab_template = function(template)
         hl_colors = hl_colors,
         text = function(data)
             if data.is_selection then
-                local hl_end = data.is_tab_finish and 'select_fill' or 'select_end'
-                local result = {
+                local hl_end = 'select_end'
+                local text_end = sep_text.select_end
+                if data.is_tab_finish then
+                    text_end = sep_text.select_last
+                    hl_end = 'select_last'
+                end
+                return {
                     { sep_text.select_start, 'select_start' },
                     { M.tab_name(data.tab_index), 'select' },
-                    { sep_text.select_end, hl_end },
+                    { text_end, hl_end },
                 }
-                return result
             else
                 local hl_end = 'normal_end'
                 local text_end = sep_text.normal_end
                 local text_start = sep_text.normal_start
                 if data.is_tab_finish then
-                    text_end = sep_text.normal_fill
-                    hl_end = 'normal_fill'
+                    text_end = sep_text.normal_last
+                    hl_end = 'normal_last'
                 elseif data.is_next_select then
                     text_end = sep_text.normal_select
                     hl_end = 'normal_select'
                 end
-                local result = {
+                return {
                     { text_start, 'normal_start' },
                     { M.tab_name(data.tab_index), 'normal' },
                     { text_end, hl_end },
                 }
-                return result
             end
         end,
     }
 end
 
 M.setup = function(opts)
-    opts = vim.tbl_extend('force', default_config, opts or {})
+    opts = vim.tbl_deep_extend('force', default_config, opts or {})
     opts.tab_template = opts.tab_template or tab_template(opts.template or {})
     _G.WindLine.tabline = {
         setup_hightlight = M.setup_hightlight,

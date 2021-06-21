@@ -65,7 +65,11 @@ function Comp:setup_hl(colors)
             return
         end
         for key, value in pairs(hl_colors) do
-            hl_data[key] = create_hl(unpack(value))
+            if type(value) == 'table' then
+                hl_data[key] = create_hl(unpack(value))
+            else
+                hl_data[key] = value
+            end
         end
     end
     self.hl_data = hl_data
