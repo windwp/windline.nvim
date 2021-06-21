@@ -19,7 +19,6 @@ local basic = {}
 
 basic.divider = { b_components.divider, '' }
 basic.space = { ' ', '' }
-basic.bg = { ' ', 'StatusLine' }
 basic.file_name_inactive = { b_components.full_file_name, hl_list.Inactive }
 basic.line_col_inactive = { b_components.line_col, hl_list.Inactive }
 basic.progress_inactive = { b_components.progress, hl_list.Inactive }
@@ -113,7 +112,7 @@ basic.git = {
     text = function()
         if git_comps.is_git() then
             return {
-                { ' ', ' ' },
+                { ' ' },
                 { git_comps.diff_added({ format = ' %s' }), 'green' },
                 { git_comps.diff_removed({ format = '  %s' }), 'red' },
                 { git_comps.diff_changed({ format = ' 柳%s' }), 'blue' },

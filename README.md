@@ -51,7 +51,9 @@ It is not loaded if you don't use animation.
 ```lua
 local windline = require('windline')
 windline.setup({
-  statuslines = {--- you need define your status line here }
+  statuslines = {
+    --- you need define your status line here
+  }
 })
 
 ```
@@ -131,7 +133,7 @@ local explorer = {
 ```
 
 # components
-An component define with {text ,{fgcolor,bgcolor} }
+An component define with {text ,{ fgcolor, bgcolor } }
 
 ```lua
 
@@ -157,34 +159,8 @@ local default = {
 
 **Every component have own hightlight name define in `hl_colors` function**
 
-**A `hl` function return a name in `hl_colors` function you can use it to toggle mode**
-
 **A text function has a bufnr parameter and you can use it to get data from buffer**
 
-You can define a component like this.
-```lua
-time_count = 1
-
-local count = {
-  hl_colors = {
-     countRed     = {'black', 'red'},
-     countGreen  = {'black', 'green'}
-  },
-  hl = function(hl_colors)
-      if time_count > 50 then
-        return hl_colors.countRed
-      end
-      return hl_colors.countGreen
-  end,
-  text = function(bufnr)
-    time_count = time_count + 1
-    if time_count > 99 then
-      time_count = 1
-    end
-    return ' ' .. vim.fn.strftime("%H:%M:%S") .. ' '
-  end,
-}
-```
 
 A text function can return a group of child component.
 Child component share `hl_colors` data with parent component.
@@ -195,14 +171,15 @@ basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
         -- we need define color name here to cache value
-        -- then use it on child of group
+        -- then we use it on child of group
         red = { 'red', 'black' },
         yellow = { 'yellow', 'black' },
         blue = { 'blue', 'black' },
     },
-    text = function()
+    text = function(bufnr)
         if lsp_comps.check_lsp() then
             return {
+                -- `red` is define in hl_colors or a hightlight group name
                 { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
                 { lsp_comps.lsp_hint({ format = '  %s' }), 'blue' },
@@ -212,6 +189,7 @@ basic.lsp_diagnos = {
     end,
 }
 ```
+
 Windline doesn't have a component condition just return it to empty or nil to
 make it disappear
 
@@ -321,3 +299,22 @@ animation.animation({
 })
 ```
 
+## Tabline
+add tabline config in setup then it will enable a tabline
+```lua
+windline.setup({
+  tabline = { }
+})
+
+-- change seprator of tab
+windline.setup({
+  tabline = {
+    seperator={
+      main =">",
+      sub = "|"
+    }
+  }
+})
+```
+
+[config tabline](./lua/wltabline/init.lua)

@@ -1,17 +1,36 @@
 local M = {}
 local fn = vim.fn
 local helper = require('windline.helpers')
+local utils = require('windline.utils')
 
 M.divider = '%='
 M.line_col = [[ %3l:%-2c ]]
 M.progress = [[%3p%%]]
 M.full_file_name = '%f'
 
-M.file_name = function(opt)
-    opt = opt or {}
-    local default = opt.default or '[No Name]'
+local function get_buf_name(modify,shorten)
     return function(bufnr)
-        local name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
+        local bufname = vim.fn.bufname(bufnr)
+        bufname = vim.fn.fnamemodify(bufname, modify)
+        if shorten then
+            return vim.fn.pathshorten(bufname)
+        end
+        return bufname
+    end
+end
+
+M.file_name = function(default, modify)
+    default = default or '[No Name]'
+    modify = modify or 'name'
+    local fnc_name = get_buf_name(':t')
+    if modify == 'unique' then
+        fnc_name = utils.get_unique_bufname
+    elseif modify == 'full' then
+        fnc_name = get_buf_name('%:p', true)
+    end
+
+    return function(bufnr)
+        local name = fnc_name(bufnr)
         if name == '' then
             name = default
         end
@@ -100,4 +119,5 @@ M.file_modified = function(icon)
     end
     return '%m'
 end
+
 return M

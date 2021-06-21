@@ -85,7 +85,7 @@ M.on_buf_enter = function(bufnr)
     vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s)', bufnr)
     -- some helper function to define a cache value on state
     if M.state.buf_enter_events ~= nil then
-        for _,buf_enter in pairs (M.state.buf_enter_events) do
+        for _, buf_enter in pairs(M.state.buf_enter_events) do
             buf_enter(tonumber(bufnr))
         end
     end
@@ -95,50 +95,55 @@ M.add_buf_enter_event = function(func)
     if M.state.buf_enter_events == nil then
         M.state.buf_enter_events = {}
     end
-    table.insert(M.state.buf_enter_events,func)
+    table.insert(M.state.buf_enter_events, func)
+end
+
+-- create component and init highlight first
+M.create_comp_list = function(comps_list, colors)
+    if type(comps_list) == 'table' then
+        for key, value in pairs(comps_list) do
+            local comp = value
+            if not value.created then
+                comp = Comp.create(value)
+                comps_list[key] = comp
+            end
+            comp:setup_hl(colors)
+        end
+    end
 end
 
 local setup_hightlight = function(colors)
     assert(M.default_line ~= nil, 'you need define default statusline')
     assert(M.default_line.active ~= nil, 'default need list active componet')
     assert(M.default_line.in_active ~= nil, 'default need list in_active component')
+
     if _G.WindLine.stop then
         _G.WindLine.stop()
     end
     utils.hl_clear()
     colors = colors or M.get_colors()
 
-    --  create component and init highlight first
-    local create_comp = function(comps_list)
-        if type(comps_list) == 'table' then
-            for key, value in pairs(comps_list) do
-                local comp = value
-                if not value.created then
-                    comp = Comp.create(value)
-                    comps_list[key] = comp
-                end
-                comp:setup_hl(colors)
-            end
-        end
+    if _G.WindLine.tabline then
+        _G.WindLine.tabline.setup_hightlight(colors)
     end
 
     for _, line in pairs(M.statusline_ft) do
-        create_comp(line.active)
-        create_comp(line.in_active)
+        M.create_comp_list(line.active, colors)
+        M.create_comp_list(line.in_active, colors)
     end
-    create_comp(M.default_line.active)
-    create_comp(M.default_line.in_active)
+    M.create_comp_list(M.default_line.active, colors)
+    M.create_comp_list(M.default_line.in_active, colors)
     utils.hl_create()
 end
 
 M.get_colors = function()
     local colors = themes.load_theme()
     colors = M.state.config.colors_name(colors) or colors
-    assert( colors ~= nil, "a colors_name on setup function should return a value")
+    assert(colors ~= nil, 'a colors_name on setup function should return a value')
     return colors
 end
 
-M.on_colorscheme = function(colors )
+M.on_colorscheme = function(colors)
     -- some lua theme use async method to load color
     vim.defer_fn(function()
         setup_hightlight(colors or M.get_colors())
@@ -152,8 +157,7 @@ end
 
 ---@class WLConfig
 local default_config = {
-    default_colors = nil,
-    themes = nil,
+    theme = nil,
     colors_name = function(color)
         return color
     end,
@@ -163,6 +167,7 @@ M.setup = function(opts)
     M.statusline_ft = {}
     opts = vim.tbl_extend('force', default_config, opts)
     themes.default_theme = opts.theme
+    if opts.tabline then require('wltabline').setup(opts.tabline) end
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
@@ -195,7 +200,6 @@ M.add_status = function(lines)
         end
         return true
     end, M.statusline_ft)
-
     setup_hightlight()
 end
 

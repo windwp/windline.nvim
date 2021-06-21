@@ -97,7 +97,7 @@ basic.section_c = {
     text = function()
         return {
             { ' ', state.mode[2] },
-            { b_components.file_name(), '' },
+            { b_components.file_name('', 'unique'), '' },
             { ' ', '' },
             { sep.right_filled, state.mode[2] .. 'Sep' },
         }

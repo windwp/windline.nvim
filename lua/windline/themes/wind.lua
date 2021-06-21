@@ -22,11 +22,6 @@ local colors = {
   ActiveBg      = '#262626',
   InactiveFg    = '#928b95',
   InactiveBg    = '#0c0b1b',
-
-  tab_fg        = "#d0d0d0",
-  tab_bg        = '#002635',
-  tab_selection = '#517f8d',
-  tab_end       = "#002635",
 }
 
 return colors

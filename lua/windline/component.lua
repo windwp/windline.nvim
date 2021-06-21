@@ -84,7 +84,7 @@ function Comp:render(bufnr)
                 text = child[1](bufnr)
             end
             if type(hl) == 'string' then
-                hl = hl_data[hl]
+                hl = hl_data[hl] or hl
             end
             result = result .. render_text(
                text, self:make_hl(hl, hl_data.default)

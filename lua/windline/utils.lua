@@ -109,4 +109,36 @@ M.hl_create = function ()
     end
 end
 
+M.get_unique_bufname = function(bufnr)
+    local bufname = vim.fn.bufname(bufnr)
+    local all_bufers = vim.tbl_filter(function(buffer)
+        return buffer.listed == 1 and buffer.name ~= bufname
+    end, vim.fn.getbufinfo())
+    local all_name = vim.tbl_map(function(buffer)
+        return string.reverse(buffer.name)
+    end, all_bufers)
+    local tmp_name = string.reverse(bufname)
+    local position = 1
+    if #all_name > 1 then
+        for _, other_name in pairs(all_name) do
+            for i = 1, #tmp_name do
+                if tmp_name:sub(i, i) ~= other_name:sub(i, i) then
+                    if i > position then
+                        position = i
+                    end
+                    break
+                end
+            end
+        end
+    end
+    while position <= #tmp_name do
+        if tmp_name:sub(position, position) == '/' then
+            position = position - 1
+            break
+        end
+        position = position + 1
+    end
+    return string.reverse(string.sub(tmp_name, 1, position))
+end
+
 return M
