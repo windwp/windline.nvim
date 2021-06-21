@@ -257,7 +257,6 @@ windline.setup({
 
         return colors
     end,
-    tabline={},
     statuslines = {
         default,
         quickfix,

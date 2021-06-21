@@ -303,18 +303,8 @@ animation.animation({
 add tabline config in setup then it will enable a tabline
 ```lua
 windline.setup({
-  tabline = { }
+  tabline = {}
 })
 
--- change seprator of tab
-windline.setup({
-  tabline = {
-    seperator={
-      main =">",
-      sub = "|"
-    }
-  }
-})
-```
 
 [config tabline](./lua/wltabline/init.lua)
