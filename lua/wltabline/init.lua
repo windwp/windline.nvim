@@ -3,7 +3,7 @@ local windline = require('windline')
 local helper = require('windline.helpers')
 local utils = require('windline.utils')
 
-local seperator = helper.separators
+local separators = helper.separators
 local M = {}
 
 local state = _G.WindLine.state
@@ -27,6 +27,7 @@ M.setup_hightlight = function(colors)
     end
     windline.create_comp_list({ state.tabline.tab_template }, colors)
     windline.create_comp_list(state.tabline.tab_end, colors)
+
 end
 
 local last_tab_name = {}
@@ -57,12 +58,14 @@ M.show = function()
     local tab_data = state.tabline
     for i = 1, total_tab, 1 do
         -- set the tab for mouse click"
-        result = result .. '%' .. i .. 'T'
+        if state.tabline.click then
+            result = result .. '%' .. i .. 'T'
+        end
         local data = {
             is_selection = i == tabSelect,
             is_next_select = ((i + 1) == tabSelect),
-            is_tab_end = i == total_tab,
-            seperator = tab_data.seperator,
+            is_tab_finish = i == total_tab,
+            template = tab_data.template,
             tab_index = i,
         }
         result = result .. tab_data.tab_template:render(data)
@@ -74,53 +77,75 @@ M.show = function()
 end
 
 local default_config = {
-    seperator = {
-        main = seperator.right_filled .. ' ',
-        sub = seperator.right .. ' ',
+    template = {
+        select        = { ''                          , { 'NormalFg'    , 'NormalBg' , 'bold' } },
+        select_start  = { separators.block_thin .. ' ', { 'blue'        , 'NormalBg' } },
+        select_end    = { ' '                         , { 'NormalFg'    , 'NormalBg' } },
+        select_fill   = { ' '                         , { 'NormalFg'    , 'NormalBg' } },
+        normal        = { ''                          , { 'white_light' , 'black_light' } },
+        normal_start  = { ' '                         , { 'white_light' , 'black_light' } },
+        normal_end    = { ' '                         , { 'white_light' , 'black_light' } },
+        normal_select = { ' '                         , { 'white_light' , 'black_light' } },
+        normal_fill   = { ' '                         , { 'white_light' , 'black_light' } },
     },
-    tab_template = {
-        hl_colors = {
-            tab_selection = { 'TabSelectionFg', 'TabSelectionBg' },
-            tab_normal = { 'TabLineFg', 'TabLineBg' },
-            tab_sep_end = { 'TabSelectionBg', 'TabLineFillBg' },
-            tab_normal_end = { 'TabLineBg', 'TabLineFillBg' },
-            tab_normal_next = { 'TabLineBg', 'TabSelectionBg' },
-            tab_sep = { 'TabSelectionBg', 'TabLineBg' },
-        },
-        text = function(data)
-            local result = {}
-            if data.is_selection then
-                table.insert(result, { M.tab_name(data.tab_index), 'tab_selection' })
-                if data.is_tab_end then
-                    table.insert(result, { data.seperator.main, 'tab_sep_end' })
-                else
-                    table.insert(result, { data.seperator.main, 'tab_sep' })
-                end
-            else
-                table.insert(result, { M.tab_name(data.tab_index), 'tab_normal' })
-                if data.is_next_select then
-                    table.insert(result, { data.seperator.main, 'tab_normal_next' })
-                elseif data.is_tab_end then
-                    table.insert(result, { data.seperator.main, 'tab_normal_end' })
-                else
-                    table.insert(result, { data.seperator.sub, '' })
-                end
-            end
-            return result
-        end,
-    },
+    click = true,
     tab_end = {
         { ' ', 'TabLineFill' },
     },
 }
 
+local tab_template = function(template)
+    local hl_colors = {}
+    local sep_text = {}
+    for key, value in pairs(template) do
+        hl_colors[key] = value[2]
+        sep_text[key] = value[1]
+    end
+    return {
+        hl_colors = hl_colors,
+        text = function(data)
+            if data.is_selection then
+                local hl_end = data.is_tab_finish and 'select_fill' or 'select_end'
+                local result = {
+                    { sep_text.select_start, 'select_start' },
+                    { M.tab_name(data.tab_index), 'select' },
+                    { sep_text.select_end, hl_end },
+                }
+                return result
+            else
+                local hl_end = 'normal_end'
+                local text_end = sep_text.normal_end
+                local text_start = sep_text.normal_start
+                if data.is_tab_finish then
+                    text_end = sep_text.normal_fill
+                    hl_end = 'normal_fill'
+                elseif data.is_next_select then
+                    text_end = sep_text.normal_select
+                    hl_end = 'normal_select'
+                end
+                local result = {
+                    { text_start, 'normal_start' },
+                    { M.tab_name(data.tab_index), 'normal' },
+                    { text_end, hl_end },
+                }
+                return result
+            end
+        end,
+    }
+end
+
 M.setup = function(opts)
     opts = vim.tbl_extend('force', default_config, opts or {})
+    opts.tab_template = opts.tab_template or tab_template(opts.template or {})
     _G.WindLine.tabline = {
         setup_hightlight = M.setup_hightlight,
         show = M.show,
     }
     state.tabline = opts
+    if opts.colors then
+        M.setup_hightlight(opts.colors)
+        utils.hl_create()
+    end
     vim.cmd([[set tabline=%!v:lua.WindLine.tabline.show()]])
 end
 
