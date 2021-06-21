@@ -5,6 +5,7 @@ M.separators = {
     left = '',
     right = '',
     block = '█',
+    block_thin = "▌",
     left_filled = '',
     right_filled = '',
     slant_left = '',

@@ -26,11 +26,12 @@ M.setup_hightlight = function(colors)
         colors.TabLineBg = bg_tab or colors.black
     end
     windline.create_comp_list({ state.tabline.tab_template }, colors)
+    windline.create_comp_list(state.tabline.tab_end, colors)
 end
 
 local last_tab_name = {}
 
-local function tab_name(num)
+M.tab_name = function(num)
     local buflist = vim.fn.tabpagebuflist(num)
     local winnr = vim.fn.tabpagewinnr(num)
 
@@ -66,7 +67,10 @@ M.show = function()
         }
         result = result .. tab_data.tab_template:render(data)
     end
-    return result .. tab_data.tab_end
+    for _, comp in pairs(tab_data.tab_end) do
+        result = result .. comp:render()
+    end
+    return result
 end
 
 local default_config = {
@@ -86,14 +90,14 @@ local default_config = {
         text = function(data)
             local result = {}
             if data.is_selection then
-                table.insert(result, { tab_name(data.tab_index), 'tab_selection' })
+                table.insert(result, { M.tab_name(data.tab_index), 'tab_selection' })
                 if data.is_tab_end then
                     table.insert(result, { data.seperator.main, 'tab_sep_end' })
                 else
                     table.insert(result, { data.seperator.main, 'tab_sep' })
                 end
             else
-                table.insert(result, { tab_name(data.tab_index), 'tab_normal' })
+                table.insert(result, { M.tab_name(data.tab_index), 'tab_normal' })
                 if data.is_next_select then
                     table.insert(result, { data.seperator.main, 'tab_normal_next' })
                 elseif data.is_tab_end then
@@ -105,7 +109,9 @@ local default_config = {
             return result
         end,
     },
-    tab_end = '%#TabLineFill#'
+    tab_end = {
+        { ' ', 'TabLineFill' },
+    },
 }
 
 M.setup = function(opts)

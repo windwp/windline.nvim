@@ -110,7 +110,7 @@ basic.git = {
     text = function()
         if git_comps.is_git() then
             return {
-                { ' ', ' ' },
+                { ' ', '' },
                 { git_comps.diff_added({ format = ' %s' }), 'green' },
                 { git_comps.diff_removed({ format = '  %s' }), 'red' },
                 { git_comps.diff_changed({ format = ' 柳%s' }), 'blue' },
