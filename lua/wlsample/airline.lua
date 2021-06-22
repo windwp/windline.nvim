@@ -88,7 +88,7 @@ basic.section_b = {
                 { sep.right_filled, state.mode[2] .. 'Sep' },
             }
         end
-        return ''
+        return { { sep.right_filled, state.mode[2] .. 'Sep' } }
     end,
 }
 
