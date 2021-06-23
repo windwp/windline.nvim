@@ -80,6 +80,9 @@ require('wlsample.evil_line')
 [airline](./lua/wlsample/airline.lua)
 ```lua
 require('wlsample.airline')
+
+require('wlsample.airline_anim')
+
 ```
 ---
 ![basic animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_basic.gif)

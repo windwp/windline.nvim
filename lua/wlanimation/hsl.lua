@@ -12,6 +12,9 @@
 
 local M = {}
 ---@class HSL
+---@field H number
+---@field S number
+---@field L number
 local Color = {}
 local Color_mt = {__metatable = {}, __index = Color}
 
@@ -123,7 +126,7 @@ M.rgb_string_to_hsl = rgb_string_to_hsl
 -----------------------------------------------------------------------------
 
 function Color:to_rgb()
-   local r, g, b = hsl_to_rgb(self.H, self.S, self.L)
+   -- local r, g, b = hsl_to_rgb(self.H, self.S, self.L)
    local rgb = {hsl_to_rgb(self.H, self.S, self.L)}
    local buffer = "#"
    for i,v in ipairs(rgb) do

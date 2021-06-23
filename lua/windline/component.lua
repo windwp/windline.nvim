@@ -1,9 +1,11 @@
 local Comp = {}
 local utils=require('windline.utils')
 
+local last_hl = ''
 local render_text = function (text, highlight)
     if text == nil or text == "" then return "" end
-    if highlight == '' or highlight == nil then return text end
+    if highlight == '' or last_hl == highlight or highlight == nil then return text end
+    last_hl = highlight
     return string.format('%%#%s#%s', highlight, text)
 end
 
@@ -99,4 +101,4 @@ function Comp:render(bufnr)
     return render_text(childs, self:make_hl(self.hl, hl_data.default))
 end
 
-return { create = Comp.create }
+return { create = Comp.create, reset = function () last_hl = '' end}

@@ -20,6 +20,9 @@ local mode = utils.mode
 M.statusline_ft = {}
 
 local render = function(bufnr, items, cache)
+    M.state.comp = {} --reset component data
+    M.state.mode = mode()
+    Comp.reset()
     local status = ''
     for _, comp in pairs(items) do
         status = status .. comp:render(bufnr)
@@ -41,8 +44,6 @@ end
 
 M.show = function(bufnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
-    M.state.comp = {} --reset component data
-    M.state.mode = mode()
     local line = M.get_statusline(bufnr)
 
     local win_id = api.nvim_get_current_win()
