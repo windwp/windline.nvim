@@ -25,18 +25,18 @@ local colors_mode = {
     Command = { 'magenta', 'black' },
 }
 
-local hide_in_width = function() return vim.fn.winwidth(0) > 90 end
-
 basic.vi_mode = {
     name = 'vi_mode',
     hl_colors = colors_mode,
     text = function()
-        return { { '  ', state.mode[2] }, } end,
+        return { { '  ', state.mode[2] } }
+    end,
 }
 basic.square_mode = {
     hl_colors = colors_mode,
     text = function()
-        return { { '▊', state.mode[2] }, } end,
+        return { { '▊', state.mode[2] } }
+    end,
 }
 
 basic.lsp_diagnos = {
@@ -46,16 +46,17 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'black' },
         blue = { 'blue', 'black' },
     },
+    width = 90,
     text = function()
-        if hide_in_width() and lsp_comps.check_lsp() then
+        if lsp_comps.check_lsp() then
             return {
-                {' ', 'red'},
-                { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red', },
-                { lsp_comps.lsp_warning({ format = '  %s', show_zero = true }), 'yellow', },
-                { lsp_comps.lsp_hint({ format = '  %s', show_zero = true }), 'blue', },
+                { ' ', 'red' },
+                { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
+                { lsp_comps.lsp_warning({ format = '  %s', show_zero = true }), 'yellow' },
+                { lsp_comps.lsp_hint({ format = '  %s', show_zero = true }), 'blue' },
             }
         end
-        return {' ', 'red'}
+        return ''
     end,
 }
 
@@ -85,10 +86,11 @@ basic.git = {
         red = { 'red', 'black' },
         blue = { 'blue', 'black' },
     },
+    width = 90,
     text = function()
-        if git_comps.is_git() and hide_in_width() then
+        if git_comps.is_git() then
             return {
-                {' ', ''},
+                { ' ', '' },
                 { git_comps.diff_added({ format = ' %s', show_zero = true }), 'green' },
                 { git_comps.diff_removed({ format = '  %s', show_zero = true }), 'red' },
                 { git_comps.diff_changed({ format = ' 柳%s', show_zero = true }), 'blue' },
@@ -117,6 +119,7 @@ local quickfix = {
         { helper.separators.slant_right, { 'InactiveBg', 'black' } },
         { '🧛 ', { 'white', 'black' } },
     },
+
     show_in_active = true,
 }
 
@@ -134,14 +137,13 @@ local default = {
     filetypes = { 'default' },
     active = {
         basic.square_mode,
-        { ' ', hl_list.Black },
         basic.vi_mode,
         basic.file,
         basic.lsp_diagnos,
         basic.divider,
-        { lsp_comps.lsp_name(), { 'magenta', 'black' } },
+        { lsp_comps.lsp_name(),  { 'magenta', 'black' } , 90},
         basic.git,
-        { git_comps.git_branch(), { 'magenta', 'black' } },
+        { git_comps.git_branch(), { 'magenta', 'black' } , 90},
         { ' ', hl_list.Black },
         basic.square_mode,
     },
@@ -151,15 +153,14 @@ local default = {
         basic.divider,
         basic.divider,
         { b_components.line_col, hl_list.Inactive },
-        { b_components.progress, hl_list.Inactive }
+        { b_components.progress, hl_list.Inactive },
     },
 }
-
 
 windline.setup({
     statuslines = {
         default,
         quickfix,
-        explorer
+        explorer,
     },
 })

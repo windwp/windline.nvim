@@ -196,6 +196,23 @@ basic.lsp_diagnos = {
 Windline doesn't have a component condition just return it to empty or nil to
 make it disappear
 
+## width setting
+you can hide component by window width 
+```lua 
+
+local git_comps = require('windline.components.git')
+
+-- short syntax
+local git_branch = { git_comps.git_branch(), {'white', 'black'}, 100}
+
+--  or you can use a table with field
+local git_branch = {
+    text = git_comps.git_branch(),
+    hl_colors = {'white','black'},
+    width = 100, 
+}
+```
+
 # Colors
 Windline use a terminal color. It generate from your colorscheme terminal.
 Every time you change colorschemes it will be generate a new colors to map

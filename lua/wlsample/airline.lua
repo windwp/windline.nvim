@@ -61,15 +61,22 @@ airline_colors.c = {
 
 basic.divider = { b_components.divider, hl_list.Normal }
 
-local hide_in_width = function()
-    return vim.fn.winwidth(0) > 100
+local width_breakpoint = 100
+local check_width = function()
+    return vim.fn.winwidth(0) > width_breakpoint
 end
 
 basic.section_a = {
     hl_colors = airline_colors.a,
     text = function()
+        if check_width() then
+            return {
+                { ' ' .. state.mode[1] .. ' ', state.mode[2] },
+                { sep.right_filled, state.mode[2] .. 'Sep' },
+            }
+        end
         return {
-            { ' ' .. state.mode[1] .. ' ', state.mode[2] },
+            { ' ' .. state.mode[1]:sub(1, 1) .. ' ', state.mode[2] },
             { sep.right_filled, state.mode[2] .. 'Sep' },
         }
     end,
@@ -81,7 +88,7 @@ basic.section_b = {
     hl_colors = airline_colors.b,
     text = function()
         local branch_name = get_git_branch()
-        if #branch_name > 2 then
+        if check_width() and #branch_name > 1 then
             return {
                 { git_comps.git_branch({}), state.mode[2] },
                 { ' ', '' },
@@ -109,16 +116,6 @@ basic.section_x = {
     text = function()
         return {
             { sep.left_filled, state.mode[2] .. 'Sep' },
-            { b_components.file_type({ icon = true }), state.mode[2] },
-            { ' ', '' },
-        }
-    end,
-}
-basic.section_y = {
-    hl_colors = airline_colors.b,
-    text = function()
-        return {
-            { sep.left_filled, state.mode[2] .. 'Sep' },
             { ' ', state.mode[2] },
             { b_components.file_encoding(), '' },
             { ' ', '' },
@@ -127,6 +124,21 @@ basic.section_y = {
         }
     end,
 }
+
+basic.section_y = {
+    hl_colors = airline_colors.b,
+    text = function()
+        if check_width() then
+            return {
+                { sep.left_filled, state.mode[2] .. 'Sep' },
+                { b_components.file_type({ icon = true }), state.mode[2] },
+                { ' ', '' },
+            }
+        end
+        return { { sep.left_filled, state.mode[2] .. 'Sep' } }
+    end,
+}
+
 basic.section_z = {
     hl_colors = airline_colors.a,
     text = function()
@@ -147,8 +159,9 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'NormalBg' },
         blue = { 'blue', 'NormalBg' },
     },
+    width = width_breakpoint,
     text = function()
-        if hide_in_width() and lsp_comps.check_lsp() then
+        if check_width() and lsp_comps.check_lsp() then
             return {
                 { ' ', 'red' },
                 { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
@@ -162,13 +175,14 @@ basic.lsp_diagnos = {
 
 basic.git = {
     name = 'git',
+    width = width_breakpoint,
     hl_colors = {
         green = { 'green', 'NormalBg' },
         red = { 'red', 'NormalBg' },
         blue = { 'blue', 'NormalBg' },
     },
     text = function()
-        if hide_in_width() and git_comps.is_git() then
+        if git_comps.is_git() then
             return {
                 { ' ', '' },
                 { git_comps.diff_added({ format = ' %s' }), 'green' },

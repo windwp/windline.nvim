@@ -25,7 +25,6 @@ basic.line_col_inactive = { b_components.line_col, hl_list.Inactive }
 basic.progress_inactive = { b_components.progress, hl_list.Inactive }
 
 basic.vi_mode = {
-    name = 'vi_mode',
     hl_colors = {
         Normal = { 'black', 'red', 'bold' },
         Insert = { 'black', 'green', 'bold' },
@@ -52,7 +51,7 @@ basic.vi_mode = {
 }
 
 basic.lsp_diagnos = {
-    name = 'diagnostic',
+    width = 90,
     hl_colors = {
         red = { 'red', 'black' },
         yellow = { 'yellow', 'black' },
@@ -71,7 +70,6 @@ basic.lsp_diagnos = {
 }
 
 basic.file = {
-    name = 'file',
     hl_colors = {
         default = { 'white', 'black_light' },
     },
@@ -101,7 +99,7 @@ basic.right = {
     end,
 }
 basic.git = {
-    name = 'git',
+    width = 90,
     hl_colors = {
         green = { 'green', 'black' },
         red = { 'red', 'black' },
@@ -143,7 +141,7 @@ local default = {
         basic.lsp_diagnos,
         basic.git,
         basic.divider,
-        { git_comps.git_branch({ icon = '  ' }), { 'green', 'black' } },
+        {git_comps.git_branch({ icon = '  ' }),{ 'green', 'black' }, 90 },
         {' ', hl_list.Black },
         basic.vi_mode,
         basic.right,

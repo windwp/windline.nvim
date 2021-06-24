@@ -58,6 +58,7 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'black' },
         blue = { 'blue', 'black' },
     },
+    width = 90,
     text = function()
         if lsp_comps.check_lsp() then
             return {
@@ -104,6 +105,7 @@ basic.right = {
 }
 basic.git = {
     name = 'git',
+    width = 90,
     hl_colors = {
         green = { 'green', 'black' },
         red = { 'red', 'black' },
@@ -133,7 +135,7 @@ local default = {
         basic.lsp_diagnos,
         basic.git,
         basic.divider,
-        { git_comps.git_branch({ icon = '  ' }), { 'green', 'black' } },
+        {git_comps.git_branch({ icon = '  ' }),  { 'green', 'black' }, 90 },
         { ' ', hl_list.Black },
         basic.right,
         { ' ', hl_list.Black },

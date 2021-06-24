@@ -11,7 +11,7 @@ end
 
 function Comp.create(params)
     local opt = {}
-    if params.text == nil and #params == 2 then
+    if params.text == nil then
         local text = params[1]
         local hl, hl_colors
         if type(params[2]) == "string" then
@@ -23,6 +23,7 @@ function Comp.create(params)
             text = function () return params[1] end
         end
         opt = {
+            width = params[3],
             text = text,
             hl = hl,
             hl_colors = hl_colors

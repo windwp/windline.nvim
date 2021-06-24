@@ -25,7 +25,9 @@ local render = function(bufnr, items, cache)
     Comp.reset()
     local status = ''
     for _, comp in pairs(items) do
-        status = status .. comp:render(bufnr)
+        if not(comp.width and comp.width > vim.fn.winwidth(vim.g.statusline_winid)) then
+            status = status .. comp:render(bufnr)
+        end
     end
     if cache then
         M.state.cache_status = status
