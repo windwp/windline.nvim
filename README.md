@@ -197,7 +197,7 @@ Windline doesn't have a component condition just return it to empty or nil to
 make it disappear
 
 ## width setting
-you can hide component by window width 
+you can hide component by set window width 
 ```lua 
 
 local git_comps = require('windline.components.git')
