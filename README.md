@@ -4,7 +4,7 @@
  * custom statusline for filetype
  * built-in animation library
  * change colors with colorscheme
- * simple syntax
+ * Fast and powerful customize
 
 ## demo
   display 3 different status line on lua, vim and markdown file
@@ -196,19 +196,19 @@ Windline doesn't have a component condition just return it to empty or nil to
 make it disappear
 
 ## width setting
-you can hide component by set window width 
-```lua 
+you can hide component by set window width
+```lua
 
 local git_comps = require('windline.components.git')
 
 -- short syntax
 local git_branch = { git_comps.git_branch(), {'white', 'black'}, 100}
 
---  or you can use a table with field
+--  or you can use a table and set width field
 local git_branch = {
     text = git_comps.git_branch(),
     hl_colors = {'white','black'},
-    width = 100, 
+    width = 100,
 }
 ```
 
@@ -321,5 +321,5 @@ animation.animation({
 ## Tabline
 [view](https://github.com/windwp/windline.nvim/wiki/tabline)
 
-## Document 
+## Document
 [wiki](https://github.com/windwp/windline.nvim/wiki/)

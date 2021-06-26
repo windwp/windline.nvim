@@ -26,7 +26,7 @@ local render = function(bufnr, winnr, items, cache)
     local status = ''
     for _, comp in pairs(items) do
         if not(comp.width and comp.width > vim.api.nvim_win_get_width(winnr)) then
-            status = status .. comp:render(bufnr)
+            status = status .. comp:render(bufnr, winnr)
         end
     end
     if cache then

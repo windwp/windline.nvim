@@ -79,16 +79,16 @@ function Comp:setup_hl(colors)
 end
 
 
-function Comp:render(bufnr)
+function Comp:render(bufnr, winnr)
     self.bufnr = bufnr
     local hl_data = self.hl_data or {}
-    local childs = self.text(self.bufnr)
+    local childs = self.text(self.bufnr, winnr)
     if type(childs) == 'table'then
         local result = ''
         for _,child in pairs(childs) do
             local text,hl = child[1],child[2]
             if type(text) == 'function' then
-                text = child[1](bufnr)
+                text = child[1](bufnr, winnr)
             end
             if type(hl) == 'string' then
                 hl = hl_data[hl] or hl
