@@ -12,20 +12,20 @@ M.state = M.state or {
     mode = {}, -- vim mode {normal insert}
     comp = {}, -- component state it will reset on begin render
     config = {},
-    buf_enter_events = nil,
+    buf_enter_events = nil, -- it will help add hook to buf_enter on component
 }
 
 local mode = utils.mode
 
 M.statusline_ft = {}
 
-local render = function(bufnr, items, cache)
+local render = function(bufnr, winnr, items, cache)
     M.state.comp = {} --reset component data
     M.state.mode = mode()
     Comp.reset()
     local status = ''
     for _, comp in pairs(items) do
-        if not(comp.width and comp.width > vim.fn.winwidth(vim.g.statusline_winid)) then
+        if not(comp.width and comp.width > vim.api.nvim_win_get_width(winnr)) then
             status = status .. comp:render(bufnr)
         end
     end
@@ -44,10 +44,9 @@ M.get_statusline = function(bufnr)
     end
 end
 
-M.show = function(bufnr)
+M.show = function(bufnr, winnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
     local line = M.get_statusline(bufnr)
-
     local win_id = api.nvim_get_current_win()
     if vim.g.statusline_winid ~= win_id then
         -- in active
@@ -61,31 +60,31 @@ M.show = function(bufnr)
             if line then
                 -- render active even that component on_inactive
                 if line.show_in_active == true then
-                    return render(bufnr, line.active)
+                    return render(bufnr, winnr, line.active)
                 end
                 if line.in_active then
-                    return render(bufnr, line.in_active)
+                    return render(bufnr, winnr, line.in_active)
                 end
             end
-            return render(bufnr, M.default_line.in_active)
+            return render(bufnr, winnr, M.default_line.in_active)
         end
     else
         M.bufnr = bufnr
         M.last_win = win_id
         if line and line.active then
-            return render(bufnr, line.active, true)
+            return render(bufnr, winnr, line.active, true)
         end
     end
-    return render(bufnr, M.default_line.active, true)
+    return render(bufnr, winnr, M.default_line.active, true)
 end
 
 -- for quickfix
 M.on_buf_win_enter = function(bufnr)
-    vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s)', bufnr)
+    vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s,%s)', bufnr, vim.api.nvim_get_current_win())
 end
 
 M.on_buf_enter = function(bufnr)
-    vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s)', bufnr)
+    vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s,%s)', bufnr, vim.api.nvim_get_current_win())
     -- some helper function to define a cache value on state
     if M.state.buf_enter_events ~= nil then
         for _, buf_enter in pairs(M.state.buf_enter_events) do
@@ -119,9 +118,8 @@ local setup_hightlight = function(colors)
     assert(M.default_line ~= nil, 'you need define default statusline')
     assert(M.default_line.active ~= nil, 'default need list active componet')
     assert(M.default_line.in_active ~= nil, 'default need list in_active component')
-
-    if _G.WindLine.stop then
-        _G.WindLine.stop()
+    if _G.WindLine.anim_stop then
+        _G.WindLine.anim_stop()
     end
     utils.hl_clear()
     colors = colors or M.get_colors()

@@ -19,7 +19,6 @@
 
 Firstly create a statusline in lua is easy and you can do it with some line
 code. There are many lua statusline but they do the same thing of vimscript statusline.
-It doesn't have anything new
 
 Windline is a first statusline support change statusline per filetype.
 You can write a statusline for any filetype.
@@ -162,7 +161,7 @@ local default = {
 
 **Every component have own hightlight name define in `hl_colors` function**
 
-**A text function has a bufnr parameter and you can use it to get data from buffer**
+**A text function has a bufnr and winnr parameter and you can use it to get data from buffer**
 
 
 A text function can return a group of child component.
@@ -179,7 +178,7 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'black' },
         blue = { 'blue', 'black' },
     },
-    text = function(bufnr)
+    text = function(bufnr, winnr)
         if lsp_comps.check_lsp() then
             return {
                 -- `red` is define in hl_colors or a hightlight group name
@@ -322,3 +321,5 @@ animation.animation({
 ## Tabline
 [view](https://github.com/windwp/windline.nvim/wiki/tabline)
 
+## Document 
+[wiki](https://github.com/windwp/windline.nvim/wiki/)

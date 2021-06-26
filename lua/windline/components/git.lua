@@ -7,6 +7,7 @@ M.git_changes = function()
         return vim.b.gitsigns_status or ''
     end
 end
+
 M.is_git = function()
     local git_dict = vim.b.gitsigns_status_dict
     if git_dict and git_dict.head and #git_dict.head > 0 then
@@ -74,10 +75,5 @@ M.diff_changed = function(opt)
     end
 end
 
-M.git_changes = function()
-    return function()
-        return vim.b.gitsigns_status or ''
-    end
-end
 
 return M

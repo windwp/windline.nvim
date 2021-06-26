@@ -73,7 +73,7 @@ M.on_vimenter = function()
     -- need to wait on colorscheme finish
     -- do that because we don't need WindLine require this animation lib
     vim.defer_fn(function()
-        _G.WindLine.stop = Animation.stop_all
+        _G.WindLine.anim_stop = Animation.stop_all
     end,100)
     Animation.run_all()
 end
