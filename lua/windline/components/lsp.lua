@@ -22,12 +22,15 @@ local lsp_client_names = function(bufnr, opt)
     opt = opt or {}
     local clients = {}
     local icon = opt.icon or ' '
-    local sep = opt.seprator or ' '
+    local sep = opt.seprator or '|'
 
     for _, client in pairs(lsp.buf_get_clients(bufnr or 0)) do
-        clients[#clients + 1] = icon .. client.name
+        clients[#clients + 1] = client.name
     end
-    return table.concat(clients, sep)
+    if next(clients) then
+        return icon .. table.concat(clients, sep)
+    end
+    return nil
 end
 
 M.check_custom_lsp = function(opt)
@@ -62,6 +65,12 @@ M.check_lsp = M.check_custom_lsp()
 M.lsp_name = function(opt)
     windline.add_buf_enter_event(function(bufnr)
         vim.b.lsp_server_name = lsp_client_names(bufnr, opt)
+        if not vim.b.lsp_server_name then
+            -- some server need too long to start
+            vim.defer_fn(function()
+                vim.b.lsp_server_name = lsp_client_names(bufnr, opt)
+            end, 500)
+        end
     end)
 
     return function()
