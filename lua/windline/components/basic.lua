@@ -8,7 +8,7 @@ M.line_col = [[ %3l:%-2c ]]
 M.progress = [[%3p%%]]
 M.full_file_name = '%f'
 
-local function get_buf_name(modify,shorten)
+local function get_buf_name(modify, shorten)
     return function(bufnr)
         local bufname = vim.fn.bufname(bufnr)
         bufname = vim.fn.fnamemodify(bufname, modify)
@@ -29,19 +29,20 @@ M.file_name = function(default, modify)
         fnc_name = get_buf_name('%:p', true)
     end
 
-    return function(bufnr)
+    return utils.cache_on_buffer('BufEnter', 'WL_filename', function(bufnr)
+        print('get new name')
         local name = fnc_name(bufnr)
         if name == '' then
             name = default
         end
         return name .. ' '
-    end
+    end)
 end
 
 M.file_type = function(opt)
     opt = opt or {}
     local default = opt.default or '  '
-    return function(bufnr)
+    return utils.cache_on_buffer('BufEnter', 'WL_filetype', function(bufnr)
         local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
         local file_ext = vim.fn.fnamemodify(file_name, ':e')
         local icon = opt.icon and helper.get_icon(file_name, file_ext) or ''
@@ -53,7 +54,7 @@ M.file_type = function(opt)
             return icon .. ' ' .. filetype
         end
         return filetype
-    end
+    end)
 end
 
 M.file_size = function()
@@ -100,6 +101,7 @@ function M.file_encoding()
         return enc:upper()
     end
 end
+
 M.file_icon = function(default)
     default = default or ''
     return function(bufnr)
