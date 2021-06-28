@@ -9,25 +9,36 @@ M.cmdl_search_leave = function()
     end, 10)
 end
 
-M.search_count = function(opt)
-    opt = opt or {}
-    local show_zero = opt.show_zero or false
+M.cmdl_search_enter = function()
+    -- recompute when change to new buffer
+    local pattern = vim.fn.getreg('/')
+    vim.fn.searchcount({ pattern = pattern })
+end
 
-    require('windline').add_buf_enter_event(function()
-        -- recompute when change to new buffer
-        local pattern = vim.fn.getreg('/')
-        vim.fn.searchcount({ pattern = pattern })
-    end)
+local is_sc_setup = false
+
+local setup_search_count = function()
+    if is_sc_setup then
+        return
+    end
+    is_sc_setup = true
 
     vim.api.nvim_exec(
         [[
         aug WLSearchLens
             au!
+            au BufEnter * lua require('windline.components.vim').cmdl_search_enter()
             au CmdlineLeave [/\?] lua require('windline.components.vim').cmdl_search_leave()
         aug END
     ]],
         false
     )
+end
+
+M.search_count = function(opt)
+    opt = opt or {}
+    local show_zero = opt.show_zero or false
+    setup_search_count()
 
     return function()
         if vim.v.hlsearch == 0 then

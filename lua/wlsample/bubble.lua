@@ -71,11 +71,6 @@ basic.lsp_diagnos = {
     end,
 }
 
--- don't use it directly on child component it is a a cache version
-local file_size = b_components.cache_file_size()
-local file_name = b_components.cache_file_name('[No Name]', 'unique')
-local file_icon = b_components.cache_file_icon('')
-
 basic.file = {
     name = 'file',
     hl_colors = {
@@ -83,11 +78,11 @@ basic.file = {
     },
     text = function()
         return {
-            { file_icon, 'default' },
+            { b_components.cache_file_icon(''), 'default' },
             { ' ', '' },
-            { file_name, '' },
+            { b_components.cache_file_name('[No Name]', 'unique'), '' },
             { b_components.file_modified(' '), '' },
-            { file_size, '' },
+            { b_components.cache_file_size(), '' },
         }
     end,
 }
@@ -200,3 +195,6 @@ windline.setup({
         quickfix,
     },
 })
+
+
+

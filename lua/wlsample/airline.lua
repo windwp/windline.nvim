@@ -99,15 +99,13 @@ basic.section_b = {
     end,
 }
 
--- don't use it directly on child component it is a a cache version
-local cache_file_name = b_components.cache_file_name('[No Name]', 'unique')
 
 basic.section_c = {
     hl_colors = airline_colors.c,
     text = function()
         return {
             { ' ', state.mode[2] },
-            { cache_file_name, '' },
+            { b_components.cache_file_name('[No Name]', 'unique'), '' },
             { ' ', '' },
             { sep.right_filled, state.mode[2] .. 'Sep' },
         }

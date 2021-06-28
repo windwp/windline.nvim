@@ -212,6 +212,7 @@ local git_branch = {
 }
 ```
 
+[built-in component](https://github.com/windwp/windline.nvim/wiki/component)
 # Colors
 Windline use a terminal color. It generate from your colorscheme terminal.
 Every time you change colorschemes it will be generate a new colors to map
@@ -272,7 +273,6 @@ windline.setup({
 
 })
 ```
-
 ## animation
 animation with colors_name from colors above
 ``` lua

@@ -2,6 +2,7 @@ local M = {}
 local fn = vim.fn
 local helper = require('windline.helpers')
 local utils = require('windline.utils')
+local cache_utils = require('windline.cache_utils')
 
 M.divider = '%='
 M.line_col = [[ %3l:%-2c ]]
@@ -37,10 +38,9 @@ M.file_name = function(default, modify)
     end
 end
 
---- don't call it direct from child component
 ---@return any
 M.cache_file_name = function(default, modify)
-    return utils.cache_on_buffer('BufEnter', 'WL_filename', M.file_name(default, modify))
+    return cache_utils.cache_on_buffer('BufEnter', 'WL_filename', M.file_name(default, modify))
 end
 
 M.file_type = function(opt)
@@ -61,10 +61,9 @@ M.file_type = function(opt)
     end
 end
 
---- don't call it direct from child component
 ---@return any
 M.cache_file_type = function(opt)
-    return utils.cache_on_buffer('FileType', 'WL_filetype', M.file_type(opt))
+    return cache_utils.cache_on_buffer('FileType', 'WL_filetype', M.file_type(opt))
 end
 
 M.file_size = function()
@@ -89,10 +88,9 @@ M.file_size = function()
     end
 end
 
---- don't call it direct from child component
 ---@return any
 M.cache_file_size = function()
-    return utils.cache_on_buffer('BufWritePost', 'WL_filesize', M.file_size())
+    return cache_utils.cache_on_buffer('BufWritePost', 'WL_filesize', M.file_size())
 end
 
 local format_icons = {
@@ -120,10 +118,9 @@ function M.file_encoding()
     end
 end
 
---- don't call it direct from child component
----@return any
+---@rturn any
 M.cache_file_icon = function(default)
-    return utils.cache_on_buffer('FileType', 'WL_fileicon', M.file_icon(default))
+    return cache_utils.cache_on_buffer('FileType', 'WL_fileicon', M.file_icon(default))
 end
 
 M.file_icon = function(default)

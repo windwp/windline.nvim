@@ -1,6 +1,7 @@
 local M = {}
 
 local windline = require('windline')
+local cache_utils = require('windline.cache_utils')
 local state = windline.state
 local lsp = vim.lsp
 
@@ -8,10 +9,10 @@ local get_diagnostics_count = function(bufnr)
     bufnr = bufnr or 0
     local error = lsp.diagnostic.get_count(bufnr, [[Error]])
     local warning = lsp.diagnostic.get_count(bufnr, [[Warning]])
-    local information = lsp.diagnostic.get_count(bufnr, [[Information]])
-    -- local hint = lsp.diagnostic.get_count(bufnr, [[Hint]])
+    local information = lsp.diagnostic.get_count(bufnr, [[Hint]])
+    local hint = lsp.diagnostic.get_count(bufnr, [[Hint]])
 
-    return error, warning, information
+    return error, warning, information, hint
 end
 
 local function is_lsp()
@@ -39,9 +40,10 @@ M.check_custom_lsp = function(opt)
 
     return function()
         if state.comp.lsp == nil and lsp_check() then
-            local error, warning, hint = get_diagnostics_count(0)
+            local error, warning, information, hint = get_diagnostics_count(0)
             state.comp.lsp_error = error
             state.comp.lsp_warning = warning
+            state.comp.lsp_information = information
             state.comp.lsp_hint = hint
             -- save lsp_name on buffer variable
 
@@ -63,19 +65,19 @@ end
 M.check_lsp = M.check_custom_lsp()
 
 M.lsp_name = function(opt)
-    windline.add_buf_enter_event(function(bufnr)
-        vim.b.lsp_server_name = lsp_client_names(bufnr, opt)
-        if not vim.b.lsp_server_name then
-            -- some server need too long to start
+    return cache_utils.cache_on_buffer('BufEnter','lsp_server_name',function (bufnr)
+        local lsp_name = lsp_client_names(bufnr, opt)
+        -- some server need too long to start
+        -- it check on bufenter and after 600ms it check again
+        if lsp_name == nil then
             vim.defer_fn(function()
-                vim.b.lsp_server_name = lsp_client_names(bufnr, opt)
-            end, 500)
+                vim.b.lsp_server_name = lsp_client_names(bufnr, opt) or ''
+            end, 600)
+            -- return ''  will stop that cache func loop check
+            return ''
         end
+        return lsp_name
     end)
-
-    return function()
-        return vim.b.lsp_server_name or ''
-    end
 end
 
 M.lsp_error = function(opt)
@@ -83,6 +85,19 @@ M.lsp_error = function(opt)
     local format = opt.format or '%s'
     return function()
         local value = state.comp.lsp_error or 0
+        if value > 0 or value == 0 and opt.show_zero == true then
+            return string.format(format, value)
+        end
+        return ''
+    end
+end
+
+
+M.lsp_info = function(opt)
+    opt = opt or {}
+    local format = opt.format or '%s'
+    return function()
+        local value = state.comp.lsp_information or 0
         if value > 0 or value == 0 and opt.show_zero == true then
             return string.format(format, value)
         end

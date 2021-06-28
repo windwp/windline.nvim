@@ -4,20 +4,28 @@ _G.WindLine = _G.WindLine or M
 
 local themes = require('windline.themes')
 local utils = require('windline.utils')
+local cache_utils = require('windline.cache_utils')
 local Comp = require('windline.component')
 
 M.lastBuff = 0
 
-M.state = M.state or {
-    mode = {}, -- vim mode {normal insert}
-    comp = {}, -- component state it will reset on begin render
-    config = {},
-    buf_enter_events = nil, -- it will help add hook to buf_enter on component
-}
+M.state = M.state
+    or {
+        mode = {}, -- vim mode {normal insert}
+        comp = {}, -- component state it will reset on begin render
+        config = {},
+        buf_enter_events = nil, -- it will help add hook to buf_enter on component
+    }
 
 local mode = utils.mode
 
 M.statusline_ft = {}
+
+local is_width_valid = function (width, winnr)
+    if width == nil then return true end
+    return vim.api.nvim_win_is_valid(winnr)
+        and width < vim.api.nvim_win_get_width(winnr)
+end
 
 local render = function(bufnr, winnr, items, cache)
     M.state.comp = {} --reset component data
@@ -25,7 +33,7 @@ local render = function(bufnr, winnr, items, cache)
     Comp.reset()
     local status = ''
     for _, comp in pairs(items) do
-        if not(comp.width and comp.width > vim.api.nvim_win_get_width(winnr)) then
+        if is_width_valid(comp.width, winnr) then
             status = status .. comp:render(bufnr, winnr)
         end
     end
@@ -78,26 +86,12 @@ M.show = function(bufnr, winnr)
     return render(bufnr, winnr, M.default_line.active, true)
 end
 
--- for quickfix
-M.on_buf_win_enter = function(bufnr)
-    vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s,%s)', bufnr, vim.api.nvim_get_current_win())
-end
-
 M.on_buf_enter = function(bufnr)
-    vim.wo.statusline = string.format('%%!v:lua.WindLine.show(%s,%s)', bufnr, vim.api.nvim_get_current_win())
-    -- some helper function to define a cache value on state
-    if M.state.buf_enter_events ~= nil then
-        for _, buf_enter in pairs(M.state.buf_enter_events) do
-            buf_enter(tonumber(bufnr))
-        end
-    end
-end
-
-M.add_buf_enter_event = function(func)
-    if M.state.buf_enter_events == nil then
-        M.state.buf_enter_events = {}
-    end
-    table.insert(M.state.buf_enter_events, func)
+    vim.wo.statusline = string.format(
+        '%%!v:lua.WindLine.show(%s,%s)',
+        bufnr,
+        vim.api.nvim_get_current_win()
+    )
 end
 
 -- create component and init highlight first
@@ -168,7 +162,9 @@ M.setup = function(opts)
     M.statusline_ft = {}
     opts = vim.tbl_extend('force', default_config, opts)
     themes.default_theme = opts.theme
-    if opts.tabline then require('wltabline').setup(opts.tabline) end
+    if opts.tabline then
+        require('wltabline').setup(opts.tabline)
+    end
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
@@ -176,7 +172,7 @@ M.setup = function(opts)
         [[augroup WindLine
             au!
             au BufEnter * call v:lua.WindLine.on_buf_enter(expand('<abuf>'))
-            au BufWinEnter * call v:lua.WindLine.on_buf_win_enter(expand('<abuf>'))
+            au BufWinEnter * call v:lua.WindLine.on_buf_enter(expand('<abuf>'))
             au VimEnter * call v:lua.WindLine.on_vimenter()
             au ColorScheme * call v:lua.WindLine.on_colorscheme()
         augroup END]],
