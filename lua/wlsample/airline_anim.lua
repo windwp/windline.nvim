@@ -83,23 +83,26 @@ basic.section_b = {
     hl_colors = airline_colors.b,
     text = function()
         local branch_name = get_git_branch()
-        if #branch_name > 2 then
+        if #branch_name > 1 then
             return {
-                { git_comps.git_branch({}), state.mode[2] },
+                { branch_name , state.mode[2] },
                 { ' ', '' },
                 { sep.right_filled, state.mode[2] .. 'Sep' },
             }
         end
-        return ''
+        return { { sep.right_filled, state.mode[2] .. 'Sep' } }
     end,
 }
+
+-- don't use it directly on child component it is a a cache version
+local cache_file_name = b_components.cache_file_name('[No Name]', 'unique')
 
 basic.section_c = {
     hl_colors = airline_colors.c,
     text = function()
         return {
             { ' ', state.mode[2] },
-            { b_components.file_name(), '' },
+            { cache_file_name, '' },
             { ' ', '' },
             { sep.right_filled, state.mode[2] .. 'Sep' },
         }

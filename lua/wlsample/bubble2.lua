@@ -69,18 +69,23 @@ basic.lsp_diagnos = {
     end,
 }
 
+-- don't use it directly on child component it is a a cache version
+local cache_file_size = b_components.cache_file_size()
+local cache_file_name = b_components.cache_file_name('[No Name]', '')
+local cache_file_icon = b_components.cache_file_icon('')
+
 basic.file = {
     hl_colors = {
         default = { 'white', 'black_light' },
     },
     text = function()
         return {
+            { ' ', 'default' },
+            { cache_file_icon, '' },
             { ' ', '' },
-            { b_components.file_icon(''), 'default' },
-            { ' ', '' },
-            { b_components.file_name(''), '' },
+            { cache_file_name, '' },
             { b_components.file_modified(' '), '' },
-            { b_components.file_size(), '' },
+            { cache_file_size, '' },
         }
     end,
 }

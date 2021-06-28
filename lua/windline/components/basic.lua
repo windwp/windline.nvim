@@ -28,21 +28,25 @@ M.file_name = function(default, modify)
     elseif modify == 'full' then
         fnc_name = get_buf_name('%:p', true)
     end
-
-    return utils.cache_on_buffer('BufEnter', 'WL_filename', function(bufnr)
-        print('get new name')
+    return function(bufnr)
         local name = fnc_name(bufnr)
         if name == '' then
             name = default
         end
         return name .. ' '
-    end)
+    end
+end
+
+--- don't call it direct from child component
+---@return any
+M.cache_file_name = function(default, modify)
+    return utils.cache_on_buffer('BufEnter', 'WL_filename', M.file_name(default, modify))
 end
 
 M.file_type = function(opt)
     opt = opt or {}
     local default = opt.default or '  '
-    return utils.cache_on_buffer('BufEnter', 'WL_filetype', function(bufnr)
+    return function(bufnr)
         local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
         local file_ext = vim.fn.fnamemodify(file_name, ':e')
         local icon = opt.icon and helper.get_icon(file_name, file_ext) or ''
@@ -54,7 +58,13 @@ M.file_type = function(opt)
             return icon .. ' ' .. filetype
         end
         return filetype
-    end)
+    end
+end
+
+--- don't call it direct from child component
+---@return any
+M.cache_file_type = function(opt)
+    return utils.cache_on_buffer('FileType', 'WL_filetype', M.file_type(opt))
 end
 
 M.file_size = function()
@@ -67,7 +77,9 @@ M.file_size = function()
         local index = 1
 
         local fsize = fn.getfsize(file)
-
+        if fsize < 1 then
+            return ''
+        end
         while fsize > 1024 and index < 7 do
             fsize = fsize / 1024
             index = index + 1
@@ -75,6 +87,12 @@ M.file_size = function()
 
         return string.format('%.2f', fsize) .. suffix[index]
     end
+end
+
+--- don't call it direct from child component
+---@return any
+M.cache_file_size = function()
+    return utils.cache_on_buffer('BufWritePost', 'WL_filesize', M.file_size())
 end
 
 local format_icons = {
@@ -100,6 +118,12 @@ function M.file_encoding()
         local enc = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc
         return enc:upper()
     end
+end
+
+--- don't call it direct from child component
+---@return any
+M.cache_file_icon = function(default)
+    return utils.cache_on_buffer('FileType', 'WL_fileicon', M.file_icon(default))
 end
 
 M.file_icon = function(default)

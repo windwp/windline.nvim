@@ -141,60 +141,53 @@ M.get_unique_bufname = function(bufnr)
     return string.reverse(string.sub(tmp_name, 1, position))
 end
 
-_G.WindLine.cache_actions = _G.WindLine.cache_actions or {}
+_G.WindLine.check_buffer_auto = _G.WindLine.check_buffer_auto or {}
 
-local cache_actions = _G.WindLine.cache_actions
-
---- It will help reduce call function too many time on buffer. it save data on
---- buffer and only update when event happen
+local check_buffer_auto =_G.WindLine.check_buffer_auto
+--- It will help reduce call function too many time on buffer.
+--- it save data on buffer and only update when event happen
+--- I don't use autocommands on buffer it have an problem when buffnr=1??
+--- and usually only 1 function call on visible window so update it on global
+--- event on another buffer is fine
+--- some event like FileType don't work on autocommands with buffer
 ---@param auto_event string event when buffer value change
 ---@param buf_variable_name string buf_variable_name then
 ---@param action function action to do on buffer
 M.cache_on_buffer = function(auto_event, buf_variable_name, action)
-    return function(bufnr, winnr)
-        local id = buf_variable_name .. bufnr
-        local cache_action = cache_actions[id]
-        if cache_action == nil then
-            cache_action = {
-                id = id,
-                name = buf_variable_name,
-                bufnr = bufnr,
-                winnr = winnr,
-                action = action,
-            }
-            vim.api.nvim_exec(
-                string.format(
-                    [[
-                    augroup WL%s
-                        au!
-                        au %s * call v:lua.WindLine.cache_buffer_cb('%s')
-                    augroup END
-                    ]],
-                    cache_action.id,
-                    auto_event,
-                    cache_action.id
-                ),
-                false
-            )
-            cache_actions[cache_action.id] = cache_action
+    if check_buffer_auto[buf_variable_name] == nil then
+        vim.api.nvim_exec(
+            string.format(
+                [[
+                augroup WL%s
+                au!
+                au %s * call v:lua.WindLine.cache_buffer_cb('%s')
+                augroup END
+                ]],
+                buf_variable_name,
+                auto_event,
+               buf_variable_name
+            ),
+            false
+        )
+    end
+    return function (bufnr, winnr)
+        if check_buffer_auto[buf_variable_name] == false then
+            check_buffer_auto[buf_variable_name] = true
+            local value = action(bufnr, winnr)
+            vim.b[buf_variable_name] = value
+            return value
         end
-        local value = vim.b[buf_variable_name]
-        if value then
-             return value
+        if vim.b[buf_variable_name] == nil then
+            local value = action(bufnr, winnr)
+            vim.b[buf_variable_name] = value
+            return value
         end
-        value = action(bufnr, winnr)
-        vim.b[buf_variable_name] = value
-        return value
+        return vim.b[buf_variable_name] or ''
     end
 end
 
-M.cache_buffer_cb = function(identifer)
-    local action = _G.WindLine.cache_actions[identifer]
-    if action then
-        print('call action' .. identifer)
-       local value = action.action(action.bufnr, action.winnr)
-       vim.b[action.name] = value
-    end
+M.cache_buffer_cb = function(identifier)
+    check_buffer_auto[identifier] = false
 end
 
 _G.WindLine.cache_buffer_cb = M.cache_buffer_cb
