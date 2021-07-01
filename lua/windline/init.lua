@@ -4,7 +4,6 @@ _G.WindLine = _G.WindLine or M
 
 local themes = require('windline.themes')
 local utils = require('windline.utils')
-local cache_utils = require('windline.cache_utils')
 local Comp = require('windline.component')
 
 M.lastBuff = 0
@@ -14,7 +13,6 @@ M.state = M.state
         mode = {}, -- vim mode {normal insert}
         comp = {}, -- component state it will reset on begin render
         config = {},
-        buf_enter_events = nil, -- it will help add hook to buf_enter on component
     }
 
 local mode = utils.mode
