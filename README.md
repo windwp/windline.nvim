@@ -17,10 +17,7 @@
 
 # Intro
 
-Firstly create a statusline in lua is easy and you can do it with some line
-code. There are many lua statusline but they do the same thing of vimscript statusline.
-
-Windline is a first statusline support change statusline per filetype.
+Windline is statusline support change statusline per filetype.
 You can write a statusline for any filetype.
 `terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
 If you write a plugin you can define a statusline for your plugin.
@@ -164,8 +161,8 @@ local default = {
 **A text function has a bufnr and winnr parameter and you can use it to get data from buffer**
 
 
-A text function can return a group of child component.
-Child component share `hl_colors` data with parent component.
+A text function can return a group of child component
+Child component share `hl_colors` with parent component.
 
 ```lua
 local lsp_comps = require('windline.components.lsp')
@@ -204,7 +201,7 @@ local git_comps = require('windline.components.git')
 -- short syntax
 local git_branch = { git_comps.git_branch(), {'white', 'black'}, 100}
 
---  or you can use a table and set width field
+-- syntax using table
 local git_branch = {
     text = git_comps.git_branch(),
     hl_colors = {'white','black'},
@@ -212,7 +209,9 @@ local git_branch = {
 }
 ```
 
-[built-in component](https://github.com/windwp/windline.nvim/wiki/component)
+## cache component
+[More info](https://github.com/windwp/windline.nvim/wiki/component)
+
 # Colors
 Windline use a terminal color. It generate from your colorscheme terminal.
 Every time you change colorschemes it will be generate a new colors to map
