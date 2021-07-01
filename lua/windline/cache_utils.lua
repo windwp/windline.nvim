@@ -38,7 +38,7 @@ M.cache_on_buffer = function(auto_event, buf_variable_name, action)
         )
     else
         print(string.format(
-            'if it repeat too many time use need to declare a variable for component %s',
+            'if it repeat too many time you need to declare a variable for component %s',
             buf_variable_name
         ))
     end
