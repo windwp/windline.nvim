@@ -84,7 +84,7 @@ M.show = function(bufnr, winnr)
     return render(bufnr, winnr, M.default_line.active, true)
 end
 
-M.on_buf_enter = function(bufnr)
+M.on_win_enter = function(bufnr)
     vim.wo.statusline = string.format(
         '%%!v:lua.WindLine.show(%s,%s)',
         bufnr,
@@ -137,10 +137,7 @@ M.get_colors = function()
 end
 
 M.on_colorscheme = function(colors)
-    -- some lua theme use async method to load color
-    vim.defer_fn(function()
-        setup_hightlight(colors or M.get_colors())
-    end, 10)
+    setup_hightlight(colors or M.get_colors())
 end
 
 M.on_vimenter = function()
@@ -169,8 +166,7 @@ M.setup = function(opts)
     api.nvim_exec(
         [[augroup WindLine
             au!
-            au BufEnter * call v:lua.WindLine.on_buf_enter(expand('<abuf>'))
-            au BufWinEnter * call v:lua.WindLine.on_buf_enter(expand('<abuf>'))
+            au BufWinEnter,WinEnter * call v:lua.WindLine.on_win_enter(expand('<abuf>'))
             au VimEnter * call v:lua.WindLine.on_vimenter()
             au ColorScheme * call v:lua.WindLine.on_colorscheme()
         augroup END]],
