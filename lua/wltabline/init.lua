@@ -75,17 +75,18 @@ M.show = function()
     return result
 end
 
+-- stylua: ignore
 local default_config = {
     template = {
-        select = { '', { 'NormalFg', 'NormalBg', 'bold' } },
-        select_start = { separators.block_thin .. ' ', { 'blue', 'NormalBg' } },
-        select_end = { ' ', { 'NormalFg', 'NormalBg' } },
-        select_fill = { ' ', { 'NormalFg', 'NormalBg' } },
-        normal = { '', { 'white_light', 'black_light' } },
-        normal_start = { ' ', { 'white_light', 'black_light' } },
-        normal_end = { ' ', { 'white_light', 'black_light' } },
-        normal_select = { ' ', { 'white_light', 'black_light' } },
-        normal_last = { ' ', { 'white_light', 'black_light' } },
+        select        = { '',                           { 'NormalFg', 'NormalBg', 'bold' } },
+        select_start  = { separators.block_thin .. ' ', { 'blue', 'NormalBg' } },
+        select_end    = { ' ',                          { 'NormalFg', 'NormalBg' } },
+        select_fill   = { ' ',                          { 'NormalFg', 'NormalBg' } },
+        normal        = { '',                           { 'white_light', 'black_light' } },
+        normal_start  = { ' ',                          { 'white_light', 'black_light' } },
+        normal_end    = { ' ',                          { 'white_light', 'black_light' } },
+        normal_select = { ' ',                          { 'white_light', 'black_light' } },
+        normal_last   = { ' ',                          { 'white_light', 'black_light' } },
     },
     click = true,
     tab_end = {
