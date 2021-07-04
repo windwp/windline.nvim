@@ -1,5 +1,6 @@
 local M = {}
 local fn = vim.fn
+local api = vim.api
 local helper = require('windline.helpers')
 local utils = require('windline.utils')
 local cache_utils = require('windline.cache_utils')
@@ -11,10 +12,10 @@ M.full_file_name = '%f'
 
 local function get_buf_name(modify, shorten)
     return function(bufnr)
-        local bufname = vim.fn.bufname(bufnr)
-        bufname = vim.fn.fnamemodify(bufname, modify)
+        local bufname = fn.bufname(bufnr)
+        bufname = fn.fnamemodify(bufname, modify)
         if shorten then
-            return vim.fn.pathshorten(bufname)
+            return fn.pathshorten(bufname)
         end
         return bufname
     end
@@ -47,10 +48,10 @@ M.file_type = function(opt)
     opt = opt or {}
     local default = opt.default or '  '
     return function(bufnr)
-        local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
-        local file_ext = vim.fn.fnamemodify(file_name, ':e')
+        local file_name = fn.fnamemodify(fn.bufname(bufnr), ':t')
+        local file_ext = fn.fnamemodify(file_name, ':e')
         local icon = opt.icon and helper.get_icon(file_name, file_ext) or ''
-        local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+        local filetype = api.nvim_buf_get_option(bufnr, 'filetype')
         if filetype == '' then
             return default
         end
@@ -68,7 +69,7 @@ end
 
 M.file_size = function()
     return function()
-        local file = vim.fn.expand('%:p')
+        local file = fn.expand('%:p')
         if string.len(file) == 0 then
             return ''
         end
@@ -126,8 +127,8 @@ end
 M.file_icon = function(default)
     default = default or ''
     return function(bufnr)
-        local file_name = vim.fn.fnamemodify(vim.fn.bufname(bufnr), ':t')
-        local file_ext = vim.fn.fnamemodify(file_name, ':e')
+        local file_name = fn.fnamemodify(fn.bufname(bufnr), ':t')
+        local file_ext = fn.fnamemodify(file_name, ':e')
         return helper.get_icon(file_name, file_ext) or default
     end
 end

@@ -21,8 +21,8 @@ M.statusline_ft = {}
 
 local is_width_valid = function (width, winnr)
     if width == nil then return true end
-    return vim.api.nvim_win_is_valid(winnr)
-        and width < vim.api.nvim_win_get_width(winnr)
+    return api.nvim_win_is_valid(winnr)
+        and width < api.nvim_win_get_width(winnr)
 end
 
 local render = function(bufnr, winnr, items, cache)
@@ -51,14 +51,14 @@ M.get_statusline = function(bufnr)
 end
 
 M.show = function(bufnr, winnr)
-    bufnr = bufnr or vim.api.nvim_get_current_buf()
+    bufnr = bufnr or api.nvim_get_current_buf()
     local line = M.get_statusline(bufnr)
     local win_id = api.nvim_get_current_win()
     if vim.g.statusline_winid ~= win_id then
         -- in active
         if
             M.last_win == vim.g.statusline_winid
-            and vim.api.nvim_win_get_config(win_id).relative ~= ''
+            and api.nvim_win_get_config(win_id).relative ~= ''
         then
             -- disable on floating window
             return M.state.cache_status
@@ -88,7 +88,7 @@ M.on_win_enter = function(bufnr)
     vim.wo.statusline = string.format(
         '%%!v:lua.WindLine.show(%s,%s)',
         bufnr,
-        vim.api.nvim_get_current_win()
+        api.nvim_get_current_win()
     )
 end
 
