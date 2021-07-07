@@ -1,6 +1,21 @@
 local Animation = require('wlanimation.animation')
 local M = {}
 
+-- we need animation run after vim enter
+local check_enter = function(anim)
+    if M.is_enter == true then
+        return anim:run()
+    end
+    vim.defer_fn(function()
+        -- if user call animation libary after vimenter then
+        -- we wait a bit to  call anim
+        M.on_vimenter()
+    end, 200)
+    return anim
+end
+
+M.is_enter = false
+
 M.animation = function(opts)
     assert(type(opts.data) == 'table', 'param data is required')
     opts = vim.tbl_extend('force', {
@@ -53,29 +68,7 @@ M.animation = function(opts)
         delay = opts.delay,
         timeout = opts.timeout,
     })
-    -- we need to animation run after vim enter
-    if M.is_enter == true then
-        return anim:run()
-    end
-    vim.defer_fn(function()
-      -- if user call animation libary after vimenter then
-      -- we wait a bit to  call anim
-        M.on_vimenter()
-    end, 200)
-    return anim
-end
-
-M.is_enter = false
-
-M.on_vimenter = function()
-    if M.is_enter then return true end
-    M.is_enter = true
-    -- need to wait on colorscheme finish
-    -- do that because we don't need WindLine require this animation lib
-    vim.defer_fn(function()
-        _G.WindLine.anim_stop = Animation.stop_all
-    end,100)
-    Animation.run_all()
+    return check_enter(anim)
 end
 
 M.basic_animation = function(opts)
@@ -87,9 +80,38 @@ M.basic_animation = function(opts)
         delay = opts.delay,
         timeout = opts.timeout,
     })
-    return anim:run()
+
+    return check_enter(anim)
 end
 
+local anim_waitting = {}
+--- add animation or job on list to will run after setup
+M.add_anim_job = function(anim)
+    table.insert(anim_waitting, anim)
+    M.on_vimenter()
+end
+
+M.on_vimenter = function()
+    if M.is_enter then
+        return true
+    end
+    M.is_enter = true
+    -- do that because we don't need WindLine require this animation lib on
+    -- statup
+    _G.WindLine.anim_stop = Animation.stop_all
+    _G.WindLine.anim_run = Animation.run_all
+    _G.WindLine.anim_clear = Animation.clear_all
+    _G.WindLine.anim_reset = function()
+        -- remove all animtion and put the animtation on waiting to rerun on
+        -- setup
+        Animation.clear_all()
+        _G.WindLine.anim_list = anim_waitting
+        anim_waitting = {}
+    end
+
+    -- running waiting animation
+    Animation.run_all()
+end
 M.stop_all = Animation.stop_all
 
 vim.api.nvim_exec(

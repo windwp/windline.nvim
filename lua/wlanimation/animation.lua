@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field
 local utils = require('wlanimation.utils')
 local hl_anim = require('wlanimation.highlight_anim')
 local basic_anim = require('wlanimation.basic_anim')
@@ -8,10 +9,16 @@ local default_option = {
     highlights = {},
     __hl = {},
     __state = {},
+    __timer = nil,
+    __tick = nil,
     delay = 100,
     interval = 100,
     is_use_both = false, -- combine fg and bg action to 1
 }
+
+
+_G.WindLine.anim_list =_G.WindLine.anim_list or{}
+
 ---@class Animation
 local Animation = {}
 Animation.__index = Animation
@@ -34,26 +41,21 @@ function Animation.new(opt)
     anim.setup(opt)
     opt.uid = uuid_num
     opt.timeout = opt.timeout and opt.timeout * 1E9
-
-    if not _G.__animation_list then
-        _G.__animation_list = {}
-    end
-
     local ani = setmetatable(opt, { __index = Animation })
-    table.insert(_G.__animation_list, ani)
+    table.insert(_G.WindLine.anim_list, ani)
     return ani
 end
 
 function Animation:run()
-    local _timer = vim.loop.new_timer()
-    self.__is_run = true
+    local timer = vim.loop.new_timer()
+    self.is_run = true
     local tick = self.__tick
     local start_time = vim.loop.hrtime()
-    _timer:start(
+    timer:start(
         self.delay,
         self.interval,
         vim.schedule_wrap(function()
-            if not self.__is_run then
+            if not self.is_run then
                 return
             end
             local ctime = vim.loop.hrtime()
@@ -64,41 +66,47 @@ function Animation:run()
             tick(self)
         end)
     )
-    self._timer = _timer
+    self.__timer = timer
     return self
 end
 
-function Animation:stop()
-    self.__is_run = false
+function Animation:stop(is_not_remove)
+    self.is_run = false
     if self.__timer ~= nil then
         vim.loop.timer_stop(self.__timer)
     end
-    self._timer = nil
+    self.__timer = nil
     for _, value in pairs(self.__hl) do
         utils.highlight(value.name, value.fg, value.bg)
     end
-    _G.__animation_list = vim.tbl_filter(function(ani)
-        if ani.uid == self.uid then
-            return false
-        end
-        return true
-    end, _G.__animation_list)
+    if not is_not_remove then
+        _G.WindLine.anim_list = vim.tbl_filter(function(ani)
+            if ani.uid == self.uid then
+                return false
+            end
+            return true
+        end, _G.WindLine.anim_list)
+    end
     return self
 end
 
 local function stop_all()
-    if _G.__animation_list then
-        for _, ani in pairs(_G.__animation_list) do
-            ani:stop()
+    if _G.WindLine.anim_list then
+        for _, ani in pairs(_G.WindLine.anim_list) do
+            ani:stop(true)
         end
     end
-    _G.__animation_list = {}
+end
+
+local function clear_all()
+    stop_all()
+    _G.WindLine.anim_list = {}
 end
 
 -- only use on_vimenter
 local function run_all()
-    if _G.__animation_list then
-        for _, ani in pairs(_G.__animation_list) do
+    if _G.WindLine.anim_list then
+        for _, ani in pairs(_G.WindLine.anim_list) do
             ani:run()
         end
     end
@@ -106,6 +114,7 @@ end
 
 return {
     new = Animation.new,
-    stop_all = stop_all,
+    clear_all = clear_all,
     run_all = run_all,
+    stop_all = stop_all,
 }

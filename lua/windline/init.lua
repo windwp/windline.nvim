@@ -110,14 +110,14 @@ local setup_hightlight = function(colors)
     assert(M.default_line ~= nil, 'you need define default statusline')
     assert(M.default_line.active ~= nil, 'default need list active componet')
     assert(M.default_line.in_active ~= nil, 'default need list in_active component')
-    if _G.WindLine.anim_stop then
-        _G.WindLine.anim_stop()
-    end
+
+    if M.anim_stop then M.anim_stop() end
+
     utils.hl_clear()
     colors = colors or M.get_colors()
 
-    if _G.WindLine.tabline then
-        _G.WindLine.tabline.setup_hightlight(colors)
+    if M.tabline then
+        M.tabline.setup_hightlight(colors)
     end
 
     for _, line in pairs(M.statusline_ft) do
@@ -127,6 +127,8 @@ local setup_hightlight = function(colors)
     M.create_comp_list(M.default_line.active, colors)
     M.create_comp_list(M.default_line.in_active, colors)
     utils.hl_create()
+
+    if M.anim_run then M.anim_run() end
 end
 
 M.get_colors = function()
@@ -160,6 +162,9 @@ M.setup = function(opts)
     if opts.tabline then
         require('wltabline').setup(opts.tabline)
     end
+    require('windline.cache_utils').reset()
+    if M.anim_clear then M.anim_reset() end
+
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])

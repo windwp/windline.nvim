@@ -290,3 +290,4 @@ vim.defer_fn(function()
         interval = 150,
     })
 end, 200)
+
