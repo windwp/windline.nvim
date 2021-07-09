@@ -17,7 +17,7 @@
 
 # Intro
 
-Windline is statusline support change statusline per filetype.
+Windline support change statusline per filetype.
 You can write a statusline for any filetype.
 `terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
 If you write a plugin you can define a statusline for your plugin.
