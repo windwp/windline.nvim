@@ -47,7 +47,7 @@ M.cache_func = function(auto_event, variable_name, action, loading_action, vim_d
         )
     else
         print(string.format(
-            'if it repeat too many time you need to declare a variable for component %s',
+            '[windline] if it repeat too many time you need to declare a variable for component %s',
             variable_name
         ))
     end
@@ -59,14 +59,15 @@ M.cache_func = function(auto_event, variable_name, action, loading_action, vim_d
             vim_data[variable_name] = value
             return value
         end
-        if not vim_data[variable_name] then
+        local c_value = vim_data[variable_name]
+        if not c_value then
             local value = action(bufnr, winnr)
             vim_data[variable_name] = value
             return value
-        elseif vim_data[variable_name] == M.LOADING_STATE and loading_action then
+        elseif c_value == M.LOADING_STATE and loading_action then
             return loading_action(bufnr, winnr)
         end
-        return vim_data[variable_name] or ''
+        return c_value or ''
     end
     M.buffer_auto_funcs[variable_name] = func
     return func

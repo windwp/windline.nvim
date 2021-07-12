@@ -73,7 +73,7 @@ end
 
 M.basic_animation = function(opts)
     local anim = Animation.new({
-        type = 'text',
+        type = 'basic',
         on_tick = opts.on_tick,
         effect = opts.effect,
         interval = opts.interval,

@@ -4,6 +4,9 @@ local M={}
 local function tick(animation)
     local state = animation.__state
     state.value = animation.effect(state.value)
+    if not state.value then
+        animation:stop()
+    end
     animation.on_tick(state.value)
 end
 
