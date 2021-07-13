@@ -111,7 +111,7 @@ local setup_hightlight = function(colors)
     assert(M.default_line.active ~= nil, 'default need list active componet')
     assert(M.default_line.in_active ~= nil, 'default need list in_active component')
 
-    if M.anim_stop then M.anim_stop() end
+    if M.anim_pause then M.anim_pause() end
 
     utils.hl_clear()
     colors = colors or M.get_colors()
@@ -163,7 +163,7 @@ M.setup = function(opts)
         require('wltabline').setup(opts.tabline)
     end
     require('windline.cache_utils').reset()
-    if M.anim_clear then M.anim_reset() end
+    if M.anim_reset then M.anim_reset() end
 
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)

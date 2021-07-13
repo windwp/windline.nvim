@@ -33,6 +33,12 @@ local function tick(animation)
     end
 end
 
+local function stop(animation)
+    for _, value in pairs(animation.__hl) do
+        utils.highlight(value.name, value.fg, value.bg)
+    end
+end
+
 --- @param opt AnimationOption
 M.setup = function(opt)
     for _, group_name in pairs(opt.highlights) do
@@ -51,6 +57,7 @@ M.setup = function(opt)
             bg = bg and HSL.new(bg.H, bg.S, bg.L) or nil,
         })
     end
+    opt.__stop = stop
     opt.__tick = tick
 end
 return M

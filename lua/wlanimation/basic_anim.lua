@@ -6,6 +6,7 @@ local function tick(animation)
     state.value = animation.effect(state.value)
     if not state.value then
         animation:stop()
+        return
     end
     animation.on_tick(state.value)
 end

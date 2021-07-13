@@ -98,13 +98,13 @@ M.on_vimenter = function()
     M.is_enter = true
     -- do that because we don't need WindLine require this animation lib on
     -- statup
-    _G.WindLine.anim_stop = Animation.stop_all
+    _G.WindLine.anim_pause = Animation.pause_all
     _G.WindLine.anim_run = Animation.run_all
-    _G.WindLine.anim_clear = Animation.clear_all
+    _G.WindLine.anim_stop = Animation.stop_all
     _G.WindLine.anim_reset = function()
         -- remove all animtion and put the animtation on waiting to rerun on
         -- setup
-        Animation.clear_all()
+        Animation.stop_all()
         _G.WindLine.anim_list = anim_waitting
         anim_waitting = {}
     end

@@ -16,8 +16,7 @@ local default_option = {
     is_use_both = false, -- combine fg and bg action to 1
 }
 
-
-_G.WindLine.anim_list =_G.WindLine.anim_list or{}
+_G.WindLine.anim_list = _G.WindLine.anim_list or {}
 
 ---@class Animation
 local Animation = {}
@@ -40,15 +39,20 @@ function Animation.new(opt)
     end
     anim.setup(opt)
     opt.uid = uuid_num
+    opt.name = opt.name or ('name' .. opt.uid)
     opt.timeout = opt.timeout and opt.timeout * 1E9
     local ani = setmetatable(opt, { __index = Animation })
     table.insert(_G.WindLine.anim_list, ani)
+    uuid_num = uuid_num + 1
     return ani
 end
 
 function Animation:run()
-    local timer = vim.loop.new_timer()
+    if self.is_run then
+        self.stop(true)
+    end
     self.is_run = true
+    local timer = vim.loop.new_timer()
     local tick = self.__tick
     local start_time = vim.loop.hrtime()
     timer:start(
@@ -71,13 +75,20 @@ function Animation:run()
 end
 
 function Animation:stop(is_not_remove)
+    if not self.is_run then
+        return
+    end
     self.is_run = false
-    if self.__timer ~= nil then
+    if self.__timer then
+        self.__timer:stop()
         vim.loop.timer_stop(self.__timer)
     end
     self.__timer = nil
-    for _, value in pairs(self.__hl) do
-        utils.highlight(value.name, value.fg, value.bg)
+    if self.__stop then
+        self.__stop(self)
+    end
+    if self.on_stop then
+        self.on_stop()
     end
     if not is_not_remove then
         _G.WindLine.anim_list = vim.tbl_filter(function(ani)
@@ -90,7 +101,7 @@ function Animation:stop(is_not_remove)
     return self
 end
 
-local function stop_all()
+local function pause_all()
     if _G.WindLine.anim_list then
         for _, ani in pairs(_G.WindLine.anim_list) do
             ani:stop(true)
@@ -98,8 +109,8 @@ local function stop_all()
     end
 end
 
-local function clear_all()
-    stop_all()
+local function stop_all()
+    pause_all()
     _G.WindLine.anim_list = {}
 end
 
@@ -107,14 +118,16 @@ end
 local function run_all()
     if _G.WindLine.anim_list then
         for _, ani in pairs(_G.WindLine.anim_list) do
-            ani:run()
+            if not ani.is_run then
+                ani:run()
+            end
         end
     end
 end
 
 return {
     new = Animation.new,
-    clear_all = clear_all,
+    pause_all = pause_all,
     run_all = run_all,
     stop_all = stop_all,
 }
