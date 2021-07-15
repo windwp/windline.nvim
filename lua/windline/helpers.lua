@@ -32,9 +32,10 @@ M.get_icon = function (file_name, file_ext)
         if ok then web_devicons = icon else web_devicons = false end
     end
     if web_devicons then
-        return web_devicons.get_icon(file_name, file_ext, { default = true })
+        local icon, hl =  web_devicons.get_icon(file_name, file_ext, { default = false })
+        return icon, hl
     end
-    return ''
+    return nil
 end
 
 return M

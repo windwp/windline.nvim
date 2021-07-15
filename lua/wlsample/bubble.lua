@@ -78,8 +78,8 @@ basic.file = {
     },
     text = function()
         return {
-            { b_components.cache_file_icon(''), 'default' },
-            { ' ', '' },
+            {b_components.cache_file_icon({ default = '' }), 'default'},
+            { ' ', 'default' },
             { b_components.cache_file_name('[No Name]', 'unique'), '' },
             { b_components.file_modified(' '), '' },
             { b_components.cache_file_size(), '' },
@@ -136,7 +136,7 @@ local default = {
         basic.lsp_diagnos,
         basic.git,
         basic.divider,
-        {git_comps.git_branch({ icon = '  ' }),  { 'green', 'black' }, 90 },
+        { git_comps.git_branch({ icon = '  ' }), { 'green', 'black' }, 90 },
         { ' ', hl_list.Black },
         basic.right,
         { ' ', hl_list.Black },
@@ -181,7 +181,6 @@ local explorer = {
         { b_components.file_name(''), { 'white', 'black_light' } },
     },
     show_in_active = true,
-
 }
 
 windline.setup({
@@ -195,6 +194,3 @@ windline.setup({
         quickfix,
     },
 })
-
-
-

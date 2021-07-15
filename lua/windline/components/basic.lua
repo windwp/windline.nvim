@@ -4,6 +4,7 @@ local api = vim.api
 local helper = require('windline.helpers')
 local utils = require('windline.utils')
 local cache_utils = require('windline.cache_utils')
+local themes = require('windline.themes')
 
 M.divider = '%='
 M.line_col = [[ %3l:%-2c ]]
@@ -119,17 +120,31 @@ function M.file_encoding()
     end
 end
 
----@rturn any
-M.cache_file_icon = function(default)
-    return cache_utils.cache_on_buffer('FileType', 'WL_fileicon', M.file_icon(default))
+M.cache_file_icon = function(opt)
+    return cache_utils.cache_on_buffer('FileType', 'WL_fileicon', M.file_icon(opt))
 end
 
-M.file_icon = function(default)
-    default = default or ''
+M.file_icon = function(opt)
+    opt = opt or { default = '' }
     return function(bufnr)
         local file_name = fn.fnamemodify(fn.bufname(bufnr), ':t')
         local file_ext = fn.fnamemodify(file_name, ':e')
-        return helper.get_icon(file_name, file_ext) or default
+        local icon, hl = helper.get_icon(file_name, file_ext)
+        if not opt.hl_colors then
+            return hl ~= 'DevIconDefault' and icon or opt.default
+        end
+        if file_ext == "" then file_ext = nil end
+        local highlight = string.format('WL%s_%s',opt.hl_colors[1], opt.hl_colors[2])
+        if hl == 'DevIconDefault' then
+            return { opt.default, highlight }
+        end
+        if hl then
+            highlight = string.format('WL%s_%s', file_ext, opt.hl_colors[2])
+            local fg = themes.get_hl_color(hl)
+            local bg = WindLine.state.colors[opt.hl_colors[2]]
+            utils.highlight(highlight, { guifg = fg, guibg = bg })
+        end
+        return {icon or opt.default, highlight }
     end
 end
 

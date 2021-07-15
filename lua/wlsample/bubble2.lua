@@ -70,16 +70,18 @@ basic.lsp_diagnos = {
 }
 
 
+local icon_comp = b_components.cache_file_icon({ default = '', hl_colors = {'white','black_light'} })
+
 basic.file = {
     hl_colors = {
         default = { 'white', 'black_light' },
     },
-    text = function()
+    text = function(bufnr)
         return {
             { ' ', 'default' },
-            { b_components.cache_file_icon(''), '' },
-            { ' ', '' },
-            { b_components.cache_file_name('[No Name]', '') , '' },
+            icon_comp(bufnr),
+            { ' ', 'default' },
+            { b_components.cache_file_name('[No Name]', ''), '' },
             { b_components.file_modified(' '), '' },
             { b_components.cache_file_size(), '' },
         }
@@ -142,8 +144,8 @@ local default = {
         basic.lsp_diagnos,
         basic.git,
         basic.divider,
-        {git_comps.git_branch({ icon = '  ' }),{ 'green', 'black' }, 90 },
-        {' ', hl_list.Black },
+        { git_comps.git_branch({ icon = '  ' }), { 'green', 'black' }, 90 },
+        { ' ', hl_list.Black },
         basic.vi_mode,
         basic.right,
         { ' ', hl_list.Black },
