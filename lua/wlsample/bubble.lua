@@ -181,6 +181,7 @@ local explorer = {
         { b_components.file_name(''), { 'white', 'black_light' } },
     },
     show_in_active = true,
+    show_last_status = true
 }
 
 windline.setup({

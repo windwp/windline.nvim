@@ -127,6 +127,8 @@ local explorer = {
     },
     show_in_active = true
     -- set this mean if it is inactive it still display same as active mode
+    show_last_status = true
+    --- it will display a last window status event that window should inactive
 }
 
 ```

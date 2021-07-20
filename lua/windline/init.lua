@@ -60,6 +60,7 @@ M.show = function(bufnr, winnr)
             M.last_win == vim.g.statusline_winid
             and api.nvim_win_get_config(win_id).relative ~= ''
         then
+            M.state.last_status_win = nil
             -- disable on floating window
             return M.state.cache_status
         else
@@ -72,14 +73,25 @@ M.show = function(bufnr, winnr)
                     return render(bufnr, winnr, line.in_active)
                 end
             end
+            -- make an in_active render like the last active
+            if M.state.last_status_win == vim.g.statusline_winid then
+                return M.state.cache_last_status
+            end
             return render(bufnr, winnr, M.default_line.in_active)
         end
     else
         M.bufnr = bufnr
-        M.last_win = win_id
         if line and line.active then
+            if line.show_last_status and not M.state.last_status_win then
+                -- remember last window status active
+                M.state.last_status_win = M.last_win
+                M.state.cache_last_status = M.state.cache_status
+            end
+            M.last_win = win_id
             return render(bufnr, winnr, line.active, true)
         end
+        M.last_win = win_id
+        M.state.last_status_win = nil
     end
     return render(bufnr, winnr, M.default_line.active, true)
 end
