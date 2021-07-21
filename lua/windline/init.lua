@@ -80,12 +80,16 @@ M.show = function(bufnr, winnr)
             return render(bufnr, winnr, M.default_line.in_active)
         end
     else
+        -- active
         M.bufnr = bufnr
         if line and line.active then
             if line.show_last_status and not M.state.last_status_win then
                 -- remember last window status active
                 M.state.last_status_win = M.last_win
                 M.state.cache_last_status = M.state.cache_status
+                -- current status window will draw after the last window
+                -- it need force another window draw again
+                vim.cmd[[redraws!]]
             end
             M.last_win = win_id
             return render(bufnr, winnr, line.active, true)
