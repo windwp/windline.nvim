@@ -8,6 +8,8 @@ local M = {}
 --- you don't display that component it will not call
 M.buffer_auto_events = {}
 
+M.buffer_value = {}
+
 --- store an cache value action to make sure it is never repeat call on child
 --- component
 M.buffer_auto_funcs = {}
@@ -45,24 +47,21 @@ M.cache_func = function(auto_event, variable_name, action, loading_action, vim_d
             ),
             false
         )
-    else
-        print(string.format(
-            '[windline] if it repeat too many time you need to declare a variable for component %s',
-            variable_name
-        ))
     end
 
     local func = function(bufnr, winnr)
+        M.buffer_value[bufnr] = M.buffer_value[bufnr] or {}
+        local buffer_v = vim_data or M.buffer_value[bufnr]
         if M.buffer_auto_events[variable_name] == false then
             M.buffer_auto_events[variable_name] = true
             local value = action(bufnr, winnr)
-            vim_data[variable_name] = value
+            buffer_v[variable_name] = value
             return value
         end
-        local c_value = vim_data[variable_name]
+        local c_value = buffer_v[variable_name]
         if not c_value then
             local value = action(bufnr, winnr)
-            vim_data[variable_name] = value
+            buffer_v[variable_name] = value
             return value
         elseif c_value == M.LOADING_STATE and loading_action then
             return loading_action(bufnr, winnr)
@@ -80,7 +79,7 @@ end
 ---@param action function action to do on buffer
 ---@return function(bufnr, winr)
 M.cache_on_buffer = function(auto_event, buf_variable_name, action)
-    return M.cache_func(auto_event, buf_variable_name, action, nil, vim.b)
+    return M.cache_func(auto_event, buf_variable_name, action, nil, nil )
 end
 
 --- reduce call function on render status line
@@ -95,6 +94,10 @@ end
 
 M.cache_buffer_cb = function(identifier)
     M.buffer_auto_events[identifier] = false
+    local bufnr = vim.api.nvim_get_current_buf()
+    if(M.buffer_value[bufnr]) then
+        M.buffer_value[bufnr] = {}
+    end
 end
 
 _G.WindLine.cache_buffer_cb = M.cache_buffer_cb
@@ -102,6 +105,8 @@ _G.WindLine.cache_buffer_cb = M.cache_buffer_cb
 M.reset = function()
     M.buffer_auto_events = {}
     M.buffer_auto_funcs = {}
+    M.buffer_value = {}
 end
 
+-- local BufferContext=
 return M
