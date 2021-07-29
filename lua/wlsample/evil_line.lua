@@ -6,6 +6,8 @@ local state = _G.WindLine.state
 local lsp_comps = require('windline.components.lsp')
 local git_comps = require('windline.components.git')
 
+local HSL = require('wlanimation.utils')
+
 local hl_list = {
     Black = { 'white', 'black' },
     White = { 'black', 'white' },
@@ -14,6 +16,7 @@ local hl_list = {
 }
 local basic = {}
 
+local breakpoint_width = 90
 basic.divider = { b_components.divider, '' }
 basic.bg = { ' ', 'StatusLine' }
 
@@ -46,7 +49,7 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'black' },
         blue = { 'blue', 'black' },
     },
-    width = 90,
+    width = breakpoint_width,
     text = function()
         if lsp_comps.check_lsp() then
             return {
@@ -63,19 +66,44 @@ basic.file = {
     name = 'file',
     hl_colors = {
         default = hl_list.Black,
+        white = { 'white', 'black'},
+        magenta = { 'magenta', 'black' },
+    },
+    text = function(_, winnr)
+        if vim.api.nvim_win_get_width(winnr) > breakpoint_width then
+            return {
+                { b_components.cache_file_size(), 'default' },
+                { ' ', '' },
+                { b_components.cache_file_name('[No Name]', ''), 'magenta' },
+                { b_components.line_col, 'white' },
+                { b_components.progress, '' },
+                { ' ', '' },
+                { b_components.file_modified(' '), 'magenta' },
+            }
+        else
+            return {
+                { b_components.cache_file_size(), 'default' },
+                { ' ', '' },
+                { b_components.cache_file_name('[No Name]', ''), 'magenta' },
+                { ' ', '' },
+                { b_components.file_modified(' '), 'magenta' },
+            }
+        end
+    end,
+}
+basic.file_right = {
+    hl_colors = {
+        default = hl_list.Black,
         white = { 'white', 'black' },
         magenta = { 'magenta', 'black' },
     },
-    text = function()
-        return {
-            { b_components.cache_file_size() , 'default' },
-            { ' ', '' },
-            { b_components.cache_file_name('[No Name]', '') , 'magenta' },
-            { b_components.line_col, 'white' },
-            { b_components.progress, '' },
-            { ' ', '' },
-            { b_components.file_modified(' '), 'magenta' },
-        }
+    text = function(_, winnr)
+        if vim.api.nvim_win_get_width(winnr) < breakpoint_width then
+            return {
+                { b_components.line_col, 'white' },
+                { b_components.progress, '' },
+            }
+        end
     end,
 }
 basic.git = {
@@ -85,7 +113,7 @@ basic.git = {
         red = { 'red', 'black' },
         blue = { 'blue', 'black' },
     },
-    width = 90,
+    width = breakpoint_width,
     text = function()
         if git_comps.is_git() then
             return {
@@ -131,7 +159,7 @@ local explorer = {
         { b_components.file_name(''), { 'white', 'black_light' } },
     },
     show_in_active = true,
-    show_last_status = true
+    show_last_status = true,
 }
 local default = {
     filetypes = { 'default' },
@@ -141,9 +169,10 @@ local default = {
         basic.file,
         basic.lsp_diagnos,
         basic.divider,
-        { lsp_comps.lsp_name(),  { 'magenta', 'black' } , 90},
+        basic.file_right,
+        { lsp_comps.lsp_name(), { 'magenta', 'black' }, breakpoint_width },
         basic.git,
-        { git_comps.git_branch(), { 'magenta', 'black' } , 90},
+        { git_comps.git_branch(), { 'magenta', 'black' }, breakpoint_width },
         { ' ', hl_list.Black },
         basic.square_mode,
     },
