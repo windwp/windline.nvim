@@ -6,7 +6,6 @@ local state = _G.WindLine.state
 local lsp_comps = require('windline.components.lsp')
 local git_comps = require('windline.components.git')
 
-local HSL = require('wlanimation.utils')
 
 local hl_list = {
     Black = { 'white', 'black' },

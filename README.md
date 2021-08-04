@@ -41,6 +41,7 @@ I know it is not useful but why not :).
 
 It is not loaded if you don't use animation.
 
+ ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
 
 # Setup
 
