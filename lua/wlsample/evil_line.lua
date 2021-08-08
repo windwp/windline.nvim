@@ -6,7 +6,6 @@ local state = _G.WindLine.state
 local lsp_comps = require('windline.components.lsp')
 local git_comps = require('windline.components.git')
 
-
 local hl_list = {
     Black = { 'white', 'black' },
     White = { 'black', 'white' },
@@ -65,7 +64,7 @@ basic.file = {
     name = 'file',
     hl_colors = {
         default = hl_list.Black,
-        white = { 'white', 'black'},
+        white = { 'white', 'black' },
         magenta = { 'magenta', 'black' },
     },
     text = function(_, winnr)
@@ -130,7 +129,6 @@ local quickfix = {
     filetypes = { 'qf', 'Trouble' },
     active = {
         { '🚦 Quickfix ', { 'white', 'black' } },
-        { 'Quickfix ', { 'white', 'black' } },
         { helper.separators.slant_right, { 'black', 'black_light' } },
         {
             function()

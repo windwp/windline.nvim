@@ -71,7 +71,7 @@ M.lsp_name = function(opt)
         -- it check on bufenter and after 600ms it check again
         if lsp_name == nil then
             vim.defer_fn(function()
-                vim.b.lsp_server_name = lsp_client_names(bufnr, opt) or ''
+                cache_utils.buffer_value[bufnr]['lsp_server_name'] =  lsp_client_names(bufnr, opt) or ''
             end, 600)
             -- return ''  will stop that cache func loop check
             return ''
