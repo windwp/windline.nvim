@@ -11,8 +11,12 @@ end
 
 M.cmdl_search_enter = function()
     -- recompute when change to new buffer
-    local pattern = vim.fn.getreg('/')
-    vim.fn.searchcount({ pattern = pattern })
+    if vim.v.hlsearch == 1 and vim.api.nvim_win_get_config(0).relative == '' then
+        local pattern = vim.fn.getreg('/')
+        if pattern and #pattern > 1 then
+            vim.fn.searchcount({ pattern = pattern })
+        end
+    end
 end
 
 local is_sc_setup = false
