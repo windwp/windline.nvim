@@ -41,13 +41,17 @@ local render = function(bufnr, winnr, items, cache)
     return status
 end
 
-M.get_statusline = function(bufnr)
-    local ft = api.nvim_buf_get_option(bufnr, 'filetype')
+M.get_statusline_ft = function(ft)
     for _, line in pairs(M.statusline_ft) do
         if utils.is_in_table(line.filetypes, ft) then
             return line
         end
     end
+end
+
+M.get_statusline = function(bufnr)
+    local ft = api.nvim_buf_get_option(bufnr, 'filetype')
+    return M.get_statusline_ft(ft)
 end
 
 M.show = function(bufnr, winnr)
@@ -214,6 +218,45 @@ M.add_status = function(lines)
         return true
     end, M.statusline_ft)
     setup_hightlight()
+end
+
+--- add component to status
+--- you need define a name and a position
+--- position can be an index of array or a a name of previous component
+--- if position = nil then it will add at a last of statusline
+---@param component Component
+---@param opt table {filetype = "",  position = "", kind = "active"}
+M.add_component = function(component, opt)
+    local line = M.get_statusline_ft(opt.filetype or '') or M.default_line
+
+    local status_line = line[opt.kind or 'active']
+    if type(opt.position) == 'number' then
+        table.insert(status_line, opt.position, component)
+    elseif type(opt.position) == 'string' then
+        for index, comp in ipairs(status_line) do
+            if comp.name and comp.name == opt.position then
+                table.insert(status_line, index, component)
+                break
+            end
+        end
+    else
+        table.insert(status_line, component)
+    end
+    setup_hightlight()
+end
+
+--- remove component
+--- remove_component({name = 'lsp', filetype = 'default', kind = 'active'})
+M.remove_component = function(opt)
+    local line = M.get_statusline_ft(opt.filetype) or M.default_line
+
+    local status_line = line[opt.kind or 'active']
+    for index, comp in ipairs(status_line) do
+        if comp.name and comp.name == opt.name then
+            table.remove(status_line, index)
+            break
+        end
+    end
 end
 
 return M

@@ -1,3 +1,5 @@
+
+---@class Component
 local Comp = {}
 local utils=require('windline.utils')
 
