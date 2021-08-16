@@ -49,7 +49,7 @@ end
 
 function Animation:run()
     if self.is_run then
-        self.stop(true)
+        self:stop(true)
     end
     self.is_run = true
     local timer = vim.loop.new_timer()
