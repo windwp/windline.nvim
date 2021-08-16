@@ -103,6 +103,7 @@ function Job:run()
     )
     self.timer = timer
 end
+
 ---run a system command and process result to display on statusline
 ---triger run command on vim event
 ---@param cmd string a system command to run
@@ -193,6 +194,49 @@ M.job_interval = function(cmd, interval, name, text_action, loading_text)
         return tmp.text
     end
     return func
+end
+
+
+M.LOADING_STATE = {
+    SPINNER = 1,
+    RESULT = 2,
+    REMOVE = 3,
+}
+
+--- a simple way to display spinner component
+--- don't use it on child component
+---@param opt table {spin_tbl = table, loading = func, result = func, comp_remove = table}}
+---@return function
+M.loading = function(opt)
+    local loading_text = ''
+    local anim = nil
+    if opt.spin_tbl then
+        if opt.spin_tbl == true then
+            opt.spin_tbl = tbl_loading
+        end
+        anim = animation.basic_animation({
+            timeout = nil,
+            delay = 0,
+            interval = 200,
+            effect = efffects.list_text(opt.spin_tbl),
+            on_tick = function(value)
+                loading_text = value
+            end,
+        })
+        animation.add_anim_job(anim)
+    end
+    return function(bufnr, winnr)
+        local state = opt.state()
+        if state == M.LOADING_STATE.SPINNER then
+            return opt.loading(loading_text, bufnr, winnr)
+        end
+        if state == M.LOADING_STATE.REMOVE then
+            if anim then anim:stop() end
+            WindLine.remove_component(opt.comp_remove)
+            return ''
+        end
+        return opt.result(bufnr, winnr)
+    end
 end
 
 return M

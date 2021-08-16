@@ -1,4 +1,3 @@
-
 local windline = require('windline')
 local helper = require('windline.helpers')
 local sep = helper.separators
@@ -32,12 +31,11 @@ local colors_mode_rev = {
     Command = { 'black', 'red' },
 }
 
-
 basic.vi_mode = {
     name = 'vi_mode',
     hl_colors = colors_mode_rev,
     text = function()
-        return { {  state.mode[1] .. ' ', state.mode[2] } }
+        return { { state.mode[1] .. ' ', state.mode[2] } }
     end,
 }
 
@@ -48,7 +46,6 @@ basic.vi_mode_sep_left = {
         return { { sep.right_filled, state.mode[2] } }
     end,
 }
-
 
 basic.right = {
     hl_colors = colors_mode_rev,
@@ -65,33 +62,58 @@ basic.right = {
 local job_utils = require('wlanimation.components.job')
 
 basic.job_event = {
-    hl_colors = {'blue','black_light'},
-    text = job_utils.job_event(
-        'sleep 10',
-        'BufEnter',
-        'job_sleep',
-        function(data)
-            if data.is_load then
-                return 'event ' .. data.loading_text
-            end
-            return 'bufenter done ' .. (data.data or '')
+    hl_colors = { 'blue', 'black_light' },
+    text = job_utils.job_event('sleep 10', 'BufEnter', 'job_sleep', function(data)
+        if data.is_load then
+            return 'event ' .. data.loading_text
         end
-    ),
+        return 'bufenter done ' .. (data.data or '')
+    end),
 }
 
 basic.job_interval = {
-    hl_colors = {'green','black_light'},
-    text = job_utils.job_interval(
-        'sleep 10',
-        7000,
-        'job_inerval',
-        function(data)
-            if data.is_load then
-                return 'interval ' .. data.loading_text
-            end
-            return 'interval done ' .. (data.data or '')
+    hl_colors = { 'green', 'black_light' },
+    text = job_utils.job_interval('sleep 10', 7000, 'job_inerval', function(data)
+        if data.is_load then
+            return 'interval ' .. data.loading_text
         end
-    ),
+        return 'interval done ' .. (data.data or '')
+    end),
+}
+
+vim.g.tmp_job_state = 'loading'
+
+basic.job_spinner = {
+    name = 'job_spinner',
+    hl_colors = {
+        yellow = { 'yellow', 'black_light' },
+        red = { 'red', 'black_light' },
+    },
+    text = job_utils.loading({
+        spin_tbl = true,
+        state = function()
+            if vim.g.tmp_job_state == 'loading' then
+                return job_utils.LOADING_STATE.SPINNER -- 1
+            elseif vim.g.tmp_job_state == 'remove' then
+                -- it will complete remove that components out of statusline
+                return job_utils.LOADING_STATE.REMOVE -- 3
+            end
+            return job_utils.LOADING_STATE.RESULT --2
+        end,
+        result = function()
+            return {
+                { 'result :', 'red' },
+                { vim.g.tmp_job_state or '', 'yellow' },
+            }
+        end,
+        loading = function(spinner_text)
+            return {
+                { 'loading', 'red' },
+                { spinner_text, 'yellow' },
+            }
+        end,
+        comp_remove = { name = 'job_spinner', filetype = 'default' },
+    }),
 }
 
 basic.right_sep = {
@@ -108,9 +130,10 @@ local default = {
         basic.vi_mode,
         basic.vi_mode_sep_left,
         basic.divider,
-        {'   ', {'white', 'black'}},
-        basic.job_event,
-        basic.job_interval,
+        { '   ', { 'white', 'black' } },
+        basic.job_spinner,
+        -- basic.job_event,
+        -- basic.job_interval,
         basic.right_sep,
         basic.right,
     },
