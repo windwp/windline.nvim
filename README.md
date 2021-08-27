@@ -319,6 +319,9 @@ animation.animation({
     interval = 100,
 })
 ```
+## Benchmark
+A command to benchmark current statuline it will render statusline 20.000 time.
+`:WindLineBenchMark`
 
 ## Tabline
 [view](https://github.com/windwp/windline.nvim/wiki/tabline)

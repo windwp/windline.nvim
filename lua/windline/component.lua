@@ -1,5 +1,8 @@
-
 ---@class Component
+---@field hl_colors table
+---@field text function
+---@field hl function
+---@field created boolean
 local Comp = {}
 local utils=require('windline.utils')
 

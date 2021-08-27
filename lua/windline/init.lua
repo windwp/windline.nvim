@@ -198,6 +198,20 @@ M.setup = function(opts)
         augroup END]],
         false
     )
+    api.nvim_exec("command! -nargs=* WindLineBenchmark lua require('windline').benchmark()", false)
+end
+
+--- a benchmark  current statusline. it need plenary
+M.benchmark = function()
+    local num = 2e4
+    local bench = require('plenary.profile').benchmark
+    local statusline = ''
+    local time = bench(num, function()
+        vim.g.statusline_winid = vim.api.nvim_get_current_win()
+        statusline = WindLine.show(vim.api.nvim_get_current_buf(), vim.g.statusline_winid)
+    end)
+    print(statusline)
+    print(string.format('render %s time : %s', num, time ))
 end
 
 M.add_status = function(lines)
