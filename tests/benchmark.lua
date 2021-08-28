@@ -1,5 +1,5 @@
 -- test time to render status line
-local num = 2e4
+local num = 1e4
 vim.cmd([[packadd plenary.nvim]])
 vim.cmd([[packadd windline.nvim]])
 vim.opt.termguicolors = true

@@ -320,7 +320,7 @@ animation.animation({
 })
 ```
 ## Benchmark
-A command to benchmark current statuline it will render statusline 20.000 time.
+A command to benchmark current statusline it will render 10.000 time.
 `:WindLineBenchMark`
 
 ## Tabline
