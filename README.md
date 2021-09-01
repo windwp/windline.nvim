@@ -262,7 +262,7 @@ on colors_name function
 local windline = require('windline')
 
 windline.setup({
-
+  -- this function will run on ColorScheme autocmd
   colors_name = function(colors)
       --- add more color
       colors.FilenameFg = colors.white_light
@@ -270,11 +270,20 @@ windline.setup({
 
       -- this color will not update if you change a colorscheme
       colors.gray = "#fefefe"
+
+      -- dynamic get color from colorscheme hightlight group
+      local searchFg, searchBg = require('windline.themes').get_hl_color('Search')
+      colors.SearchFg = searchFg or colors.white
+      colors.SearchBg = searchBg or colors.yellow
+
       return colors
   end,
 
 })
 ```
+you can create theme for colorscheme
+[gruvbox](./lua/windline/themes/gruvbox.lua)
+
 ## animation
 animation with colors_name from colors above
 ``` lua
