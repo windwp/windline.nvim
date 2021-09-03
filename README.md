@@ -1,13 +1,13 @@
 # Windline
  The next generation statusline for neovim
 
- * custom statusline for filetype
+ * custom statusline for every filetype
  * built-in animation library
  * change colors with colorscheme
- * Fast and powerful customize
+ * Fast and powerful customization
 
 ## demo
-  display 3 different status line on lua, vim and markdown file
+  display 3 different status lines on lua, vim and markdown file types.
 
  ![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
 
@@ -17,11 +17,11 @@
 
 # Intro
 
-Windline support change statusline per filetype.
+Windline supports changing statusline per filetype.
 You can write a statusline for any filetype.
 `terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
 If you write a plugin you can define a statusline for your plugin.
-It support to display status on **inactive window**
+It support displaying a different status line on **inactive windows**
 
 ```lua
 
@@ -36,10 +36,10 @@ local yourstatus = {
 
 ```
 
-We offer an built-in animation color library for statusline.
+We offer a built-in animations and color library for statusline.
 I know it is not useful but why not :).
 
-It is not loaded if you don't use animation.
+It is not loaded if you don't use animations.
 
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
 
@@ -49,7 +49,7 @@ It is not loaded if you don't use animation.
 local windline = require('windline')
 windline.setup({
   statuslines = {
-    --- you need define your status line here
+    --- you need to define your status lines here
   }
 })
 
@@ -102,22 +102,26 @@ require('wlsample.wind')
 require('wlsample.airline_luffy')
 ```
 
-Remember windline can change status line per filetype so you can have bubble
-line for markdown or latex file and airline for your working file.
+Remember windline can display  a different status line per filetype,
+so you can have bubble line for markdown or latex file, and airline 
+for your working file.
+
 
 ![Swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap.gif)
 
 # Status line
 
-You need to define a default statusline it will apply to all filetypes.
+You need to define a default statusline that will be used on all
+filetypes that do not define a custom one.
+
 ```lua
 local default = {
     filetypes={'default'},
     active={
-      --- component...
+      --- components...
     },
     in_active={
-      --- component...
+      --- components...
     }
 }
 
@@ -126,8 +130,9 @@ local explorer = {
     active = {
         {'  ', {'white', 'black'} },
     },
-    show_in_active = true
-    -- set this mean if it is inactive it still display same as active mode
+
+    -- show same components from active when the window is inactive
+    show_in_active = true,
     show_last_status = true
     --- it will display a last window status event that window should inactive
 }
@@ -135,22 +140,22 @@ local explorer = {
 ```
 
 # components
-An component define with {text ,{ fgcolor, bgcolor } }
+A component is defined as `{text ,{ fgcolor, bgcolor } }`
 
 ```lua
 
 local default = {
     filetypes={'default'},
     active={
-      --- component...
+      --- components...
       {'[',{'red', 'black'}},
       {'%f',{'green','black'}},
       {']',{'red','black'}},
 
-      -- use empty mean it use same color with component above
+      -- empty color definition uses the previous component colors
       {"%=", ''} ,
 
-      -- use a hightlight group
+      -- hightlight groups can also be used
       {' ','StatusLine'},
 
       {' %3l:%-2c ',{'white','black'}}
@@ -161,18 +166,18 @@ local default = {
 
 **Every component have own hightlight name define in `hl_colors` function**
 
-**A text function has a bufnr and winnr parameter and you can use it to get data from buffer**
+**A text function has a bufnr and winnr parameter that can be used it to get data from the buffer or window**
 
 
-A text function can return a group of child component
-Child component share `hl_colors` with parent component.
+A text function can return a group of child components
+Child component share `hl_colors` with the parent component.
 
 ```lua
 local lsp_comps = require('windline.components.lsp')
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
-        -- we need define color name here to cache value
+        -- we need to define color name here to cache value
         -- then we use it on child of group
         red = { 'red', 'black' },
         yellow = { 'yellow', 'black' },
