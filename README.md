@@ -20,8 +20,8 @@
 Windline supports changing statusline per filetype.
 You can write a statusline for any filetype.
 `terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
-If you write a plugin you can define a statusline for your plugin.
-It support displaying a different status line on **inactive windows**
+Pugins can define their own statusline.
+It supports displaying a different status line on **inactive windows**
 
 ```lua
 
@@ -131,10 +131,10 @@ local explorer = {
         {'  ', {'white', 'black'} },
     },
 
-    -- show same components from active when the window is inactive
+    --- show active components when the window is inactive
     show_in_active = true,
-    show_last_status = true
     --- it will display a last window status event that window should inactive
+    show_last_status = true
 }
 
 ```
@@ -164,9 +164,9 @@ local default = {
 ```
 ![demo](https://github.com/windwp/windline.nvim/wiki/screenshot/simple_comp.png)
 
-**Every component have own hightlight name define in `hl_colors` function**
+**Every component have it's own hightlight name define in `hl_colors` function**
 
-**A text function has a bufnr and winnr parameter that can be used it to get data from the buffer or window**
+**A text function has a bufnr and winnr parameter that can be used to get data from the buffer or window**
 
 
 A text function can return a group of child components
@@ -197,11 +197,11 @@ basic.lsp_diagnos = {
 }
 ```
 
-Windline doesn't have a component condition just return it to empty or nil to
-make it disappear
+Windline doesn't have a component condition just return an empty string `''`or `nil` to
+remove it.
 
 ## width setting
-you can hide component by set window width
+you can hide components by setting a minimum window width
 ```lua
 
 local git_comps = require('windline.components.git')
@@ -213,6 +213,7 @@ local git_branch = { git_comps.git_branch(), {'white', 'black'}, 100}
 local git_branch = {
     text = git_comps.git_branch(),
     hl_colors = {'white','black'},
+    --- component not visible if window width is less than 100
     width = 100,
 }
 ```
@@ -259,8 +260,8 @@ local colors = {
 return colors
 ```
 
-If you need to define a new name of color to use on animation you need define
-on colors_name function
+If you need to define a new color to use on animation you need to define
+it on the `colors_name` function.
 
 ```lua
 
@@ -269,14 +270,14 @@ local windline = require('windline')
 windline.setup({
   -- this function will run on ColorScheme autocmd
   colors_name = function(colors)
-      --- add more color
+      --- add new colors
       colors.FilenameFg = colors.white_light
       colors.FilenameBg = colors.black
 
       -- this color will not update if you change a colorscheme
       colors.gray = "#fefefe"
 
-      -- dynamic get color from colorscheme hightlight group
+      -- dynamically get color from colorscheme hightlight group
       local searchFg, searchBg = require('windline.themes').get_hl_color('Search')
       colors.SearchFg = searchFg or colors.white
       colors.SearchBg = searchBg or colors.yellow
@@ -286,11 +287,11 @@ windline.setup({
 
 })
 ```
-you can create theme for colorscheme
+you can create a theme for a colorscheme
 [gruvbox](./lua/windline/themes/gruvbox.lua)
 
-## animation
-animation with colors_name from colors above
+## animations
+animations with colors_name from colors defined above
 ``` lua
 animation.animation({
    data = {
@@ -334,7 +335,7 @@ animation.animation({
 })
 ```
 ## Benchmark
-A command to benchmark current statusline it will render 10.000 time.
+A command to benchmark current statusline by rendering it 10.000 time.
 `:WindLineBenchMark`
 
 ## Tabline
