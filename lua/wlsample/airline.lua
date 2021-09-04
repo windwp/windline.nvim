@@ -143,12 +143,18 @@ basic.section_y = {
 basic.section_z = {
     hl_colors = airline_colors.a,
     text = function()
+        if check_width() then
+            return {
+                { sep.left_filled, state.mode[2] .. 'Sep' },
+                { '', state.mode[2] },
+                { b_components.progress, '' },
+                { ' ', '' },
+                { b_components.line_col, '' },
+            }
+        end
         return {
             { sep.left_filled, state.mode[2] .. 'Sep' },
-            { '', state.mode[2] },
-            { b_components.progress, '' },
-            { ' ', '' },
-            { b_components.line_col, '' },
+            { b_components.line_col, state.mode[2] },
         }
     end,
 }
@@ -160,9 +166,8 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'NormalBg' },
         blue = { 'blue', 'NormalBg' },
     },
-    width = width_breakpoint,
     text = function()
-        if check_width() and lsp_comps.check_lsp() then
+        if lsp_comps.check_lsp() then
             return {
                 { ' ', 'red' },
                 { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },

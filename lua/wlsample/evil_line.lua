@@ -184,6 +184,11 @@ local default = {
 }
 
 windline.setup({
+    colors_name = function(colors)
+        -- print(vim.inspect(colors))
+        -- ADD MORE COLOR HERE ----
+        return colors
+    end,
     statuslines = {
         default,
         quickfix,
