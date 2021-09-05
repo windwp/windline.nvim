@@ -67,8 +67,8 @@ basic.file = {
         white = { 'white', 'black' },
         magenta = { 'magenta', 'black' },
     },
-    text = function(_, winnr)
-        if vim.api.nvim_win_get_width(winnr) > breakpoint_width then
+    text = function(_, _, width)
+        if width > breakpoint_width then
             return {
                 { b_components.cache_file_size(), 'default' },
                 { ' ', '' },
@@ -95,8 +95,8 @@ basic.file_right = {
         white = { 'white', 'black' },
         magenta = { 'magenta', 'black' },
     },
-    text = function(_, winnr)
-        if vim.api.nvim_win_get_width(winnr) < breakpoint_width then
+    text = function(_, _, width)
+        if width < breakpoint_width then
             return {
                 { b_components.line_col, 'white' },
                 { b_components.progress, '' },
