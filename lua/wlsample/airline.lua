@@ -62,14 +62,11 @@ airline_colors.c = {
 basic.divider = { b_components.divider, hl_list.Normal }
 
 local width_breakpoint = 100
-local check_width = function()
-    return vim.fn.winwidth(0) > width_breakpoint
-end
 
 basic.section_a = {
     hl_colors = airline_colors.a,
-    text = function()
-        if check_width() then
+    text = function(_,_,width)
+        if width > width_breakpoint then
             return {
                 { ' ' .. state.mode[1] .. ' ', state.mode[2] },
                 { sep.right_filled, state.mode[2] .. 'Sep' },
@@ -86,9 +83,9 @@ local get_git_branch = git_comps.git_branch()
 
 basic.section_b = {
     hl_colors = airline_colors.b,
-    text = function()
+    text = function(_,_, width)
         local branch_name = get_git_branch()
-        if check_width() and #branch_name > 1 then
+        if width > width_breakpoint and #branch_name > 1 then
             return {
                 { branch_name , state.mode[2] },
                 { ' ', '' },
@@ -128,8 +125,8 @@ basic.section_x = {
 
 basic.section_y = {
     hl_colors = airline_colors.b,
-    text = function()
-        if check_width() then
+    text = function(_,_,width)
+        if width > width_breakpoint then
             return {
                 { sep.left_filled, state.mode[2] .. 'Sep' },
                 { b_components.file_type({ icon = true }), state.mode[2] },
@@ -142,8 +139,8 @@ basic.section_y = {
 
 basic.section_z = {
     hl_colors = airline_colors.a,
-    text = function()
-        if check_width() then
+    text = function(_,_,width)
+        if width > width_breakpoint then
             return {
                 { sep.left_filled, state.mode[2] .. 'Sep' },
                 { '', state.mode[2] },
@@ -154,6 +151,7 @@ basic.section_z = {
         end
         return {
             { sep.left_filled, state.mode[2] .. 'Sep' },
+            { ' ', state.mode[2] },
             { b_components.line_col, state.mode[2] },
         }
     end,

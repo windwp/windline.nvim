@@ -19,20 +19,15 @@ local mode = utils.mode
 
 M.statusline_ft = {}
 
-local is_width_valid = function (width, winnr)
-    if width == nil then return true end
-    return api.nvim_win_is_valid(winnr)
-        and width < api.nvim_win_get_width(winnr)
-end
-
 local render = function(bufnr, winnr, items, cache)
     M.state.comp = {} --reset component data
     M.state.mode = mode()
     Comp.reset()
     local status = ''
+    local win_width = api.nvim_win_is_valid(winnr) and api.nvim_win_get_width(winnr)
     for _, comp in pairs(items) do
-        if is_width_valid(comp.width, winnr) then
-            status = status .. comp:render(bufnr, winnr)
+        if win_width and (comp.width == nil or comp.width < win_width) then
+            status = status .. comp:render(bufnr, winnr, win_width)
         end
     end
     if cache then
@@ -268,8 +263,8 @@ M.benchmark = function()
     local bench = require('plenary.profile').benchmark
     local statusline = ''
     local time = bench(num, function()
-        vim.g.statusline_winid = vim.api.nvim_get_current_win()
-        statusline = WindLine.show(vim.api.nvim_get_current_buf(), vim.g.statusline_winid)
+        vim.g.statusline_winid = api.nvim_get_current_win()
+        statusline = WindLine.show(api.nvim_get_current_buf(), vim.g.statusline_winid)
     end)
     local popup = require('plenary.popup')
     local result = {}
@@ -279,18 +274,19 @@ M.benchmark = function()
     table.insert(result, string.format('render %s time : *%s*', num, time))
     table.insert(result, 'Comp:')
     local line = M.get_statusline_ft(vim.bo.filetype) or M.default_line
-    local bufnr = vim.api.nvim_get_current_buf()
-    local winnr = vim.api.nvim_get_current_win()
+    local bufnr = api.nvim_get_current_buf()
+    local winnr = api.nvim_get_current_win()
+    local width = api.nvim_win_get_width(0)
     table.insert(result, string.format('%s %12s %12s %s %s', ' ', 'time', 'name', 'num   ', 'text'))
     for index, comp in ipairs(line.active) do
         local item=''
         time = bench(num, function()
-            item = comp:render(bufnr, winnr)
+            item = comp:render(bufnr, winnr, width)
         end)
         table.insert(result, string.format('%02d *%10s* %12s %s - %s', index, time, comp.name or '   ', num, item))
     end
-    local width = math.floor(vim.o.columns / 1.5)
-    local col = math.floor((vim.o.columns - width) / 2)
+    local vim_width = math.floor(vim.o.columns / 1.5)
+    local col = math.floor((vim.o.columns - vim_width) / 2)
     popup.create(result, {
         border = {},
         minheight = 30,
