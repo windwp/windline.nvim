@@ -1,27 +1,30 @@
 # Windline
- The next generation statusline for neovim
+ The next generation status line for neovim
 
- * custom statusline for filetype
+**Features**:
+
+ * custom status line for every file type
  * built-in animation library
- * change colors with colorscheme
- * Fast and powerful customize
+ * change colors with your colorscheme
+ * fast and powerful customization
 
 ## demo
-  display 3 different status line on lua, vim and markdown file
 
- ![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
+Displaying three different status lines (lua, vim and markdown file types).
 
- ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
-  display an animation statusline to markdown and lua file.
+![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
+
+Displaying two different animated status line (markdown and lua file types).
+
+![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
 
 
 # Intro
 
-Windline support change statusline per filetype.
-You can write a statusline for any filetype.
-`terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
-If you write a plugin you can define a statusline for your plugin.
-It support to display status on **inactive window**
+Windline supports having a different status line per file type.
+`terminal,nvimtree,qf,help,spectre,lsptrouble,diffview,lspoutline`.
+Pugins can define their own status line as well.
+It also supports displaying a different status line on **inactive windows**
 
 ```lua
 
@@ -36,88 +39,102 @@ local yourstatus = {
 
 ```
 
-We offer an built-in animation color library for statusline.
+We offer a built-in animations and color library for status line.
 I know it is not useful but why not :).
 
-It is not loaded if you don't use animation.
+It is not loaded if you don't use animations.
 
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
 
 # Setup
 
+You can create your own custom status line, using as a base/example the [included status line setups](./lua/wlsample) is recommended for new users.
+
 ```lua
 local windline = require('windline')
 windline.setup({
   statuslines = {
-    --- you need define your status line here
+    --- you need to define your status lines here
   }
 })
 
 ```
 
+## Included Status lines
+
+You can also use any of this status lines and avoid setting up your own *(skipping the example above)* by just requiring it.
+
+### [bubble line](./lua/wlsample/bubble.lua)
 ![Bubble](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble.png)
-[bubble line](./lua/wlsample/bubble.lua)
 ```lua
 require('wlsample.bubble')
 ```
 ---
+### [bubble line](./lua/wlsample/bubble2.lua)
 ![Bubble2](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble2.png)
-[bubble line](./lua/wlsample/bubble2.lua)
 ```lua
 require('wlsample.bubble2')
 ```
 ---
+
+### [evil line](./lua/wlsample/evil_line.lua)
 ![evilline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/eviline.png)
-[evil line](./lua/wlsample/evil_line.lua)
 ```lua
 require('wlsample.evil_line')
 ```
 ---
+
+### [airline](./lua/wlsample/airline.lua)
 ![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
-[airline](./lua/wlsample/airline.lua)
 ```lua
 require('wlsample.airline')
-
+-- or the animated alternative
 require('wlsample.airline_anim')
-
 ```
 ---
+
+### [basic animation](./lua/wlsample/basic.lua)
 ![basic animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_basic.gif)
-[basic animation](./lua/wlsample/basic.lua)
 ```lua
 require('wlsample.basic')
 ```
 ---
+
+### [wind animation](./lua/wlsample/wind.lua)
 ![wind animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_wave.gif)
-[wind animation](./lua/wlsample/wind.lua)
 
 ```lua
 require('wlsample.wind')
 ```
 ---
+
+### [luffy](./lua/wlsample/airline_luffy.lua)
 ![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
-[luffy](./lua/wlsample/airline_luffy.lua)
 
 ```lua
 require('wlsample.airline_luffy')
 ```
 
-Remember windline can change status line per filetype so you can have bubble
-line for markdown or latex file and airline for your working file.
+Remember windline can display  a different status line per file type,
+so you can have bubble line for markdown or latex file, and airline 
+for your working file.
+
 
 ![Swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap.gif)
 
 # Status line
 
-You need to define a default statusline it will apply to all filetypes.
+You need to define a default status line that will be used on all
+filetypes that do not define a custom one.
+
 ```lua
 local default = {
     filetypes={'default'},
     active={
-      --- component...
+      --- components...
     },
     in_active={
-      --- component...
+      --- components...
     }
 }
 
@@ -126,31 +143,32 @@ local explorer = {
     active = {
         {'  ', {'white', 'black'} },
     },
-    show_in_active = true
-    -- set this mean if it is inactive it still display same as active mode
-    show_last_status = true
+
+    --- show active components when the window is inactive
+    show_in_active = true,
     --- it will display a last window status event that window should inactive
+    show_last_status = true
 }
 
 ```
 
 # components
-An component define with {text ,{ fgcolor, bgcolor } }
+A component is defined as `{text ,{ fgcolor, bgcolor } }`
 
 ```lua
 
 local default = {
     filetypes={'default'},
     active={
-      --- component...
+      --- components...
       {'[',{'red', 'black'}},
       {'%f',{'green','black'}},
       {']',{'red','black'}},
 
-      -- use empty mean it use same color with component above
+      -- empty color definition uses the previous component colors
       {"%=", ''} ,
 
-      -- use a hightlight group
+      -- hightlight groups can also be used
       {' ','StatusLine'},
 
       {' %3l:%-2c ',{'white','black'}}
@@ -159,20 +177,20 @@ local default = {
 ```
 ![demo](https://github.com/windwp/windline.nvim/wiki/screenshot/simple_comp.png)
 
-**Every component have own hightlight name define in `hl_colors` function**
+**Every component have it's own hightlight name define in `hl_colors` function**
 
-**A text function has a bufnr and winnr parameter and you can use it to get data from buffer**
+**A text function has a bufnr and winnr parameter that can be used to get data from the buffer or window**
 
 
-A text function can return a group of child component
-Child component share `hl_colors` with parent component.
+A text function can return a group of child components
+Child component share `hl_colors` with the parent component.
 
 ```lua
 local lsp_comps = require('windline.components.lsp')
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
-        -- we need define color name here to cache value
+        -- we need to define color name here to cache value
         -- then we use it on child of group
         red = { 'red', 'black' },
         yellow = { 'yellow', 'black' },
@@ -192,11 +210,11 @@ basic.lsp_diagnos = {
 }
 ```
 
-Windline doesn't have a component condition just return it to empty or nil to
-make it disappear
+Windline doesn't have a component condition just return an empty string `''`or `nil` to
+remove it.
 
 ## width setting
-you can hide component by set window width
+you can hide components by setting a minimum window width
 ```lua
 
 local git_comps = require('windline.components.git')
@@ -208,6 +226,7 @@ local git_branch = { git_comps.git_branch(), {'white', 'black'}, 100}
 local git_branch = {
     text = git_comps.git_branch(),
     hl_colors = {'white','black'},
+    --- component not visible if window width is less than 100
     width = 100,
 }
 ```
@@ -254,8 +273,8 @@ local colors = {
 return colors
 ```
 
-If you need to define a new name of color to use on animation you need define
-on colors_name function
+If you need to define a new color to use on animation you need to define
+it on the `colors_name` function.
 
 ```lua
 
@@ -264,14 +283,14 @@ local windline = require('windline')
 windline.setup({
   -- this function will run on ColorScheme autocmd
   colors_name = function(colors)
-      --- add more color
+      --- add new colors
       colors.FilenameFg = colors.white_light
       colors.FilenameBg = colors.black
 
       -- this color will not update if you change a colorscheme
       colors.gray = "#fefefe"
 
-      -- dynamic get color from colorscheme hightlight group
+      -- dynamically get color from colorscheme hightlight group
       local searchFg, searchBg = require('windline.themes').get_hl_color('Search')
       colors.SearchFg = searchFg or colors.white
       colors.SearchBg = searchBg or colors.yellow
@@ -281,11 +300,11 @@ windline.setup({
 
 })
 ```
-you can create theme for colorscheme
+you can create a theme for a colorscheme
 [gruvbox](./lua/windline/themes/gruvbox.lua)
 
-## animation
-animation with colors_name from colors above
+## animations
+animations with colors_name from colors defined above
 ``` lua
 animation.animation({
    data = {
@@ -329,7 +348,7 @@ animation.animation({
 })
 ```
 ## Benchmark
-A command to benchmark current statusline it will render 10.000 time.
+A command to benchmark current status line by rendering it 10.000 time.
 `:WindLineBenchMark`
 
 ## Tabline
