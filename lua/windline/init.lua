@@ -290,10 +290,10 @@ M.benchmark = function()
     popup.create(result, {
         border = {},
         minheight = 30,
-        maxwidth=width,
+        maxwidth=vim_width,
         col = col,
         line = 10,
-        width = width,
+        width = vim_width,
     })
     vim.bo.filetype = 'help'
 end
