@@ -3,20 +3,19 @@ local M = {}
 local windline = require('windline')
 local cache_utils = require('windline.cache_utils')
 local state = windline.state
-local lsp = vim.lsp
 
 local get_diagnostics_count = function(bufnr)
     bufnr = bufnr or 0
-    local error = lsp.diagnostic.get_count(bufnr, [[Error]])
-    local warning = lsp.diagnostic.get_count(bufnr, [[Warning]])
-    local information = lsp.diagnostic.get_count(bufnr, [[Hint]])
-    local hint = lsp.diagnostic.get_count(bufnr, [[Hint]])
+    local error = vim.lsp.diagnostic.get_count(bufnr, [[Error]])
+    local warning = vim.lsp.diagnostic.get_count(bufnr, [[Warning]])
+    local information = vim.lsp.diagnostic.get_count(bufnr, [[Hint]])
+    local hint = vim.lsp.diagnostic.get_count(bufnr, [[Hint]])
 
     return error, warning, information, hint
 end
 
 local function is_lsp()
-    return next(lsp.buf_get_clients()) ~= nil
+    return next(vim.lsp.buf_get_clients()) ~= nil
 end
 
 local lsp_client_names = function(bufnr, opt)
@@ -25,7 +24,7 @@ local lsp_client_names = function(bufnr, opt)
     local icon = opt.icon or ' '
     local sep = opt.seprator or '|'
 
-    for _, client in pairs(lsp.buf_get_clients(bufnr or 0)) do
+    for _, client in pairs(vim.lsp.buf_get_clients(bufnr or 0)) do
         clients[#clients + 1] = client.name
     end
     if next(clients) then
