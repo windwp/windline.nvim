@@ -1,27 +1,30 @@
 # Windline
- The next generation statusline for neovim
+ The next generation status line for neovim
 
- * custom statusline for every filetype
+**Features**:
+
+ * custom status line for every file type
  * built-in animation library
- * change colors with colorscheme
- * Fast and powerful customization
+ * change colors with your colorscheme
+ * fast and powerful customization
 
 ## demo
-  display 3 different status lines on lua, vim and markdown file types.
 
- ![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
+Displaying three different status lines (lua, vim and markdown file types).
 
- ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
-  display an animation statusline to markdown and lua file.
+![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
+
+Displaying two different animated status line (markdown and lua file types).
+
+![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
 
 
 # Intro
 
-Windline supports changing statusline per filetype.
-You can write a statusline for any filetype.
-`terminal,nvimtree, qf,spectre,lsptrouble,diffview,lspoutline`.
-Pugins can define their own statusline.
-It supports displaying a different status line on **inactive windows**
+Windline supports having a different status line per file type.
+`terminal,nvimtree,qf,help,spectre,lsptrouble,diffview,lspoutline`.
+Pugins can define their own status line as well.
+It also supports displaying a different status line on **inactive windows**
 
 ```lua
 
@@ -36,7 +39,7 @@ local yourstatus = {
 
 ```
 
-We offer a built-in animations and color library for statusline.
+We offer a built-in animations and color library for status line.
 I know it is not useful but why not :).
 
 It is not loaded if you don't use animations.
@@ -44,6 +47,8 @@ It is not loaded if you don't use animations.
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
 
 # Setup
+
+You can create your own custom status line, using as a base/example the [included status line setups](./lua/wlsample) is recommended for new users.
 
 ```lua
 local windline = require('windline')
@@ -55,54 +60,62 @@ windline.setup({
 
 ```
 
+## Included Status lines
+
+You can also use any of this status lines and avoid setting up your own *(skipping the example above)* by just requiring it.
+
+### [bubble line](./lua/wlsample/bubble.lua)
 ![Bubble](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble.png)
-[bubble line](./lua/wlsample/bubble.lua)
 ```lua
 require('wlsample.bubble')
 ```
 ---
+### [bubble line](./lua/wlsample/bubble2.lua)
 ![Bubble2](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_bubble2.png)
-[bubble line](./lua/wlsample/bubble2.lua)
 ```lua
 require('wlsample.bubble2')
 ```
 ---
+
+### [evil line](./lua/wlsample/evil_line.lua)
 ![evilline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/eviline.png)
-[evil line](./lua/wlsample/evil_line.lua)
 ```lua
 require('wlsample.evil_line')
 ```
 ---
+
+### [airline](./lua/wlsample/airline.lua)
 ![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
-[airline](./lua/wlsample/airline.lua)
 ```lua
 require('wlsample.airline')
-
+-- or the animated alternative
 require('wlsample.airline_anim')
-
 ```
 ---
+
+### [basic animation](./lua/wlsample/basic.lua)
 ![basic animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_basic.gif)
-[basic animation](./lua/wlsample/basic.lua)
 ```lua
 require('wlsample.basic')
 ```
 ---
+
+### [wind animation](./lua/wlsample/wind.lua)
 ![wind animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_wave.gif)
-[wind animation](./lua/wlsample/wind.lua)
 
 ```lua
 require('wlsample.wind')
 ```
 ---
+
+### [luffy](./lua/wlsample/airline_luffy.lua)
 ![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
-[luffy](./lua/wlsample/airline_luffy.lua)
 
 ```lua
 require('wlsample.airline_luffy')
 ```
 
-Remember windline can display  a different status line per filetype,
+Remember windline can display  a different status line per file type,
 so you can have bubble line for markdown or latex file, and airline 
 for your working file.
 
@@ -111,7 +124,7 @@ for your working file.
 
 # Status line
 
-You need to define a default statusline that will be used on all
+You need to define a default status line that will be used on all
 filetypes that do not define a custom one.
 
 ```lua
@@ -335,7 +348,7 @@ animation.animation({
 })
 ```
 ## Benchmark
-A command to benchmark current statusline by rendering it 10.000 time.
+A command to benchmark current status line by rendering it 10.000 time.
 `:WindLineBenchMark`
 
 ## Tabline
