@@ -141,4 +141,9 @@ M.get_unique_bufname = function(bufnr)
     return string.reverse(string.sub(tmp_name, 1, position))
 end
 
+M.update_check = function(check, message)
+    if check then
+        vim.notify("WindLine Update: " .. message)
+    end
+end
 return M

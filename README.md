@@ -146,7 +146,7 @@ local explorer = {
 
     --- show active components when the window is inactive
     always_active = true,
-    --- it will display a last window status event that window should inactive
+    --- it will display a last window statusline even that window should inactive
     show_last_status = true
 }
 

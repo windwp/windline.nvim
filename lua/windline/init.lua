@@ -198,8 +198,13 @@ end
 
 
 M.add_status = function(lines)
+    -- FIXME update change. It will be remove on the future
     for _, line in ipairs(lines) do
+        utils.update_check(line.in_active ~= nil,
+           "You need to change status line 'in_active' to 'inactive'. ':%s/in_active/inactive/g'")
         line.inactive = line.inactive or line.in_active
+        utils.update_check(line.show_in_active ~= nil,
+        "You need to change status line 'show_in_active' to 'always_active'. ':%s/show_in_active/always_active/g'")
         line.always_active = line.always_active or line.show_in_active
     end
     if lines.filetypes then
