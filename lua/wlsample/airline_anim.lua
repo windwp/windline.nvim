@@ -197,7 +197,7 @@ local default = {
         basic.section_y,
         basic.section_z,
     },
-    in_active = {
+    inactive = {
         { b_components.full_file_name, hl_list.Inactive },
         { b_components.divider, hl_list.Inactive },
         { b_components.line_col, hl_list.Inactive },

@@ -34,7 +34,7 @@ local yourstatus = {
         {' lspcrazy ', {'white', 'black'} },
         {function() return 'crazy' end ,{'black', 'red'} },
     },
-    show_in_active = true
+    always_active = true
 }
 
 ```
@@ -133,7 +133,7 @@ local default = {
     active={
       --- components...
     },
-    in_active={
+    inactive={
       --- components...
     }
 }
@@ -145,7 +145,7 @@ local explorer = {
     },
 
     --- show active components when the window is inactive
-    show_in_active = true,
+    always_active = true,
     --- it will display a last window status event that window should inactive
     show_last_status = true
 }

@@ -141,7 +141,7 @@ local default = {
         basic.right,
         { ' ', hl_list.Black },
     },
-    in_active = {
+    inactive = {
         basic.file_name_inactive,
         basic.divider,
         basic.divider,
@@ -169,7 +169,7 @@ local quickfix = {
         { helper.separators.slant_right, { 'InactiveBg', 'black' } },
         { '🧛 ', { 'white', 'black' } },
     },
-    show_in_active = true,
+    always_active = true,
 }
 
 local explorer = {
@@ -180,7 +180,7 @@ local explorer = {
         { b_components.divider, '' },
         { b_components.file_name(''), { 'white', 'black_light' } },
     },
-    show_in_active = true,
+    always_active = true,
     show_last_status = true
 }
 

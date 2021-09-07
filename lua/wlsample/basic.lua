@@ -82,7 +82,7 @@ local explorer = {
         basic.divider,
         basic.explorer_name,
     },
-    show_in_active = true
+    always_active = true
 }
 
 
@@ -132,7 +132,7 @@ local terminal = {
         {sep.slant_right_thin,{'white','InactiveBg'}},
         basic.progress_inactive,
     },
-    show_in_active = true
+    always_active = true
 }
 
 local default = {
@@ -155,7 +155,7 @@ local default = {
         basic.progress
 
     },
-    in_active={
+    inactive={
         basic.file_name_inactive,
         basic.divider,
         basic.divider,
