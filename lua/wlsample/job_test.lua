@@ -137,7 +137,7 @@ local default = {
         basic.right_sep,
         basic.right,
     },
-    in_active = {
+    inactive = {
         { b_components.full_file_name, hl_list.Inactive },
         basic.divider,
         basic.divider,

@@ -151,7 +151,7 @@ local default = {
         basic.progress
 
     },
-    in_active={
+    inactive={
         basic.file_name_inactive,
         basic.divider,
         basic.divider,

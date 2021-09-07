@@ -63,7 +63,7 @@ local default = {
     active = {
         basic.up,
     },
-    in_active = {
+    inactive = {
         { '', '' },
     },
 }

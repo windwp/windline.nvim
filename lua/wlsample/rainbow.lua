@@ -117,7 +117,7 @@ local default = {
         basic.progress
 
     },
-    in_active={
+    inactive={
         basic.file_name_inactive,
         basic.divider,
         basic.divider,
@@ -182,8 +182,8 @@ local markdown = {
         basic.divider,
         {sep.left_rounded,{'red','black_light'}},
     },
-    show_in_active=true,
-    in_active={
+    always_active=true,
+    inactive={
         basic.file_name_inactive,
         basic.divider,
         basic.divider,

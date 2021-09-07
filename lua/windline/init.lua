@@ -65,18 +65,18 @@ M.show = function(bufnr, winnr)
         else
             if line then
                 -- render active even that component on_inactive
-                if line.show_in_active == true then
+                if line.always_active == true then
                     return render(bufnr, winnr, line.active)
                 end
-                if line.in_active then
-                    return render(bufnr, winnr, line.in_active)
+                if line.inactive then
+                    return render(bufnr, winnr, line.inactive)
                 end
             end
-            -- make an in_active render like the last active
+            -- make an inactive render like the last active
             if M.state.last_status_win == vim.g.statusline_winid then
                 return M.state.cache_last_status
             end
-            return render(bufnr, winnr, M.default_line.in_active)
+            return render(bufnr, winnr, M.default_line.inactive)
         end
     else
         -- active
@@ -124,7 +124,7 @@ end
 local setup_hightlight = function(colors)
     assert(M.default_line ~= nil, 'you need define default statusline')
     assert(M.default_line.active ~= nil, 'default need list active componet')
-    assert(M.default_line.in_active ~= nil, 'default need list in_active component')
+    assert(M.default_line.inactive ~= nil, 'default need list inactive component')
 
     if M.anim_pause then M.anim_pause() end
 
@@ -137,10 +137,10 @@ local setup_hightlight = function(colors)
 
     for _, line in pairs(M.statusline_ft) do
         M.create_comp_list(line.active, colors)
-        M.create_comp_list(line.in_active, colors)
+        M.create_comp_list(line.inactive, colors)
     end
     M.create_comp_list(M.default_line.active, colors)
-    M.create_comp_list(M.default_line.in_active, colors)
+    M.create_comp_list(M.default_line.inactive, colors)
     utils.hl_create()
 
     if M.anim_run then M.anim_run() end
@@ -198,6 +198,10 @@ end
 
 
 M.add_status = function(lines)
+    for _, line in ipairs(lines) do
+        line.inactive = line.inactive or line.in_active
+        line.always_active = line.always_active or line.show_in_active
+    end
     if lines.filetypes then
         table.insert(M.statusline_ft, lines)
     else
