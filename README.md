@@ -23,7 +23,7 @@ Displaying two different animated status line (markdown and lua file types).
 
 Windline supports having a different status line per file type.
 `terminal,nvimtree,qf,help,spectre,lsptrouble,diffview,lspoutline`.
-Pugins can define their own status line as well.
+Plugins can define their own status line as well.
 It also supports displaying a different status line on **inactive windows**
 
 ```lua
