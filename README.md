@@ -88,7 +88,7 @@ require('wlsample.evil_line')
 ![airline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/airline2.png)
 ```lua
 require('wlsample.airline')
--- or the animated alternative
+--  the animated alternative. you can toggle animation by press `<leader>u9`
 require('wlsample.airline_anim')
 ```
 ---
