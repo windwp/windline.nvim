@@ -86,9 +86,9 @@ M.show = function(bufnr, winnr)
                 -- remember last window status active
                 M.state.last_status_win = M.last_win
                 M.state.cache_last_status = M.state.cache_status
-                -- current status window will draw after the last window
-                -- it need force another window draw again
-                vim.cmd[[redraws!]]
+                -- some time the current window draw after the last
+                -- window (sample quickfix window)
+                M.on_win_enter(vim.api.nvim_win_get_buf(M.last_status_win), M.last_status_win)
             end
             M.last_win = win_id
             return render(bufnr, winnr, line.active, true)
@@ -99,12 +99,13 @@ M.show = function(bufnr, winnr)
     return render(bufnr, winnr, M.default_line.active, true)
 end
 
-M.on_win_enter = function(bufnr)
-    vim.wo.statusline = string.format(
+M.on_win_enter = function(bufnr, winnr)
+    winnr = winnr or vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_option(winnr, 'statusline', string.format(
         '%%!v:lua.WindLine.show(%s,%s)',
         bufnr,
-        api.nvim_get_current_win()
-    )
+        winnr
+    ))
 end
 
 -- create component and init highlight first

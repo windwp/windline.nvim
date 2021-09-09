@@ -179,6 +179,7 @@ local quickfix = {
         { '🧛 ', { 'white', 'black' } },
     },
     always_active = true,
+    show_last_status = true
 }
 
 local explorer = {
