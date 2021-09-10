@@ -49,22 +49,22 @@ M.cache_func = function(auto_event, variable_name, action, loading_action, vim_d
         )
     end
 
-    local func = function(bufnr, winid)
+    local func = function(bufnr, winid, width)
         M.buffer_value[bufnr] = M.buffer_value[bufnr] or {}
         local buffer_v = vim_data or M.buffer_value[bufnr]
         if M.buffer_auto_events[variable_name] == false then
             M.buffer_auto_events[variable_name] = true
-            local value = action(bufnr, winid)
+            local value = action(bufnr, winid, width)
             buffer_v[variable_name] = value
             return value
         end
         local c_value = buffer_v[variable_name]
         if not c_value then
-            local value = action(bufnr, winid)
+            local value = action(bufnr, winid, width)
             buffer_v[variable_name] = value
             return value
         elseif c_value == M.LOADING_STATE and loading_action then
-            return loading_action(bufnr, winid)
+            return loading_action(bufnr, winid, width)
         end
         return c_value or ''
     end
