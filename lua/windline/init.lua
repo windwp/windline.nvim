@@ -19,15 +19,15 @@ local mode = utils.mode
 
 M.statusline_ft = {}
 
-local render = function(bufnr, winnr, items, cache)
+local render = function(bufnr, winid, items, cache)
     M.state.comp = {} --reset component data
     M.state.mode = mode()
     Comp.reset()
     local status = ''
-    local win_width = api.nvim_win_is_valid(winnr) and api.nvim_win_get_width(winnr)
+    local win_width = api.nvim_win_is_valid(winid) and api.nvim_win_get_width(winid)
     for _, comp in pairs(items) do
         if win_width and (comp.width == nil or comp.width < win_width) then
-            status = status .. comp:render(bufnr, winnr, win_width)
+            status = status .. comp:render(bufnr, winid, win_width)
         end
     end
     if cache then
@@ -49,7 +49,7 @@ M.get_statusline = function(bufnr)
     return M.get_statusline_ft(ft)
 end
 
-M.show = function(bufnr, winnr)
+M.show = function(bufnr, winid)
     bufnr = bufnr or api.nvim_get_current_buf()
     local line = M.get_statusline(bufnr)
     local win_id = api.nvim_get_current_win()
@@ -66,17 +66,17 @@ M.show = function(bufnr, winnr)
             if line then
                 -- render active even that component on_inactive
                 if line.always_active == true then
-                    return render(bufnr, winnr, line.active)
+                    return render(bufnr, winid, line.active)
                 end
                 if line.inactive then
-                    return render(bufnr, winnr, line.inactive)
+                    return render(bufnr, winid, line.inactive)
                 end
             end
             -- make an inactive render like the last active
             if M.state.last_status_win == vim.g.statusline_winid then
                 return M.state.cache_last_status
             end
-            return render(bufnr, winnr, M.default_line.inactive)
+            return render(bufnr, winid, M.default_line.inactive)
         end
     else
         -- active
@@ -91,20 +91,20 @@ M.show = function(bufnr, winnr)
                 M.on_win_enter(vim.api.nvim_win_get_buf(M.last_status_win), M.last_status_win)
             end
             M.last_win = win_id
-            return render(bufnr, winnr, line.active, true)
+            return render(bufnr, winid, line.active, true)
         end
         M.last_win = win_id
         M.state.last_status_win = nil
     end
-    return render(bufnr, winnr, M.default_line.active, true)
+    return render(bufnr, winid, M.default_line.active, true)
 end
 
-M.on_win_enter = function(bufnr, winnr)
-    winnr = winnr or vim.api.nvim_get_current_win()
-    vim.api.nvim_win_set_option(winnr, 'statusline', string.format(
+M.on_win_enter = function(bufnr, winid)
+    winid = winid or vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_option(winid, 'statusline', string.format(
         '%%!v:lua.WindLine.show(%s,%s)',
         bufnr,
-        winnr
+        winid
     ))
 end
 
@@ -285,13 +285,13 @@ M.benchmark = function()
     table.insert(result, 'Comp:')
     local line = M.get_statusline_ft(vim.bo.filetype) or M.default_line
     local bufnr = api.nvim_get_current_buf()
-    local winnr = api.nvim_get_current_win()
+    local winid = api.nvim_get_current_win()
     local width = api.nvim_win_get_width(0)
     table.insert(result, string.format('%s %12s %12s %s %s', ' ', 'time', 'name', 'num   ', 'text'))
     for index, comp in ipairs(line.active) do
         local item=''
         time = bench(num, function()
-            item = comp:render(bufnr, winnr, width)
+            item = comp:render(bufnr, winid, width)
         end)
         table.insert(result, string.format('%02d *%10s* %12s %s - %s', index, time, comp.name or '   ', num, item))
     end

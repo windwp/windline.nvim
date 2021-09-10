@@ -70,7 +70,7 @@ function Job:run()
         on_tick = function(value)
             self.text = self.action({
                 is_load = true,
-                winnr = self.winnr,
+                winid = self.winid,
                 bufnr = self.bufnr,
                 loading_text = value,
             })
@@ -94,7 +94,7 @@ function Job:run()
                 end
                 self.text = self.action({
                     is_load = false,
-                    winnr = self.winnr,
+                    winid = self.winid,
                     bufnr = self.bufnr,
                     data = data,
                 })
@@ -145,10 +145,10 @@ M.job_event = function(cmd, auto_event, name, text_action, loading_text)
     })
 
     local func = nil
-    func = function(bufnr, winnr)
+    func = function(bufnr, winid)
         if not cache_utils.buffer_auto_funcs[name] then
             tmp.bufnr = bufnr
-            tmp.winnr = winnr
+            tmp.winid = winid
             cache_utils.buffer_auto_funcs[name] = func
         end
         if not cache_utils.buffer_auto_events[name] then
@@ -185,10 +185,10 @@ M.job_interval = function(cmd, interval, name, text_action, loading_text)
     })
     animation.add_anim_job(tmp)
     local func = nil
-    func = function(bufnr, winnr)
+    func = function(bufnr, winid)
         if not cache_utils.buffer_auto_funcs[name] then
             tmp.bufnr = bufnr
-            tmp.winnr = winnr
+            tmp.winid = winid
             cache_utils.buffer_auto_funcs[name] = func
         end
         return tmp.text
@@ -225,17 +225,17 @@ M.loading = function(opt)
         })
         animation.add_anim_job(anim)
     end
-    return function(bufnr, winnr)
+    return function(bufnr, winid)
         local state = opt.state()
         if state == M.LOADING_STATE.SPINNER then
-            return opt.loading(loading_text, bufnr, winnr)
+            return opt.loading(loading_text, bufnr, winid)
         end
         if state == M.LOADING_STATE.REMOVE then
             if anim then anim:stop() end
             WindLine.remove_component(opt.comp_remove)
             return ''
         end
-        return opt.result(bufnr, winnr)
+        return opt.result(bufnr, winid)
     end
 end
 

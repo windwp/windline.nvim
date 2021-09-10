@@ -179,7 +179,7 @@ local default = {
 
 **Every component have it's own hightlight name define in `hl_colors` function**
 
-**A text function has a bufnr and winnr parameter that can be used to get data from the buffer or window**
+**A text function has a bufnr and winid parameter that can be used to get data from the buffer or window**
 
 
 A text function can return a group of child components
@@ -196,7 +196,7 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'black' },
         blue = { 'blue', 'black' },
     },
-    text = function(bufnr, winnr, width)
+    text = function(bufnr, winid, width)
         if lsp_comps.check_lsp() then
             return {
                 -- `red` is define in hl_colors or a hightlight group name
