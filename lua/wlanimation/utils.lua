@@ -11,7 +11,7 @@ end
 ---@return HSL
 M.rgb_to_hsl = function(rgb)
     local h, s, l = hsl.rgb_string_to_hsl(rgb)
-    return  hsl.new(h, s, l)
+    return hsl.new(h, s, l, rgb)
 end
 
 M.get_hsl_color = function(hl)

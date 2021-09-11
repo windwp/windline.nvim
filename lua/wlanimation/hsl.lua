@@ -15,6 +15,7 @@ local M = {}
 ---@field H number
 ---@field S number
 ---@field L number
+---@field rgb string
 local Color = {}
 local Color_mt = {__metatable = {}, __index = Color}
 
@@ -26,14 +27,14 @@ local rgb_string_to_hsl -- defined below
 -- @param H              hue (0-360) _or_ an RGB string ("#930219")
 -- @param S              saturation (0.0-1.0)
 -- @param L              lightness (0.0-1.0)
+-- @param rgb string     rgb string
 -- @return               an instance of Color
 -----------------------------------------------------------------------------
-local function new(H, S, L)
+local function new(H, S, L, rgb)
    if type(H) == "string" and H:sub(1,1)=="#" and H:len() == 7 then
       H, S, L = rgb_string_to_hsl(H)
    end
-   assert(Color_mt)
-   return setmetatable({H = H, S = S, L = L}, Color_mt)
+   return setmetatable({H = H, S = S, L = L, rgb = rgb}, Color_mt)
 end
 M.new = new
 
@@ -126,12 +127,13 @@ M.rgb_string_to_hsl = rgb_string_to_hsl
 -----------------------------------------------------------------------------
 
 function Color:to_rgb()
-   -- local r, g, b = hsl_to_rgb(self.H, self.S, self.L)
+   if self.rgb then return self.rgb end
    local rgb = {hsl_to_rgb(self.H, self.S, self.L)}
    local buffer = "#"
-   for i,v in ipairs(rgb) do
+   for _,v in ipairs(rgb) do
 	  buffer = buffer..string.format("%02x",math.floor(v*255+0.5))
    end
+   self.rgb = buffer
    return buffer
 end
 
