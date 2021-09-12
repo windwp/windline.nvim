@@ -151,10 +151,10 @@ local quickfix = {
 local explorer = {
     filetypes = { 'fern', 'NvimTree', 'lir' },
     active = {
-        { '  ', { 'white', 'black' } },
-        { helper.separators.slant_right, { 'black', 'black_light' } },
+        { '  ', { 'white', 'black_light' } },
+        { helper.separators.slant_right, { 'black_light', 'NormalBg' } },
         { b_components.divider, '' },
-        { b_components.file_name(''), { 'white', 'black_light' } },
+        { b_components.file_name(''), { 'white', 'NormalBg' } },
     },
     always_active = true,
     show_last_status = true,

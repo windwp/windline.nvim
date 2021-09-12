@@ -222,10 +222,10 @@ local quickfix = {
 local explorer = {
     filetypes = { 'fern', 'NvimTree', 'lir' },
     active = {
-        { '  ', { 'white', 'black' } },
-        { helper.separators.slant_right, { 'black', 'black_light' } },
+        { '  ', { 'white', 'magenta_b' } },
+        { helper.separators.slant_right, { 'magenta_b', 'NormalBg' } },
         { b_components.divider, '' },
-        { b_components.file_name(''), { 'white', 'black_light' } },
+        { b_components.file_name(''), { 'NormalFg', 'NormalBg' } },
     },
     always_active = true,
     show_last_status = true
