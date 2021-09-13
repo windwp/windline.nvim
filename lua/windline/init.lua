@@ -52,12 +52,13 @@ end
 M.show = function(bufnr, winid)
     bufnr = bufnr or api.nvim_get_current_buf()
     local line = M.get_statusline(bufnr)
-    local win_id = api.nvim_get_current_win()
-    if vim.g.statusline_winid ~= win_id then
+    local cur_win = api.nvim_get_current_win()
+
+    if vim.g.statusline_winid ~= cur_win then
         -- in active
         if
             M.last_win == vim.g.statusline_winid
-            and api.nvim_win_get_config(win_id).relative ~= ''
+            and api.nvim_win_get_config(cur_win).relative ~= ''
         then
             M.state.last_status_win = nil
             -- disable on floating window
@@ -73,7 +74,7 @@ M.show = function(bufnr, winid)
                 end
             end
             -- make an inactive render like the last active
-            if M.state.last_status_win == vim.g.statusline_winid then
+            if M.state.last_status_win == winid then
                 return M.state.cache_last_status
             end
             return render(bufnr, winid, M.default_line.inactive)
@@ -83,27 +84,30 @@ M.show = function(bufnr, winid)
         M.bufnr = bufnr
         if line and line.active then
             if line.show_last_status and not M.state.last_status_win then
-                -- remember last window status active
                 M.state.last_status_win = M.last_win
                 M.state.cache_last_status = M.state.cache_status
                 -- some time the current window draw after the last
                 -- window (sample quickfix window)
-                M.on_win_enter(vim.api.nvim_win_get_buf(M.last_status_win), M.last_status_win)
+                M.on_win_enter(nil, M.state.last_status_win)
             end
-            M.last_win = win_id
+            M.last_win = winid
             return render(bufnr, winid, line.active, true)
         end
-        M.last_win = win_id
-        M.state.last_status_win = nil
+        if M.state.last_status_win then
+            M.on_win_enter(nil, M.state.last_status_win)
+            M.state.last_status_win = nil
+        end
+        M.last_win = winid
     end
     return render(bufnr, winid, M.default_line.active, true)
 end
 
 M.on_win_enter = function(bufnr, winid)
     winid = winid or vim.api.nvim_get_current_win()
+    if not vim.api.nvim_win_is_valid(winid) then return false end
     vim.api.nvim_win_set_option(winid, 'statusline', string.format(
         '%%!v:lua.WindLine.show(%s,%s)',
-        bufnr,
+        bufnr or vim.api.nvim_win_get_buf(winid),
         winid
     ))
 end
