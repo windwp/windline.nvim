@@ -33,13 +33,21 @@ local function toggle_anim()
     local red_anim = {}
     local colors = windline.get_colors()
 
+    if vim.o.background == 'light' then
+        magenta_anim = take(HSL.rgb_to_hsl(colors.magenta):tints(10), 8)
+        yellow_anim = take(HSL.rgb_to_hsl(colors.yellow):tints(10), 8)
+        blue_anim = take(HSL.rgb_to_hsl(colors.blue):tints(10), 8)
+        green_anim = take(HSL.rgb_to_hsl(colors.green):tints(10), 8)
+        red_anim = take(HSL.rgb_to_hsl(colors.red):tints(10), 8)
+    else
     -- shades will create array of color from color to black color .I don't need
     -- black color then I only take 8
-    magenta_anim = take(HSL.rgb_to_hsl(colors.magenta):shades(10), 8)
-    yellow_anim = take(HSL.rgb_to_hsl(colors.yellow):shades(10), 8)
-    blue_anim = take(HSL.rgb_to_hsl(colors.blue):shades(10), 8)
-    green_anim = take(HSL.rgb_to_hsl(colors.green):shades(10), 8)
-    red_anim = take(HSL.rgb_to_hsl(colors.red):shades(10), 8)
+        magenta_anim = take(HSL.rgb_to_hsl(colors.magenta):shades(10), 8)
+        yellow_anim = take(HSL.rgb_to_hsl(colors.yellow):shades(10), 8)
+        blue_anim = take(HSL.rgb_to_hsl(colors.blue):shades(10), 8)
+        green_anim = take(HSL.rgb_to_hsl(colors.green):shades(10), 8)
+        red_anim = take(HSL.rgb_to_hsl(colors.red):shades(10), 8)
+    end
 
     animation.stop_all()
     animation.animation({

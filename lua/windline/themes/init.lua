@@ -16,12 +16,21 @@ M.load_theme = function(name)
     if cache_theme[cache_name] then
         return cache_theme[cache_name]
     end
-    local ok, colors = pcall(require, 'windline.themes.' .. name)
-    if not ok then
-        ok, colors = pcall(M.generate_theme)
-        if not ok then colors = get_default_theme() end
-    else
-        colors = vim.deepcopy(colors)
+    local colors
+    if vim.o.background == 'light' then
+        local ok, light_theme = pcall(require, 'windline.themes.' .. name ..'_light')
+        if ok then
+            colors = vim.deepcopy(light_theme)
+        end
+    end
+    if not colors then
+        local ok, themes_color = pcall(require, 'windline.themes.' .. name)
+        if not ok then
+            ok, colors = pcall(M.generate_theme)
+            if not ok then colors = get_default_theme() end
+        else
+            colors = vim.deepcopy(themes_color)
+        end
     end
     cache_theme[cache_name] = colors
     return colors

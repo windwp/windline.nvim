@@ -255,25 +255,32 @@ local default = {
 
 windline.setup({
     colors_name = function(colors)
+        local mod = function (c, value)
+            if vim.o.background == 'light' then
+                return HSL.rgb_to_hsl(c):tint(value):to_rgb()
+            end
+            return HSL.rgb_to_hsl(c):shade(value):to_rgb()
+        end
+
         colors.magenta_a = colors.magenta
-        colors.magenta_b = HSL.rgb_to_hsl(colors.magenta):shade(0.5):to_rgb()
-        colors.magenta_c = HSL.rgb_to_hsl(colors.magenta):shade(0.7):to_rgb()
+        colors.magenta_b = mod(colors.magenta,0.5)
+        colors.magenta_c = mod(colors.magenta,0.7)
 
         colors.yellow_a = colors.yellow
-        colors.yellow_b = HSL.rgb_to_hsl(colors.yellow):shade(0.5):to_rgb()
-        colors.yellow_c = HSL.rgb_to_hsl(colors.yellow):shade(0.7):to_rgb()
+        colors.yellow_b = mod(colors.yellow,0.5)
+        colors.yellow_c = mod(colors.yellow,0.7)
 
         colors.blue_a = colors.blue
-        colors.blue_b = HSL.rgb_to_hsl(colors.blue):shade(0.5):to_rgb()
-        colors.blue_c = HSL.rgb_to_hsl(colors.blue):shade(0.7):to_rgb()
+        colors.blue_b = mod(colors.blue,0.5)
+        colors.blue_c = mod(colors.blue,0.7)
 
         colors.green_a = colors.green
-        colors.green_b = HSL.rgb_to_hsl(colors.green):shade(0.5):to_rgb()
-        colors.green_c = HSL.rgb_to_hsl(colors.green):shade(0.7):to_rgb()
+        colors.green_b = mod(colors.green,0.5)
+        colors.green_c = mod(colors.green,0.7)
 
         colors.red_a = colors.red
-        colors.red_b = HSL.rgb_to_hsl(colors.red):shade(0.5):to_rgb()
-        colors.red_c = HSL.rgb_to_hsl(colors.red):shade(0.7):to_rgb()
+        colors.red_b = mod(colors.red,0.5)
+        colors.red_c = mod(colors.red,0.7)
 
         return colors
     end,
