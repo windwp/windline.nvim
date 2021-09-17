@@ -292,9 +292,11 @@ M.benchmark = function()
     local winid = api.nvim_get_current_win()
     local width = api.nvim_win_get_width(0)
     table.insert(result, string.format('%s %12s %12s %s %s', ' ', 'time', 'name', 'num   ', 'text'))
-    for index, comp in ipairs(line.active) do
-        local item=''
+    for index, comp in pairs(line.active) do
+        local item = ''
         time = bench(num, function()
+            M.state.comp = {}
+            Comp.reset()
             item = comp:render(bufnr, winid, width)
         end)
         table.insert(result, string.format('%02d *%10s* %12s %s - %s', index, time, comp.name or '   ', num, item))

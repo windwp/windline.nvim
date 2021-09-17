@@ -1,4 +1,3 @@
-local wind_theme = require('windline.themes.wind')
 local M = {}
 
 local cache_theme = {}
@@ -6,7 +5,10 @@ local cache_theme = {}
 M.default_theme = nil
 
 local get_default_theme = function()
-    return vim.deepcopy(M.default_theme or wind_theme)
+    if vim.o.background == 'light' then
+        return vim.deepcopy(M.default_theme or require('windline.themes.wind'))
+    end
+    return vim.deepcopy(M.default_theme or require('windline.themes.wind_light'))
 end
 
 M.load_theme = function(name)
