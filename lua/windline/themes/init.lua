@@ -6,9 +6,9 @@ M.default_theme = nil
 
 local get_default_theme = function()
     if vim.o.background == 'light' then
-        return vim.deepcopy(M.default_theme or require('windline.themes.wind'))
+        return vim.deepcopy(M.default_theme or require('windline.themes.wind_light'))
     end
-    return vim.deepcopy(M.default_theme or require('windline.themes.wind_light'))
+    return vim.deepcopy(M.default_theme or require('windline.themes.wind'))
 end
 
 M.load_theme = function(name)
