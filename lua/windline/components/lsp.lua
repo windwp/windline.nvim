@@ -6,11 +6,22 @@ local state = windline.state
 
 local get_diagnostics_count = function(bufnr)
     bufnr = bufnr or 0
+    local diagnostics = vim.diagnostic.get(0)
+    local count = { 0, 0, 0, 0 }
+    for _, diagnostic in ipairs(diagnostics) do
+        count[diagnostic.severity] = count[diagnostic.severity] + 1
+    end
+    return count[vim.diagnostic.severity.ERROR],
+        count[vim.diagnostic.severity.WARN],
+        count[vim.diagnostic.severity.INFO],
+        count[vim.diagnostic.severity.HINT]
+end
+
+local get_lsp_diagnostics_count = function(bufnr)
     local error = vim.lsp.diagnostic.get_count(bufnr, [[Error]])
     local warning = vim.lsp.diagnostic.get_count(bufnr, [[Warning]])
     local information = vim.lsp.diagnostic.get_count(bufnr, [[Hint]])
     local hint = vim.lsp.diagnostic.get_count(bufnr, [[Hint]])
-
     return error, warning, information, hint
 end
 
@@ -36,10 +47,11 @@ end
 M.check_custom_lsp = function(opt)
     opt = opt or {}
     local lsp_check = opt.func_check or is_lsp
+    local lsp_count = vim.diagnostic and get_diagnostics_count or get_lsp_diagnostics_count
 
     return function()
         if state.comp.lsp == nil and lsp_check() then
-            local error, warning, information, hint = get_diagnostics_count(0)
+            local error, warning, information, hint = lsp_count(0)
             state.comp.lsp_error = error
             state.comp.lsp_warning = warning
             state.comp.lsp_information = information
@@ -64,13 +76,16 @@ end
 M.check_lsp = M.check_custom_lsp()
 
 M.lsp_name = function(opt)
-    return cache_utils.cache_on_buffer('BufEnter','lsp_server_name',function (bufnr)
+    return cache_utils.cache_on_buffer('BufEnter', 'lsp_server_name', function(bufnr)
         local lsp_name = lsp_client_names(bufnr, opt)
         -- some server need too long to start
         -- it check on bufenter and after 600ms it check again
         if lsp_name == nil then
             vim.defer_fn(function()
-                cache_utils.buffer_value[bufnr]['lsp_server_name'] =  lsp_client_names(bufnr, opt) or ''
+                cache_utils.buffer_value[bufnr]['lsp_server_name'] = lsp_client_names(
+                    bufnr,
+                    opt
+                ) or ''
             end, 600)
             -- return ''  will stop that cache func loop check
             return ''
@@ -90,7 +105,6 @@ M.lsp_error = function(opt)
         return ''
     end
 end
-
 
 M.lsp_info = function(opt)
     opt = opt or {}
