@@ -47,11 +47,11 @@ end
 M.check_custom_lsp = function(opt)
     opt = opt or {}
     local lsp_check = opt.func_check or is_lsp
-    local lsp_count = vim.diagnostic and get_diagnostics_count or get_lsp_diagnostics_count
 
-    return function()
+    return function(bufnr)
         if state.comp.lsp == nil and lsp_check() then
-            local error, warning, information, hint = lsp_count(0)
+            local lsp_count = vim.diagnostic and get_diagnostics_count or get_lsp_diagnostics_count
+            local error, warning, information, hint = lsp_count(bufnr)
             state.comp.lsp_error = error
             state.comp.lsp_warning = warning
             state.comp.lsp_information = information
