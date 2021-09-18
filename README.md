@@ -232,7 +232,14 @@ local git_branch = {
 ```
 
 ## cache component
-[More info](https://github.com/windwp/windline.nvim/wiki/component)
+ When you have a complex function and you want to reduce a redraw time.
+[More info](https://github.com/windwp/windline.nvim/wiki/component#cache-value-on-buffer)
+ You can check redraw time by run command `:WindLineBenchMark`.
+
+## Add or remove component on fly
+ It make you can add some cool animation to your statusline when you press a key
+ or some event happen.
+[More info](https://github.com/windwp/windline.nvim/wiki/component#add-or-remove-component)
 
 # Colors
 Windline use a terminal color. It generate from your colorscheme terminal.
