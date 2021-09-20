@@ -31,18 +31,6 @@ airline_colors.a = {
 
 basic.divider = { b_components.divider, hl_list.Normal }
 
-local function take(tbl, len)
-    local result = {}
-    local i = 0
-    for _, value in pairs(tbl) do
-        i = i + 1
-        result[i] = value
-        if i >= len then
-            return result
-        end
-    end
-    return result
-end
 basic.section_a = {
     name = 'section_a',
     hl_colors = airline_colors.a,
@@ -141,7 +129,7 @@ WindLine.test_add_comp = function()
     })
 
     local colors = windline.get_colors()
-    green_anim = take(HSL.rgb_to_hsl(colors.green):shades(10), 8)
+    green_anim = HSL.rgb_to_hsl(colors.green):shades(10, 8)
     animation.animation({
         data = {
             { 'green_a', effects.list_color(green_anim, 3) },

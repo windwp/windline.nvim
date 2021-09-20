@@ -247,28 +247,32 @@ end
 
 -----------------------------------------------------------------------------
 -- Creates n tints of this color and returns them as a table
---
--- @param n              the number of tints
--- @return               a table with n values containing the new colors
+--- It will make an array colors from that color to a white color
+--- if you set length it will skip some color on last array
+---@param n number             the number of tints
+---@param length number|nil    the length of array
+---@return table               a table with n values containing the new colors
 -----------------------------------------------------------------------------
-function Color:tints(n)
-   local f = function (color, i, n)
+function Color:tints(n, length)
+   local f = function (color, i)
                 return color:lighten_to(color.L + (1-color.L)/n*i)
              end
-   return self:variations(f, n)
+   return self:variations(f, length or n)
 end
 
 -----------------------------------------------------------------------------
--- Creates n shades of this color and returns them as a table
---
--- @param n              the number of shades
--- @return               a table with n values containing the new colors
+--- Creates n shades of this color and returns them as a table
+--- It will make an array colors from that color to a black color
+--- if you set length it will skip some color on last array
+---@param n number             the number of shades
+---@param length number             the number of shades
+---@return table              a table with n values containing the new colors
 -----------------------------------------------------------------------------
-function Color:shades(n)
-   local f = function (color, i, n)
+function Color:shades(n, length)
+   local f = function (color, i)
                 return color:lighten_to(color.L - (color.L)/n*i)
              end
-   return self:variations(f, n)
+   return self:variations(f, length or n)
 end
 
 function Color:tint(r)
