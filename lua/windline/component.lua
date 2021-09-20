@@ -1,4 +1,5 @@
 ---@class Component
+---@field name string
 ---@field hl_colors table
 ---@field text function
 ---@field hl function

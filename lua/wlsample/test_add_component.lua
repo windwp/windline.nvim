@@ -5,7 +5,6 @@ local b_components = require('windline.components.basic')
 local state = _G.WindLine.state
 local HSL = require('wlanimation.utils')
 
-
 local hl_list = {
     Black = { 'white', 'black' },
     White = { 'black', 'white' },
@@ -49,7 +48,7 @@ basic.section_a = {
     hl_colors = airline_colors.a,
     text = function()
         return {
-            { ' ' .. state.mode[1] .. ' ', state.mode[2] }
+            { ' ' .. state.mode[1] .. ' ', state.mode[2] },
         }
     end,
 }
@@ -109,6 +108,8 @@ local animation = require('wlanimation')
 local effects = require('wlanimation.effects')
 WindLine.test_add_comp = function()
     animation.stop_all()
+
+    local green_anim = {}
     windline.add_component({
         name = 'test',
         hl_colors = {
@@ -130,10 +131,15 @@ WindLine.test_add_comp = function()
         end,
     }, {
         filetype = 'default',
-        position = 'section_z',
+        position = 'right',
+        colors_name = function(colors)
+            colors.green_a = colors.NormalBg
+            colors.green_b = HSL.rgb_to_hsl(colors.NormalBg):shade(0.5):to_rgb()
+            colors.green_c = HSL.rgb_to_hsl(colors.NormalBg):shade(0.7):to_rgb()
+            return colors
+        end,
     })
 
-    local green_anim = {}
     local colors = windline.get_colors()
     green_anim = take(HSL.rgb_to_hsl(colors.green):shades(10), 8)
     animation.animation({

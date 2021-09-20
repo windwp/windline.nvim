@@ -143,7 +143,28 @@ end
 
 M.update_check = function(check, message)
     if check then
-        vim.notify("WindLine Update: " .. message)
+        vim.notify('WindLine Update: ' .. message)
+    end
+end
+
+M.find_divider_index = function(status_line)
+    for index, comp in pairs(status_line) do
+        local text = comp.text(
+            vim.api.nvim_get_current_buf(),
+            vim.api.nvim_get_current_win(),
+            100
+        )
+        if type(text) == 'string' then
+            if text == '%=' then
+                return index
+            end
+        elseif type(text) == 'table' then
+            for _, value in ipairs(text) do
+                if value[1] == '%=' then
+                    return index
+                end
+            end
+        end
     end
 end
 return M

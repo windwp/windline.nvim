@@ -13,6 +13,7 @@ M.state = M.state
         mode = {}, -- vim mode {normal insert}
         comp = {}, -- component state it will reset on begin render
         config = {},
+        runtime_colors = {} -- some colors name added by function add_component
     }
 
 local mode = utils.mode
@@ -134,7 +135,7 @@ local setup_hightlight = function(colors)
     if M.anim_pause then M.anim_pause() end
 
     utils.hl_clear()
-    colors = colors or M.get_colors()
+    colors = colors or M.get_colors(true)
 
     if M.tabline then
         M.tabline.setup_hightlight(colors)
@@ -151,16 +152,25 @@ local setup_hightlight = function(colors)
     if M.anim_run then M.anim_run() end
 end
 
-M.get_colors = function()
+---get current colors
+---@param reload any
+---@return any
+M.get_colors = function(reload)
+    if not reload and M.state.colors then return M.state.colors end
     local colors = themes.load_theme()
     colors = M.state.config.colors_name(colors) or colors
+    if M.state.runtime_colors then
+        for _, func_color in pairs(M.state.runtime_colors) do
+            colors = func_color(colors) or colors
+        end
+    end
     M.state.colors = colors
     assert(colors ~= nil, 'a colors_name on setup function should return a value')
     return colors
 end
 
 M.on_colorscheme = function(colors)
-    setup_hightlight(colors or M.get_colors())
+    setup_hightlight(colors or M.get_colors(true))
 end
 
 M.on_vimenter = function()
@@ -236,24 +246,47 @@ end
 --- position can be an index of array or a a name of previous component
 --- if position = nil then it will add at a last of statusline
 ---@param component Component
----@param opt table {filetype = "",  position = "", kind = "active"}
+---@param opt table {filetype = "",  position = "", kind = "active",colors_name}
+---opt.position == left add  component before a first divider (%=)
+---opt.position == right add component after a first divider (%=)
+---opt.color_name table a modifer colors to add to a new component
 M.add_component = function(component, opt)
     local line = M.get_statusline_ft(opt.filetype or '') or M.default_line
-
+    local added = false
     local status_line = line[opt.kind or 'active']
     if type(opt.position) == 'number' then
         table.insert(status_line, opt.position, component)
+        added = true
     elseif type(opt.position) == 'string' then
         for index, comp in ipairs(status_line) do
             if comp.name and comp.name == opt.position then
                 table.insert(status_line, index, component)
+                added = true
                 break
             end
         end
-    else
-        table.insert(status_line, component)
+        if not added then
+            local divider_pos = utils.find_divider_index(status_line)
+            if divider_pos then
+                if opt.position == 'left' then
+                    table.insert(status_line,divider_pos,component)
+                    added = true
+                else
+                    table.insert(status_line, divider_pos + 1, component)
+                    added = true
+                end
+            end
+        end
     end
-    setup_hightlight()
+    if added then
+        if component.name and opt.colors_name then
+            M.state.runtime_colors = M.state.runtime_colors or{}
+            M.state.runtime_colors[component.name] = opt.colors_name
+        end
+        setup_hightlight()
+    else
+        vim.api.nvim_echo({{string.format("Cant' find a position %s",opt.position),'ErrorMsg'}},true,{})
+    end
 end
 
 --- remove component
@@ -268,6 +301,7 @@ M.remove_component = function(opt)
             break
         end
     end
+    M.state.runtime_colors[opt.name] = nil
 end
 
 return M
