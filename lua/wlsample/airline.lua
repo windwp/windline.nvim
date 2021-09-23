@@ -111,14 +111,19 @@ basic.section_c = {
 
 basic.section_x = {
     hl_colors = airline_colors.c,
-    text = function()
-        return {
+    text = function(_,_,width)
+        if width > width_breakpoint then
+            return {
             { sep.left_filled, state.mode[2] .. 'Sep' },
             { ' ', state.mode[2] },
             { b_components.file_encoding(), '' },
             { ' ', '' },
             { b_components.file_format({ icon = true }) },
             { ' ', '' },
+            }
+        end
+        return {
+            { sep.left_filled, state.mode[2] .. 'Sep' },
         }
     end,
 }
@@ -129,7 +134,7 @@ basic.section_y = {
         if width > width_breakpoint then
             return {
                 { sep.left_filled, state.mode[2] .. 'Sep' },
-                { b_components.file_type({ icon = true }), state.mode[2] },
+                { b_components.cache_file_type({ icon = true }), state.mode[2] },
                 { ' ', '' },
             }
         end

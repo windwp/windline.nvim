@@ -72,7 +72,7 @@ basic.file = {
             return {
                 { b_components.cache_file_size(), 'default' },
                 { ' ', '' },
-                { b_components.cache_file_name('[No Name]', ''), 'magenta' },
+                { b_components.cache_file_name('[No Name]', 'unique'), 'magenta' },
                 { b_components.line_col, 'white' },
                 { b_components.progress, '' },
                 { ' ', '' },
@@ -82,7 +82,7 @@ basic.file = {
             return {
                 { b_components.cache_file_size(), 'default' },
                 { ' ', '' },
-                { b_components.cache_file_name('[No Name]', ''), 'magenta' },
+                { b_components.cache_file_name('[No Name]', 'unique'), 'magenta' },
                 { ' ', '' },
                 { b_components.file_modified(' '), 'magenta' },
             }
@@ -151,8 +151,8 @@ local quickfix = {
 local explorer = {
     filetypes = { 'fern', 'NvimTree', 'lir' },
     active = {
-        { '  ', { 'white', 'black_light' } },
-        { helper.separators.slant_right, { 'black_light', 'NormalBg' } },
+        { '  ', { 'black', 'red' } },
+        { helper.separators.slant_right, { 'red', 'NormalBg' } },
         { b_components.divider, '' },
         { b_components.file_name(''), { 'white', 'NormalBg' } },
     },
