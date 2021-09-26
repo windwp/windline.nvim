@@ -172,4 +172,16 @@ M.buf_get_var = function(bufnr,key)
     if ok then return value end
     return nil
 end
+
+M.str_lpad = function(str, len, char)
+    str = tostring(str)
+    char = char or ' '
+    return str .. string.rep(char, len - #str)
+end
+
+M.str_rpad = function(str, len, char)
+    str = tostring(str)
+    char = char or ' '
+    return string.rep(char, len - #str) .. str
+end
 return M

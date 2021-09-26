@@ -75,7 +75,7 @@ M.show = function(bufnr, winid)
                 end
             end
             -- make an inactive render like the last active
-            if M.state.last_status_win == winid then
+            if M.state.last_status_win == winid and M.state.cache_last_status then
                 return M.state.cache_last_status
             end
             return render(bufnr, winid, M.default_line.inactive)
@@ -127,7 +127,7 @@ M.create_comp_list = function(comps_list, colors)
     end
 end
 
-local setup_hightlight = function(colors)
+M.setup_hightlight = function(colors)
     assert(M.default_line ~= nil, 'you need define default statusline')
     assert(M.default_line.active ~= nil, 'default need list active component')
     assert(M.default_line.inactive ~= nil, 'default need list inactive component')
@@ -170,7 +170,7 @@ M.get_colors = function(reload)
 end
 
 M.on_colorscheme = function(colors)
-    setup_hightlight(colors or M.get_colors(true))
+    M.setup_hightlight(colors or M.get_colors(true))
 end
 
 M.on_vimenter = function()
@@ -194,23 +194,29 @@ M.setup = function(opts)
         require('wltabline').setup(opts.tabline)
     end
     require('windline.cache_utils').reset()
+    if M.state.floatline then WindLine.floatline_disable() end
     if M.anim_reset then M.anim_reset() end
 
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)
+    M.setup_event()
+end
+
+M.setup_event = function()
+    vim.opt.laststatus = 2
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
     api.nvim_exec(
         [[augroup WindLine
             au!
-            au BufWinEnter,WinEnter * call v:lua.WindLine.on_win_enter(expand('<abuf>'))
-            au VimEnter * call v:lua.WindLine.on_vimenter()
-            au ColorScheme * call v:lua.WindLine.on_colorscheme()
+            au BufWinEnter,WinEnter * lua WindLine.on_win_enter()
+            au VimEnter * lua WindLine.on_vimenter()
+            au ColorScheme * lua WindLine.on_colorscheme()
         augroup END]],
         false
     )
     api.nvim_exec("command! -nargs=* WindLineBenchmark lua require('windline.benchmark').benchmark()", false)
+    api.nvim_exec("command! -nargs=* WindLineFloatToggle lua require('wlfloatline').toggle()", false)
 end
-
 
 M.add_status = function(lines)
     -- FIXME update change. It will be remove on the future
@@ -238,8 +244,9 @@ M.add_status = function(lines)
         end
         return true
     end, M.statusline_ft)
-    setup_hightlight()
+    M.setup_hightlight()
 end
+
 
 --- add component to status
 --- you need define a name and a position
@@ -283,7 +290,7 @@ M.add_component = function(component, opt)
             M.state.runtime_colors = M.state.runtime_colors or{}
             M.state.runtime_colors[component.name] = opt.colors_name
         end
-        setup_hightlight()
+        M.setup_hightlight()
     else
         vim.api.nvim_echo({{string.format("Cant' find a position %s",opt.position),'ErrorMsg'}},true,{})
     end

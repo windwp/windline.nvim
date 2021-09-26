@@ -1,8 +1,9 @@
 # Windline
- The next generation status line for neovim
+Animation statusline, floating window statusline. Use lua + luv make some 🔥🔥🔥
 
 **Features**:
 
+ * floating window statusline
  * custom status line for every file type
  * built-in animation library
  * change colors with your colorscheme
@@ -10,15 +11,12 @@
 
 ## demo
 
-Displaying three different status lines (lua, vim and markdown file types).
-
-![swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap_3.gif)
-
 Displaying two different animated status line (markdown and lua file types).
 
 ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
 
-
+Displaying a float statusline on bottom
+![floating statusline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/floating_window.gif)
 # Intro
 
 Windline supports having a different status line per file type.
@@ -46,6 +44,20 @@ It is not loaded if you don't use animations.
 
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
 
+#floating window statusline
+  A step to test floating statusline
+
+  ```vim
+  # load a sample statusline (you can use any included statusline bellow)
+  :lua require('wlsample.evil_line')
+  # toggle from normal to floating statusline
+  :WindLineFloatToggle
+  ```
+
+  It still has some problems but you can try use it
+  [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
+
+  Credit to @justinmk for an ffi code
 # Setup
 
 You can create your own custom status line, using as a base/example the [included status line setups](./lua/wlsample) is recommended for new users.
@@ -116,7 +128,7 @@ require('wlsample.airline_luffy')
 ```
 
 Remember windline can display  a different status line per file type,
-so you can have bubble line for markdown or latex file, and airline 
+so you can have bubble line for markdown or latex file, and airline
 for your working file.
 
 
