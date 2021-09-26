@@ -48,8 +48,8 @@ basic.lsp_diagnos = {
         blue = { 'blue', 'black' },
     },
     width = breakpoint_width,
-    text = function()
-        if lsp_comps.check_lsp() then
+    text = function(bufnr)
+        if lsp_comps.check_lsp(bufnr) then
             return {
                 { ' ', 'red' },
                 { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
@@ -73,8 +73,8 @@ basic.file = {
                 { b_components.cache_file_size(), 'default' },
                 { ' ', '' },
                 { b_components.cache_file_name('[No Name]', 'unique'), 'magenta' },
-                { b_components.line_col, 'white' },
-                { b_components.progress, '' },
+                { b_components.line_col_lua, 'white' },
+                { b_components.progress_lua, '' },
                 { ' ', '' },
                 { b_components.file_modified(' '), 'magenta' },
             }
@@ -98,8 +98,8 @@ basic.file_right = {
     text = function(_, _, width)
         if width < breakpoint_width then
             return {
-                { b_components.line_col, 'white' },
-                { b_components.progress, '' },
+                { b_components.line_col_lua, 'white' },
+                { b_components.progress_lua, '' },
             }
         end
     end,
@@ -112,8 +112,8 @@ basic.git = {
         blue = { 'blue', 'black' },
     },
     width = breakpoint_width,
-    text = function()
-        if git_comps.is_git() then
+    text = function(bufnr)
+        if git_comps.is_git(bufnr) then
             return {
                 { ' ', '' },
                 { git_comps.diff_added({ format = ' %s', show_zero = true }), 'green' },

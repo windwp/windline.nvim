@@ -59,8 +59,8 @@ basic.lsp_diagnos = {
         blue = { 'blue', 'black' },
     },
     width = 90,
-    text = function()
-        if lsp_comps.check_lsp() then
+    text = function(bufnr)
+        if lsp_comps.check_lsp(bufnr) then
             return {
                 { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
@@ -97,9 +97,9 @@ basic.right = {
         return {
             { sep.left_rounded, 'sep_before' },
             { 'l/n', 'text' },
-            { b_components.line_col, 'text' },
+            { b_components.line_col_lua, 'text' },
             { '', 'text' },
-            { b_components.progress, 'text' },
+            { b_components.progress_lua, 'text' },
             { sep.right_rounded, 'sep_after' },
         }
     end,
@@ -112,8 +112,8 @@ basic.git = {
         red = { 'red', 'black' },
         blue = { 'blue', 'black' },
     },
-    text = function()
-        if git_comps.is_git() then
+    text = function(bufnr)
+        if git_comps.is_git(bufnr) then
             return {
                 { ' ' },
                 { git_comps.diff_added({ format = ' %s' }), 'green' },

@@ -149,15 +149,15 @@ basic.section_z = {
             return {
                 { sep.left_filled, state.mode[2] .. 'Sep' },
                 { '', state.mode[2] },
-                { b_components.progress, '' },
+                { b_components.progress_lua, '' },
                 { ' ', '' },
-                { b_components.line_col, '' },
+                { b_components.line_col_lua, '' },
             }
         end
         return {
             { sep.left_filled, state.mode[2] .. 'Sep' },
             { ' ', state.mode[2] },
-            { b_components.line_col, state.mode[2] },
+            { b_components.line_col_lua, state.mode[2] },
         }
     end,
 }
@@ -169,8 +169,8 @@ basic.lsp_diagnos = {
         yellow = { 'yellow', 'NormalBg' },
         blue = { 'blue', 'NormalBg' },
     },
-    text = function()
-        if lsp_comps.check_lsp() then
+    text = function(bufnr)
+        if lsp_comps.check_lsp(bufnr) then
             return {
                 { ' ', 'red' },
                 { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
@@ -190,8 +190,8 @@ basic.git = {
         red = { 'red', 'NormalBg' },
         blue = { 'blue', 'NormalBg' },
     },
-    text = function()
-        if git_comps.is_git() then
+    text = function(bufnr)
+        if git_comps.is_git(bufnr) then
             return {
                 { ' ', '' },
                 { git_comps.diff_added({ format = ' %s' }), 'green' },
