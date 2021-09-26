@@ -167,4 +167,9 @@ M.find_divider_index = function(status_line)
         end
     end
 end
+M.buf_get_var = function(bufnr,key)
+    local ok,value = pcall(vim.api.nvim_buf_get_var,bufnr,key)
+    if ok then return value end
+    return nil
+end
 return M

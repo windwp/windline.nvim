@@ -13,6 +13,7 @@ local default_option = {
     __tick = nil,
     delay = 100,
     interval = 100,
+    manage = true, -- can be stop by animation.stop_all and pause_all
     is_use_both = false, -- combine fg and bg action to 1
 }
 
@@ -36,13 +37,20 @@ function Animation.new(opt)
     local anim = basic_anim
     if opt.type == 'highlight' then
         anim = hl_anim
+    elseif opt.type == 'blank' then
+        anim = nil
+        opt.__tick = opt.tick
     end
-    anim.setup(opt)
+    if anim then
+        anim.setup(opt)
+    end
     opt.uid = uuid_num
     opt.name = opt.name or ('name' .. opt.uid)
     opt.timeout = opt.timeout and opt.timeout * 1E9
     local ani = setmetatable(opt, { __index = Animation })
-    table.insert(_G.WindLine.anim_list, ani)
+    if opt.manage then
+        table.insert(_G.WindLine.anim_list, ani)
+    end
     uuid_num = uuid_num + 1
     return ani
 end

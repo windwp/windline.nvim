@@ -1,5 +1,5 @@
-
 local windline = require('windline')
+local utils = require('windline.utils')
 local state = windline.state
 local M = {}
 
@@ -9,8 +9,8 @@ M.git_changes = function()
     end
 end
 
-M.is_git = function()
-    state.comp.git_dict = vim.b.gitsigns_status_dict
+M.is_git = function(bufnr)
+    state.comp.git_dict = utils.buf_get_var(bufnr, 'gitsigns_status_dict')
     local git_dict = state.comp.git_dict
     if git_dict and git_dict.head and #git_dict.head > 0 then
         return true
@@ -19,9 +19,10 @@ M.is_git = function()
 end
 
 M.git_branch = function(opt)
-    opt = opt or{}
-    return function()
-        local git_dict = state.comp.git_dict or vim.b.gitsigns_status_dict
+    opt = opt or {}
+    return function(bufnr)
+        local git_dict = state.comp.git_dict
+            or utils.buf_get_var(bufnr, 'gitsigns_status_dict')
         if git_dict and git_dict.head and #git_dict.head > 0 then
             state.git_branch = git_dict.head
             local icon = opt.icon or '  '
@@ -34,8 +35,9 @@ end
 M.diff_added = function(opt)
     opt = opt or {}
     local format = opt.format or '%s'
-    return function()
-        local git_dict = state.comp.git_dict or vim.b.gitsigns_status_dict
+    return function(bufnr)
+        local git_dict = state.comp.git_dict
+            or utils.buf_get_var(bufnr, 'gitsigns_status_dict')
         if git_dict and git_dict.head and #git_dict.head > 0 then
             local value = git_dict.added or 0
             if value > 0 or value == 0 and opt.show_zero == true then
@@ -50,8 +52,9 @@ end
 M.diff_removed = function(opt)
     opt = opt or {}
     local format = opt.format or '%s'
-    return function()
-        local git_dict = state.comp.git_dict or vim.b.gitsigns_status_dict
+    return function(bufnr)
+        local git_dict = state.comp.git_dict
+            or utils.buf_get_var(bufnr, 'gitsigns_status_dict')
         if git_dict and git_dict.head and #git_dict.head > 0 then
             local value = git_dict.removed or 0
             if value > 0 or value == 0 and opt.show_zero == true then
@@ -65,8 +68,9 @@ end
 M.diff_changed = function(opt)
     opt = opt or {}
     local format = opt.format or '%s'
-    return function()
-        local git_dict = state.comp.git_dict or vim.b.gitsigns_status_dict
+    return function(bufnr)
+        local git_dict = state.comp.git_dict
+            or utils.buf_get_var(bufnr, 'gitsigns_status_dict')
         if git_dict and git_dict.head and #git_dict.head > 0 then
             local value = git_dict.changed or 0
             if value > 0 or value == 0 and opt.show_zero == true then
@@ -76,6 +80,5 @@ M.diff_changed = function(opt)
         return ''
     end
 end
-
 
 return M
