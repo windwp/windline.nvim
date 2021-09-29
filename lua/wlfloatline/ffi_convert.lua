@@ -1,5 +1,5 @@
--- credit to @justinmk
--- https://github.com/justinmk
+-- credit to @shadmansaleh
+-- https://github.com/shadmansaleh
 
 local ffi = require('ffi')
 

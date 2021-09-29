@@ -58,7 +58,7 @@ It is not loaded if you don't use animations.
   It still has some problems but you can try use it
   [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
 
-  Credit to @justinmk for an ffi code
+  Credit to @shadmansaleh for an ffi code
 
 # Setup
 
