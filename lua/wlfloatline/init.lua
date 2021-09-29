@@ -101,8 +101,8 @@ end
 
 local function render_float_status(bufnr, winid, items)
     state.text_groups = {}
-    WindLine.state.comp = {} --reset compfloatlinent data
-    WindLine.state.mode = mode()
+    state.comp = {}
+    state.mode = mode()
     Comp.reset()
     local total_width = vim.o.columns
     local status = ''
@@ -197,6 +197,7 @@ M.floatline_show = function(bufnr, winid)
     end
     bufnr = bufnr or api.nvim_get_current_buf()
     local cur_win = api.nvim_get_current_win()
+    state.mode = mode()
 
     if vim.g.statusline_winid == cur_win then
         return render_status(bufnr, winid, state.floatline.active)

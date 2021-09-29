@@ -44,10 +44,11 @@ It is not loaded if you don't use animations.
 
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
 
-#floating window statusline
+# Floating window statusline
+
   A step to test floating statusline
 
-  ```vim
+  ```
   # load a sample statusline (you can use any included statusline bellow)
   :lua require('wlsample.evil_line')
   # toggle from normal to floating statusline
@@ -58,6 +59,7 @@ It is not loaded if you don't use animations.
   [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
 
   Credit to @justinmk for an ffi code
+
 # Setup
 
 You can create your own custom status line, using as a base/example the [included status line setups](./lua/wlsample) is recommended for new users.
