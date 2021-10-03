@@ -19,8 +19,6 @@ local function uv_run(cmd, action)
                 data = data[1]
             end
             action(data)
-        else
-            action('')
         end
     end
     uv.spawn(
@@ -40,7 +38,9 @@ local function uv_run(cmd, action)
         end)
     )
     stdout:read_start(vim.schedule_wrap(handler))
-    stderr:read_start(vim.schedule_wrap(handler))
+    stderr:read_start(vim.schedule_wrap(function(_, data)
+        if data then action(data, true) end
+    end))
 end
 
 local Job = {}
@@ -59,23 +59,25 @@ function Job:run()
     end
     if self.anim then
         self.anim:stop()
+        self.anim:run()
+    else
+        self.anim = animation.basic_animation({
+            timeout = nil,
+            delay = 0,
+            interval = 200,
+            effect = efffects.list_text(self.loading_text),
+            on_tick = function(value)
+                self.text = self.action({
+                    is_load = true,
+                    winid = self.winid,
+                    bufnr = self.bufnr,
+                    loading_text = value,
+                })
+            end,
+        })
     end
     local timer = vim.loop.new_timer()
     self.is_run = false
-    self.anim = animation.basic_animation({
-        timeout = nil,
-        delay = 0,
-        interval = 200,
-        effect = efffects.list_text(self.loading_text),
-        on_tick = function(value)
-            self.text = self.action({
-                is_load = true,
-                winid = self.winid,
-                bufnr = self.bufnr,
-                loading_text = value,
-            })
-        end,
-    })
     timer:start(
         100,
         self.interval,
@@ -87,17 +89,21 @@ function Job:run()
             if self.anim.is_run == false then
                 self.anim:run()
             end
-            uv_run(self.cmd, function(data)
+            uv_run(self.cmd, function(data, error)
                 self.is_run = false
                 if self.anim then
                     self.anim:stop()
                 end
-                self.text = self.action({
+                local action_result = self.action({
                     is_load = false,
+                    is_error = error,
                     winid = self.winid,
                     bufnr = self.bufnr,
                     data = data,
                 })
+                if action_result then
+                    self.text = action_result
+                end
             end)
         end)
     )
