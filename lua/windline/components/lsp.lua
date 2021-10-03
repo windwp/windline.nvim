@@ -6,7 +6,7 @@ local state = windline.state
 
 local get_diagnostics_count = function(bufnr)
     bufnr = bufnr or 0
-    local diagnostics = vim.diagnostic.get(0)
+    local diagnostics = vim.diagnostic.get(bufnr)
     local count = { 0, 0, 0, 0 }
     for _, diagnostic in ipairs(diagnostics) do
         count[diagnostic.severity] = count[diagnostic.severity] + 1

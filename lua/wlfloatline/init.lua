@@ -55,6 +55,7 @@ local create_floating_win = function()
         height = 1,
         col = 0,
         row = vim.o.lines - vim.o.cmdheight - 1,
+        focusable = false,
         style = 'minimal',
     }
     local status_winid = api.nvim_open_win(status_bufnr, true, content_opts)
@@ -155,6 +156,10 @@ M.update_status = function()
         create_floating_win()
         return
     end
+    if vim.api.nvim_get_mode().mode == 'no' then
+        --that mode is textlock can't change buffer
+        return
+    end
     local bufnr = api.nvim_get_current_buf()
     local winid = api.nvim_get_current_win()
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
@@ -240,7 +245,7 @@ M.floatline_fix_command = function(cmd)
     if check_tab_have_floatline_window() then
         close_float_win()
     end
-    vim.cmd(cmd)
+    pcall(api.nvim_command, cmd)
 end
 
 M.floatline_on_tabenter = function()
@@ -248,14 +253,41 @@ M.floatline_on_tabenter = function()
     create_floating_win()
 end
 
+local function get_layout_height(tree_layout, height)
+    if tree_layout[1] == 'row' then
+        --if it is row we only get the first window
+        return get_layout_height(tree_layout[2][1], height)
+    elseif tree_layout[1] == 'col' then
+        --need to sum all window layout
+        for _, value in pairs(tree_layout[2]) do
+            -- +1 because the size for statusline
+            height = get_layout_height(value, height + 1)
+        end
+        return height - 1
+    elseif tree_layout[1] == 'leaf' then
+        -- get window height
+        if api.nvim_win_is_valid(tree_layout[2]) then
+            return api.nvim_win_get_height(tree_layout[2]) + height
+        end
+        return height
+    end
+end
+
 M.floatline_on_resize = function()
     if api.nvim_win_is_valid(state.floatline.winid) then
+        local layout = vim.fn.winlayout(api.nvim_get_current_tabpage())
+        local tabline = vim.o.showtabline > 0 and 1 or 0
+        if vim.o.showtabline == 1 then
+            tabline = #vim.api.nvim_list_tabpages() > 1 and 1 or 0
+        end
+        local height = get_layout_height(layout, tabline)
+            or vim.o.lines - vim.o.cmdheight - 1
         api.nvim_win_set_config(state.floatline.winid, {
             relative = 'editor',
             width = vim.o.columns,
             height = 1,
             col = 0,
-            row = vim.o.lines - vim.o.cmdheight - 1,
+            row = height,
             style = 'minimal',
         })
     end
@@ -280,7 +312,7 @@ M.setup = function(opts)
             au!
             au BufWinEnter,WinEnter * lua WindLine.floatline_on_win_enter()
             au TabEnter * lua WindLine.floatline_on_tabenter()
-            au VimResized * lua WindLine.floatline_on_resize()
+            au CmdlineEnter,CmdlineLeave,VimResized * lua WindLine.floatline_on_resize()
             au VimEnter * lua WindLine.on_vimenter()
             au ColorScheme * lua WindLine.on_colorscheme()
         augroup END]],
