@@ -48,17 +48,14 @@ It is not loaded if you don't use animations.
 
   A step to test floating statusline
 
+  ```vim
+  " load a sample statusline (you can use any included statusline bellow)
+  lua require('wlsample.evil_line')
+  " toggle from normal to floating statusline
+  WindLineFloatToggle
   ```
-  # load a sample statusline (you can use any included statusline bellow)
-  :lua require('wlsample.evil_line')
-  # toggle from normal to floating statusline
-  :WindLineFloatToggle
-  ```
-
   It still has some problems but you can try use it
   [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
-
-  Credit to @shadmansaleh for an ffi code
 
 # Setup
 

@@ -95,8 +95,7 @@ basic.right = {
     },
     text = function()
         return {
-            -- { b_components.line_col, 'text' },
-            { b_components.progress_ffi, 'text' },
+            { b_components.line_col_lua, 'text' },
             { sep.right_rounded, 'sep_after' },
         }
     end,

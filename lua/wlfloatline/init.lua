@@ -60,6 +60,7 @@ local create_floating_win = function()
     }
     local status_winid = api.nvim_open_win(status_bufnr, true, content_opts)
     api.nvim_buf_set_option(status_bufnr, 'ft', 'windline')
+    api.nvim_buf_set_option(status_bufnr, 'buftype', 'nofile')
     api.nvim_win_set_option(status_winid, 'wrap', false)
     api.nvim_win_set_option(status_winid, 'number', false)
     api.nvim_win_set_option(status_winid, 'relativenumber', false)

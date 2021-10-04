@@ -5,38 +5,25 @@ local helper = require('windline.helpers')
 local utils = require('windline.utils')
 local cache_utils = require('windline.cache_utils')
 local themes = require('windline.themes')
-local ffi_convert = require('wlfloatline.ffi_convert')
 
 M.divider = '%='
 M.line_col = [[ %3l:%-2c ]]
 M.progress = [[%3p%%]]
 M.full_file_name = '%f'
 
-M.progress_lua = function()
+M.progress_lua = function(_,_,_, is_floatline)
+    if is_floatline == nil then  return M.progress end
     local line_fraction = math.floor(vim.fn.line('.') / vim.fn.line('$') * 100)
         .. '%%'
     return utils.str_rpad(line_fraction, 5, ' ')
 end
 
-M.line_col_lua = function(_, winid,_,is_floatline)
-    if is_floatline then winid = 0 end
-    local row, col = unpack(vim.api.nvim_win_get_cursor(winid or 0))
+M.line_col_lua = function(_, _,_,is_floatline)
+    if is_floatline == nil then  return M.line_col end
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     return string.format(' %s:%s ', utils.str_rpad(row, 3), utils.str_lpad(col, 2))
 end
 
-M.ffi_convert = function(status)
-    return function (_,_,_, is_floatline)
-        if is_floatline then
-            local item = ffi_convert.get_stl_string(status) or ''
-            -- something weird with lua string need to double %
-            return item:gsub("%%",'%%%%')
-        end
-        return status
-    end
-end
-
-M.progress_ffi = M.ffi_convert(M.progress)
-M.line_col_ffi = M.ffi_convert(M.line_col)
 
 local function get_buf_name(modify, shorten)
     return function(bufnr)
