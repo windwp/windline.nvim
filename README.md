@@ -157,10 +157,12 @@ local explorer = {
     always_active = true,
     --- It will display a last window statusline even that window should inactive
     show_last_status = true
+
+    --- setting for floatline
     --- It will not display on floating window.
-    floatline_skip = true
+    floatline_skip = false
     --- display both on floating window and default statusline
-    floatline_show_both = true
+    floatline_show_both = false
 }
 
 ```
@@ -276,10 +278,10 @@ local colors = {
   white         = "",  -- terminal_color_7,
   black_light   = "",  -- terminal_color_8,
   red_light     = "",  -- terminal_color_9,
-  yellow_light  = "",  -- terminal_color_10,
-  blue_light    = "",  -- terminal_color_11,
-  magenta_light = "",  -- terminal_color_12,
-  green_light   = "",  -- terminal_color_13,
+  green_light   = "",  -- terminal_color_10,
+  yellow_light  = "",  -- terminal_color_11,
+  blue_light    = "",  -- terminal_color_12,
+  magenta_light = "",  -- terminal_color_13,
   cyan_light    = "",  -- terminal_color_14,
   white_light   = "",  -- terminal_color_15,
 

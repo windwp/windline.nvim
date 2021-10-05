@@ -110,7 +110,9 @@ local function render_float_status(bufnr, winid, items)
     local status = ''
     local cur_position = 0
     for _, comp in pairs(items) do
-        render_comp(comp, bufnr, winid, total_width)
+        if comp.width == nil or comp.width < total_width then
+            render_comp(comp, bufnr, winid, total_width)
+        end
     end
     local full_status_width = 0
     -- calculate first to get statusline width
