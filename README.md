@@ -50,11 +50,10 @@ It is not loaded if you don't use animations.
 
   ```vim
   " load a sample statusline (you can use any included statusline bellow)
-  lua require('wlsample.evil_line')
+  :lua require('wlsample.evil_line')
   " toggle from normal to floating statusline
-  WindLineFloatToggle
+  :WindLineFloatToggle
   ```
-  It still has some problems but you can try use it
   [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
 
 # Setup
@@ -154,11 +153,14 @@ local explorer = {
     active = {
         {'  ', {'white', 'black'} },
     },
-
     --- show active components when the window is inactive
     always_active = true,
-    --- it will display a last window statusline even that window should inactive
+    --- It will display a last window statusline even that window should inactive
     show_last_status = true
+    --- It will not display on floating window.
+    floatline_skip = true
+    --- display both on floating window and default statusline
+    floatline_show_both = true
 }
 
 ```

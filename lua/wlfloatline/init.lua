@@ -18,7 +18,6 @@ _G.WindLine = _G.WindLine or M
 local state = WindLine.state
 
 local default_config = {
-    is_skip_floating = true,
     interval = 300,
     ui = {
         active_char = '▁',
@@ -29,7 +28,7 @@ local default_config = {
         'fern',
         'NvimTree',
         'lir',
-    },
+   },
 }
 
 local close_float_win = function()
@@ -165,8 +164,10 @@ M.update_status = function()
     local bufnr = api.nvim_get_current_buf()
     local winid = api.nvim_get_current_win()
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
+    local check_line = windline.get_statusline_ft(ft) or {}
     if
         utils.is_in_table(state.config.skip_filetypes, ft)
+        or check_line.floatline_skip
         or api.nvim_win_get_config(winid).relative ~= ''
     then
         bufnr = state.last_bufnr
@@ -175,6 +176,7 @@ M.update_status = function()
     if not api.nvim_win_is_valid(winid) then
         return
     end
+
     local line = windline.get_statusline(bufnr) or WindLine.default_line
     render_float_status(bufnr, winid, line.active)
     state.last_bufnr = bufnr
@@ -206,6 +208,10 @@ M.floatline_show = function(bufnr, winid)
     local cur_win = api.nvim_get_current_win()
     state.mode = mode()
 
+    local line = windline.get_statusline(bufnr) or WindLine.default_line
+    if line.floatline_show_both then
+        return windline.show(bufnr, winid)
+    end
     if vim.g.statusline_winid == cur_win then
         return render_status(bufnr, winid, state.floatline.active)
     else
@@ -410,7 +416,7 @@ end
 
 M.start_runner = function()
     M.stop_runner()
-    -- a warpper of vim.loop
+    -- a wrapper of vim.loop
     local runner = Animation.new({
         timeout = nil,
         delay = 200,
