@@ -71,7 +71,6 @@ windline.setup({
 ```
 
 ## Included Status lines
-
 You can also use any of this status lines and avoid setting up your own *(skipping the example above)* by just requiring it.
 
 ### [bubble line](./lua/wlsample/bubble.lua)
@@ -129,6 +128,7 @@ Remember windline can display  a different status line per file type,
 so you can have bubble line for markdown or latex file, and airline
 for your working file.
 
+You need install [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) to get git information.
 
 ![Swap](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_swap.gif)
 
@@ -227,8 +227,10 @@ basic.lsp_diagnos = {
 
 Windline doesn't have a component condition just return an empty string `''`or `nil` to
 remove it.
+**Don't do something heavy on component. It run multiple times when statusline
+rendering** if you do that you can use a cache component.
 
-## width setting
+## Width setting
 you can hide components by setting a minimum window width
 ```lua
 
@@ -246,7 +248,7 @@ local git_branch = {
 }
 ```
 
-## cache component
+## Cache component
  When you have a complex function and you want to reduce a redraw time.
 [More info](https://github.com/windwp/windline.nvim/wiki/component#cache-value-on-buffer)
  You can check redraw time by run command `:WindLineBenchMark`.
