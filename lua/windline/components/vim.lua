@@ -49,6 +49,10 @@ M.search_count = function(opt)
             return ''
         end
         local result = vim.fn.searchcount({ recompute = 0 })
+        if not result or result.current == nil then
+            return ''
+        end
+
         if show_zero == false and result.total == 0 and result.current == 0 then
             return ''
         end
@@ -62,7 +66,7 @@ M.search_count = function(opt)
                 return string.format(' %d/>%d ', result.current, result.total)
             end
         end
-        return string.format(' %d/%d ', result.current, result.total)
+        return string.format(' %d/%d ', result.current or '', result.total or '')
     end
 end
 return M
