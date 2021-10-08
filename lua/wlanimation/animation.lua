@@ -4,6 +4,10 @@ local hl_anim = require('wlanimation.highlight_anim')
 local basic_anim = require('wlanimation.basic_anim')
 
 ---@class AnimationOption
+---@field type string 'basic' 'highlight' or 'blank'
+---@field on_stop function
+---@field on_tick function
+---@field effect function an extra function to change easing or highlight effect
 local default_option = {
     type = 'highlight',
     highlights = {},
