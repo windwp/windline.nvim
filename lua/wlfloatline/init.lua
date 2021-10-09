@@ -66,6 +66,7 @@ local create_floating_win = function()
     api.nvim_win_set_option(status_winid, 'number', false)
     api.nvim_win_set_option(status_winid, 'relativenumber', false)
     api.nvim_win_set_option(status_winid, 'cursorline', false)
+    api.nvim_win_set_option(status_winid, 'winblend', 0)
     api.nvim_win_set_option(status_winid, 'signcolumn', 'no')
     api.nvim_win_set_option(status_winid, 'winhighlight', 'Search:None')
     state.floatline.winid = status_winid
