@@ -6,6 +6,7 @@ local mode_map = {
     ['nov'] = { 'O-PENDING', 'Visual' },
     ['noV'] = { 'O-PENDING', 'Visual' },
     ['no'] = { 'O-PENDING', 'Visual' },
+    ['nt'] = { 'T-NORMAL', 'Normal' },
     ['niI'] = { 'NORMAL', 'Normal' },
     ['niR'] = { 'NORMAL', 'Normal' },
     ['niV'] = { 'NORMAL', 'Normal' },
@@ -22,6 +23,8 @@ local mode_map = {
     ['Rc'] = { 'REPLACE', 'Replace' },
     ['Rv'] = { 'V-REPLACE', 'Normal' },
     ['Rx'] = { 'REPLACE', 'Normal' },
+    ['Rvc'] = { 'V-REPLACE', 'Replace' },
+    ['Rvx'] = { 'V-REPLACE', 'Replace' },
     ['c'] = { 'COMMAND', 'Command' },
     ['cv'] = { 'EX', 'Command' },
     ['ce'] = { 'EX', 'Command' },
@@ -35,7 +38,7 @@ local mode_map = {
 M.mode = function()
     local mode_code = vim.api.nvim_get_mode().mode
     if mode_map[mode_code] == nil then
-        return mode_code
+        return {mode_code, 'Normal'}
     end
     return mode_map[mode_code]
 end

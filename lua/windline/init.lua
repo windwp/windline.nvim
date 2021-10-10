@@ -6,7 +6,6 @@ local themes = require('windline.themes')
 local utils = require('windline.utils')
 local Comp = require('windline.component')
 
-M.lastBuff = 0
 
 M.state = M.state
     or {
@@ -311,4 +310,5 @@ M.remove_component = function(opt)
     M.state.runtime_colors[opt.name] = nil
 end
 
+M.render_status = render
 return M

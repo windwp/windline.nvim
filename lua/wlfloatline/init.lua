@@ -198,32 +198,20 @@ M.update_status = function()
     )
 end
 
-local render_status = function(bufnr, winid, items)
-    local status = ''
-    local win_width = api.nvim_win_is_valid(winid) and api.nvim_win_get_width(winid)
-    for _, comp in pairs(items) do
-        Comp.reset()
-        status = status .. comp:render(bufnr, winid, win_width)
-    end
-    return status
-end
-
 M.floatline_show = function(bufnr, winid)
     if not state.floatline then
         return ''
     end
     bufnr = bufnr or api.nvim_get_current_buf()
     local cur_win = api.nvim_get_current_win()
-    state.mode = mode()
-
     local line = windline.get_statusline(bufnr) or WindLine.default_line
     if line.floatline_show_both then
         return windline.show(bufnr, winid)
     end
     if vim.g.statusline_winid == cur_win then
-        return render_status(bufnr, winid, state.floatline.active)
+        return windline.render_status(bufnr, winid, state.floatline.active)
     else
-        return render_status(bufnr, winid, state.floatline.inactive)
+        return windline.render_status(bufnr, winid, state.floatline.inactive)
     end
 end
 
