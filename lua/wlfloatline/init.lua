@@ -29,8 +29,6 @@ local default_config = {
         'NvimTree',
         'lir',
     },
-    -- allow some floating window can visible on floatline
-    floating_show_filetypes = {},
 }
 
 local close_float_win = function()
@@ -172,16 +170,15 @@ M.update_status = function()
     local check_line = windline.get_statusline_ft(ft) or {}
     if
         utils.is_in_table(state.config.skip_filetypes, ft)
-        or check_line.floatline_skip
         or (
             api.nvim_win_get_config(winid).relative ~= ''
-            and not utils.is_in_table(state.config.floating_show_filetypes, ft)
+            and not check_line.floatline_show_float
         )
     then
         bufnr = state.last_bufnr
         winid = state.last_winid
     end
-    if not api.nvim_win_is_valid(winid) then
+    if not api.nvim_win_is_valid(winid) or not api.nvim_buf_is_valid(bufnr) then
         return
     end
 

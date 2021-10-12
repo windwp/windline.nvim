@@ -33,16 +33,18 @@ M.cache_func = function(auto_event, variable_name, action, loading_action, vim_d
     end
     if M.buffer_auto_events[variable_name] == nil then
         M.buffer_auto_events[variable_name] = false
+        local target = auto_event:match('User') and '' or '*'
         vim.api.nvim_exec(
             string.format(
                 [[
                 augroup WL%s
                 au!
-                au %s * call v:lua.WindLine.cache_buffer_cb('%s')
+                au %s %s lua WindLine.cache_buffer_cb('%s')
                 augroup END
                 ]],
                 variable_name,
                 auto_event,
+                target,
                 variable_name
             ),
             false
