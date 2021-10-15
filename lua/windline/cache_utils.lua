@@ -102,13 +102,44 @@ M.cache_buffer_cb = function(identifier)
     end
 end
 
+---Make function only call 1 time after setup no matter what function use inside component
+---@param variable_name any
+---@param action any
+M.one_call_func = function(variable_name, action )
+    if not M.one_func_data[variable_name] then
+        M.one_func_data[variable_name] = action()
+    end
+    return M.one_func_data[variable_name]
+end
+
+---@param reset_action function call to delete some value on reset
+M.add_reset_func = function(variable_name, reset_action)
+    if not M.reset_actions[variable_name] then
+        M.reset_actions[variable_name] = reset_action
+    end
+end
+
 _G.WindLine.cache_buffer_cb = M.cache_buffer_cb
 
 M.reset = function()
     M.buffer_auto_events = {}
     M.buffer_auto_funcs = {}
     M.buffer_value = {}
+    M.one_func_data = {}
+    if M.reset_actions then
+        for _, action in pairs(M.reset_actions) do
+            action()
+        end
+    end
+    M.reset_actions = {}
 end
 
 -- local BufferContext=
-return M
+return {
+    reset = M.reset,
+    LOADING_STATE = M.LOADING_STATE,
+    one_call_func = M.one_call_func,
+    cache_on_buffer = M.cache_on_buffer,
+    cache_on_global = M.cache_on_global,
+    add_reset_func = M.add_reset_func
+}
