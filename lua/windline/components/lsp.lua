@@ -50,7 +50,8 @@ M.check_custom_lsp = function(opt)
 
     return function(bufnr)
         if state.comp.lsp == nil and lsp_check(bufnr) then
-            local lsp_count = vim.diagnostic and get_diagnostics_count or get_lsp_diagnostics_count
+            local lsp_count = vim.diagnostic and get_diagnostics_count
+                or get_lsp_diagnostics_count
             local error, warning, information, hint = lsp_count(bufnr)
             state.comp.lsp_error = error
             state.comp.lsp_warning = warning
@@ -82,12 +83,13 @@ M.lsp_name = function(opt)
         -- it check on bufenter and after 600ms it check again
         if lsp_name == nil then
             vim.defer_fn(function()
-                cache_utils.buffer_value[bufnr]['lsp_server_name'] = lsp_client_names(
+                cache_utils.set_cache_buffer(
                     bufnr,
-                    opt
-                ) or ''
+                    'lsp_server_name',
+                    lsp_client_names(bufnr, opt) or ''
+                )
             end, 600)
-            -- return ''  will stop that cache func loop check
+            -- return '' will stop that cache func loop check
             return ''
         end
         return lsp_name

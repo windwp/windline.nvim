@@ -134,6 +134,12 @@ M.reset = function()
     M.reset_actions = {}
 end
 
+M.set_cache_buffer = function (bufnr, variable_name,value)
+    if not M.buffer_value[bufnr] then
+        M.buffer_value[bufnr] = {}
+    end
+    M.buffer_value[bufnr][variable_name] = value
+end
 -- local BufferContext=
 return {
     reset = M.reset,
@@ -141,5 +147,6 @@ return {
     one_call_func = M.one_call_func,
     cache_on_buffer = M.cache_on_buffer,
     cache_on_global = M.cache_on_global,
-    add_reset_func = M.add_reset_func
+    add_reset_func = M.add_reset_func,
+    set_cache_buffer = M.set_cache_buffer
 }
