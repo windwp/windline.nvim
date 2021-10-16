@@ -16,6 +16,7 @@ local basic = {}
 
 local breakpoint_width = 90
 basic.divider = { b_components.divider, '' }
+basic.bg = { ' ', 'StatusLine' }
 
 local colors_mode = {
     Normal = { 'red', 'black' },
@@ -41,81 +42,83 @@ basic.square_mode = {
 
 basic.lsp_diagnos = {
     name = 'diagnostic',
+    hl_colors = {
+        red = { 'red', 'black' },
+        yellow = { 'yellow', 'black' },
+        blue = { 'blue', 'black' },
+    },
     width = breakpoint_width,
     text = function(bufnr)
         if lsp_comps.check_lsp(bufnr) then
             return {
-                { ' ' },
-                {
-                    lsp_comps.lsp_error({ format = ' %s', show_zero = true }),
-                    { 'red', 'black' },
-                },
-                {
-                    lsp_comps.lsp_warning({ format = '  %s', show_zero = true }),
-                    { 'yellow','black' },
-                },
-                {
-                    lsp_comps.lsp_hint({ format = '  %s', show_zero = true }),
-                    { 'blue', 'black' },
-                },
+                { ' ', 'red' },
+                { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
+                { lsp_comps.lsp_warning({ format = '  %s', show_zero = true }), 'yellow' },
+                { lsp_comps.lsp_hint({ format = '  %s', show_zero = true }), 'blue' },
             }
         end
         return ''
     end,
 }
-
 basic.file = {
     name = 'file',
+    hl_colors = {
+        default = hl_list.Black,
+        white = { 'white', 'black' },
+        magenta = { 'magenta', 'black' },
+    },
     text = function(_, _, width)
         if width > breakpoint_width then
             return {
-                { b_components.cache_file_size(), { 'white', 'black' } },
-                { ' ' },
-                { b_components.cache_file_name('[No Name]', 'unique'), { 'magenta' } },
-                { b_components.line_col_lua, { 'white' } },
-                { b_components.progress_lua },
-                { ' ' },
-                { b_components.file_modified(' '), { 'magenta' } },
+                { b_components.cache_file_size(), 'default' },
+                { ' ', '' },
+                { b_components.cache_file_name('[No Name]', 'unique'), 'magenta' },
+                { b_components.line_col_lua, 'white' },
+                { b_components.progress_lua, '' },
+                { ' ', '' },
+                { b_components.file_modified(' '), 'magenta' },
             }
         else
             return {
-                { b_components.cache_file_size(), { 'white', 'black' } },
-                { ' ' },
-                { b_components.cache_file_name('[No Name]', 'unique'), { 'magenta' } },
-                { ' ' },
-                { b_components.file_modified(' '), { 'magenta' } },
+                { b_components.cache_file_size(), 'default' },
+                { ' ', '' },
+                { b_components.cache_file_name('[No Name]', 'unique'), 'magenta' },
+                { ' ', '' },
+                { b_components.file_modified(' '), 'magenta' },
             }
         end
     end,
 }
 basic.file_right = {
+    hl_colors = {
+        default = hl_list.Black,
+        white = { 'white', 'black' },
+        magenta = { 'magenta', 'black' },
+    },
     text = function(_, _, width)
         if width < breakpoint_width then
             return {
-                { b_components.line_col_lua, { 'white', 'black' } },
-                { b_components.progress_lua },
+                { b_components.line_col_lua, 'white' },
+                { b_components.progress_lua, '' },
             }
         end
     end,
 }
 basic.git = {
     name = 'git',
+    hl_colors = {
+        green = { 'green', 'black' },
+        red = { 'red', 'black' },
+        blue = { 'blue', 'black' },
+    },
     width = breakpoint_width,
     text = function(bufnr)
         if git_comps.is_git(bufnr) then
             return {
-                {
-                    git_comps.diff_added({ format = '  %s', show_zero = true }),
-                    { 'green', 'black' },
-                },
-                {
-                    git_comps.diff_removed({ format = '  %s', show_zero = true }),
-                    { 'red', 'black' },
-                },
-                {
-                    git_comps.diff_changed({ format = ' 柳%s', show_zero = true }),
-                    { 'blue' , 'black'},
-                },
+                { ' ', '' },
+                { git_comps.diff_added({ format = ' %s', show_zero = true }), 'green' },
+                { git_comps.diff_removed({ format = '  %s', show_zero = true }), 'red' },
+                { git_comps.diff_changed({ format = ' 柳%s', show_zero = true }), 'blue' },
             }
         end
         return ''
@@ -136,7 +139,7 @@ local quickfix = {
         { ' Total : %L ', { 'cyan', 'black_light' } },
         { helper.separators.slant_right, { 'black_light', 'InactiveBg' } },
         { ' ', { 'InactiveFg', 'InactiveBg' } },
-        { b_components.divider, '' },
+        basic.divider,
         { helper.separators.slant_right, { 'InactiveBg', 'black' } },
         { '🧛 ', { 'white', 'black' } },
     },

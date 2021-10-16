@@ -65,7 +65,7 @@ local width_breakpoint = 100
 
 basic.section_a = {
     hl_colors = airline_colors.a,
-    text = function(_, _, width)
+    text = function(_,_,width)
         if width > width_breakpoint then
             return {
                 { ' ' .. state.mode[1] .. ' ', state.mode[2] },
@@ -83,11 +83,11 @@ local get_git_branch = git_comps.git_branch()
 
 basic.section_b = {
     hl_colors = airline_colors.b,
-    text = function(_, _, width)
+    text = function(_,_, width)
         local branch_name = get_git_branch()
         if width > width_breakpoint and #branch_name > 1 then
             return {
-                { branch_name, state.mode[2] },
+                { branch_name , state.mode[2] },
                 { ' ', '' },
                 { sep.right_filled, state.mode[2] .. 'Sep' },
             }
@@ -96,13 +96,14 @@ basic.section_b = {
     end,
 }
 
+
 basic.section_c = {
     hl_colors = airline_colors.c,
     text = function()
         return {
             { ' ', state.mode[2] },
-            { b_components.cache_file_name('[No Name]', 'unique'), '' },
-            { ' ', '' },
+            { b_components.cache_file_name('[No Name]', 'unique')},
+            { ' '},
             { sep.right_filled, state.mode[2] .. 'Sep' },
         }
     end,
@@ -110,15 +111,15 @@ basic.section_c = {
 
 basic.section_x = {
     hl_colors = airline_colors.c,
-    text = function(_, _, width)
+    text = function(_,_,width)
         if width > width_breakpoint then
             return {
-                { sep.left_filled, state.mode[2] .. 'Sep' },
-                { ' ', state.mode[2] },
-                { b_components.file_encoding(), '' },
-                { ' ', '' },
-                { b_components.file_format({ icon = true }) },
-                { ' ', '' },
+            { sep.left_filled, state.mode[2] .. 'Sep' },
+            { ' ', state.mode[2] },
+            { b_components.file_encoding()},
+            { ' ' },
+            { b_components.file_format({ icon = true }) },
+            { ' ' },
             }
         end
         return {
@@ -129,7 +130,7 @@ basic.section_x = {
 
 basic.section_y = {
     hl_colors = airline_colors.b,
-    text = function(_, _, width)
+    text = function(_,_,width)
         if width > width_breakpoint then
             return {
                 { sep.left_filled, state.mode[2] .. 'Sep' },
@@ -143,7 +144,7 @@ basic.section_y = {
 
 basic.section_z = {
     hl_colors = airline_colors.a,
-    text = function(_, _, width)
+    text = function(_,_,width)
         if width > width_breakpoint then
             return {
                 { sep.left_filled, state.mode[2] .. 'Sep' },
@@ -164,39 +165,43 @@ basic.section_z = {
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
-        red_text = {'red', 'black'}
+        red = { 'red', 'NormalBg' },
+        yellow = { 'yellow', 'NormalBg' },
+        blue = { 'blue', 'NormalBg' },
     },
     text = function(bufnr)
         if lsp_comps.check_lsp(bufnr) then
             return {
+                { ' ', 'red' },
+                { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
+                { lsp_comps.lsp_warning({ format = '  %s', show_zero = true }), 'yellow' },
+                { lsp_comps.lsp_hint({ format = '  %s', show_zero = true }), 'blue' },
+            }
+        end
+        return { ' ', 'red' }
+    end,
+}
 
-                { '[ lsp: ', 'red_text' },
-                -- red_text define in hl_colors. It make easy cache value first
-                -- because text function run multiple time on redraw
-
-                { lsp_comps.lsp_name() , 'IncSearch'},
-                -- it use a hightlight group IncSearch
-
-                -- but you can create a hightlight in child component too
-                { lsp_comps.lsp_error({ format = '  %s' }), {'red','black'} },
-
-                { lsp_comps.lsp_warning({ format = '  %s' }), {'yellow'} },
-                -- it have same background black with the previous component
-
-                { lsp_comps.lsp_hint({ format = '  %s' }), {'', 'black'} },
-                -- it have same foreground yellow with the previous component
-
-                { ' ] ' },
-                -- -- it use a same bg and fg with previous component
-                -- { lsp_comps.lsp_error({ format = '  %s', show_zero = true }), { 'red', 'NormalBg' }},
-                -- { lsp_comps.lsp_warning({ format = '  %s', show_zero = true }), { 'yellow' } },
-                -- { lsp_comps.lsp_hint({ format = '  %s', show_zero = true }), { 'blue' } },
+basic.git = {
+    name = 'git',
+    width = width_breakpoint,
+    hl_colors = {
+        green = { 'green', 'NormalBg' },
+        red = { 'red', 'NormalBg' },
+        blue = { 'blue', 'NormalBg' },
+    },
+    text = function(bufnr)
+        if git_comps.is_git(bufnr) then
+            return {
+                { ' ', '' },
+                { git_comps.diff_added({ format = ' %s' }), 'green' },
+                { git_comps.diff_removed({ format = '  %s' }), 'red' },
+                { git_comps.diff_changed({ format = ' 柳%s' }), 'blue' },
             }
         end
         return ''
     end,
 }
-
 local quickfix = {
     filetypes = { 'qf', 'Trouble' },
     active = {
@@ -216,7 +221,7 @@ local quickfix = {
         { '🧛 ', { 'white', 'black' } },
     },
     always_active = true,
-    show_last_status = true,
+    show_last_status = true
 }
 
 local explorer = {
@@ -228,7 +233,7 @@ local explorer = {
         { b_components.file_name(''), { 'NormalFg', 'NormalBg' } },
     },
     always_active = true,
-    show_last_status = true,
+    show_last_status = true
 }
 
 local default = {
@@ -255,7 +260,7 @@ local default = {
 
 windline.setup({
     colors_name = function(colors)
-        local mod = function(c, value)
+        local mod = function (c, value)
             if vim.o.background == 'light' then
                 return HSL.rgb_to_hsl(c):tint(value):to_rgb()
             end
@@ -263,24 +268,24 @@ windline.setup({
         end
 
         colors.magenta_a = colors.magenta
-        colors.magenta_b = mod(colors.magenta, 0.5)
-        colors.magenta_c = mod(colors.magenta, 0.7)
+        colors.magenta_b = mod(colors.magenta,0.5)
+        colors.magenta_c = mod(colors.magenta,0.7)
 
         colors.yellow_a = colors.yellow
-        colors.yellow_b = mod(colors.yellow, 0.5)
-        colors.yellow_c = mod(colors.yellow, 0.7)
+        colors.yellow_b = mod(colors.yellow,0.5)
+        colors.yellow_c = mod(colors.yellow,0.7)
 
         colors.blue_a = colors.blue
-        colors.blue_b = mod(colors.blue, 0.5)
-        colors.blue_c = mod(colors.blue, 0.7)
+        colors.blue_b = mod(colors.blue,0.5)
+        colors.blue_c = mod(colors.blue,0.7)
 
         colors.green_a = colors.green
-        colors.green_b = mod(colors.green, 0.5)
-        colors.green_c = mod(colors.green, 0.7)
+        colors.green_b = mod(colors.green,0.5)
+        colors.green_c = mod(colors.green,0.7)
 
         colors.red_a = colors.red
-        colors.red_b = mod(colors.red, 0.5)
-        colors.red_c = mod(colors.red, 0.7)
+        colors.red_b = mod(colors.red,0.5)
+        colors.red_c = mod(colors.red,0.7)
 
         return colors
     end,
