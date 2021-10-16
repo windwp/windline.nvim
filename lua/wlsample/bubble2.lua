@@ -51,83 +51,67 @@ basic.vi_mode = {
 }
 
 basic.lsp_diagnos = {
+    name = 'diagnostic',
     width = 90,
-    hl_colors = {
-        red = { 'red', 'black' },
-        yellow = { 'yellow', 'black' },
-        blue = { 'blue', 'black' },
-    },
     text = function(bufnr)
         if lsp_comps.check_lsp(bufnr) then
             return {
-                { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
-                { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
-                { lsp_comps.lsp_hint({ format = '  %s' }), 'blue' },
+                { lsp_comps.lsp_error({ format = '  %s' }), { 'red', 'black' } },
+                { lsp_comps.lsp_warning({ format = '  %s' }), { 'yellow' } },
+                { lsp_comps.lsp_hint({ format = '  %s' }), { 'blue' } },
             }
         end
         return ''
     end,
 }
 
-
-local icon_comp = b_components.cache_file_icon({ default = '', hl_colors = {'white','black_light'} })
+local icon_comp = b_components.cache_file_icon({
+    default = '',
+    hl_colors = { 'white', 'black_light' },
+})
 
 basic.file = {
-    hl_colors = {
-        default = { 'white', 'black_light' },
-    },
     text = function(bufnr)
         return {
-            { ' ', 'default' },
+            { ' ', { 'white', 'black_light' } },
             icon_comp(bufnr),
-            { ' ', 'default' },
-            { b_components.cache_file_name('[No Name]', ''), '' },
-            { b_components.file_modified(' '), '' },
-            { b_components.cache_file_size(), '' },
+            { ' ' ,{'white', 'black_light'}},
+            { b_components.cache_file_name('[No Name]', '') },
+            { b_components.file_modified(' ') },
+            { b_components.cache_file_size() },
         }
     end,
 }
+
 basic.right = {
-    hl_colors = {
-        sep_before = { 'black_light', 'white_light' },
-        sep_after = { 'white_light', 'black' },
-        text = { 'black', 'white_light' },
-    },
     text = function()
         return {
-            { b_components.line_col_lua, 'text' },
-            { sep.right_rounded, 'sep_after' },
+            { b_components.line_col_lua, { 'black', 'white_light' } },
+            { sep.right_rounded, { 'white_light', 'black' } },
         }
     end,
 }
+
 basic.git = {
+    name = 'git',
     width = 90,
-    hl_colors = {
-        green = { 'green', 'black' },
-        red = { 'red', 'black' },
-        blue = { 'blue', 'black' },
-    },
     text = function(bufnr)
         if git_comps.is_git(bufnr) then
             return {
-                { ' ', '' },
-                { git_comps.diff_added({ format = ' %s' }), 'green' },
-                { git_comps.diff_removed({ format = '  %s' }), 'red' },
-                { git_comps.diff_changed({ format = ' 柳%s' }), 'blue' },
+                { git_comps.diff_added({ format = '  %s' }), { 'green', 'black' } },
+                { git_comps.diff_removed({ format = '  %s' }), { 'red' } },
+                { git_comps.diff_changed({ format = ' 柳%s' }), { 'blue' } },
             }
         end
         return ''
     end,
 }
+
 basic.logo = {
-    hl_colors = {
-        sep_before = { 'blue', 'black' },
-        default = { 'black', 'blue' },
-    },
     text = function()
         return {
-            { sep.left_rounded, 'sep_before' },
-            { ' ', 'default' },
+            { sep.left_rounded, { 'blue', 'black' } },
+            { ' ', { 'black', 'blue' } },
         }
     end,
 }
@@ -178,7 +162,7 @@ local quickfix = {
         { '🧛 ', { 'white', 'black' } },
     },
     always_active = true,
-    show_last_status = true
+    show_last_status = true,
 }
 
 local explorer = {
@@ -190,7 +174,7 @@ local explorer = {
         { b_components.file_name(''), { 'white', 'black_light' } },
     },
     always_active = true,
-    show_last_status = true
+    show_last_status = true,
 }
 windline.setup({
     colors_name = function(colors)

@@ -35,7 +35,7 @@ basic.vi_mode= {
             Command = {'black', 'yellow' },
         } ,
     text = function() return ' ' .. state.mode[1] .. ' ' end,
-    hl = function (hl_data) return hl_data[state.mode[2]] end,
+    hl = function () return state.mode[2] end,
 }
 
 basic.vi_mode_sep =  {
@@ -49,7 +49,7 @@ basic.vi_mode_sep =  {
         }
     ,
     text = function() return sep.right_rounded end,
-    hl = function (data) return data[state.mode[2]] end,
+    hl = function () return state.mode[2] end,
 }
 
 basic.file_name = {

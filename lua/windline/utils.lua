@@ -38,7 +38,7 @@ local mode_map = {
 M.mode = function()
     local mode_code = vim.api.nvim_get_mode().mode
     if mode_map[mode_code] == nil then
-        return {mode_code, 'Normal'}
+        return { mode_code, 'Normal' }
     end
     return mode_map[mode_code]
 end
@@ -71,30 +71,45 @@ M.highlight = function(group, color)
     local fg = color.guifg and 'guifg=' .. color.guifg or 'guifg=NONE'
     local bg = color.guibg and 'guibg=' .. color.guibg or 'guibg=NONE'
     local sp = color.guisp and 'guisp=' .. color.guisp or ''
-    vim.api.nvim_command(string.format('highlight %s %s %s %s %s', group, gui, fg, bg, sp))
+    vim.api.nvim_command(
+        string.format('highlight %s %s %s %s %s', group, gui, fg, bg, sp)
+    )
 end
 
-M.hl = function(guifg, guibg, gui, name)
-    if _G.WindLine.hl_data == nil then
-        _G.WindLine.hl_data = {}
-    end
-    local hl_data = _G.WindLine.hl_data
-    local hl = {
-        guifg = guifg,
-        guibg = guibg,
-        gui = gui,
-    }
-    if gui == 'bold' then
+M.get_hl_name = function(c1, c2, style)
+    local name = string.format('WL%s_%s', c1 or '', c2 or '')
+    if style == 'bold' then
         name = name .. 'b'
     end
-    hl.name = name
-    for _, value in pairs(hl_data) do
-        if hl.name == value.name then
-            return value.name
-        end
+    return name
+end
+
+-- use it on setup
+M.hl = function(tbl, colors, is_runtime)
+    local name = M.get_hl_name(tbl[1], tbl[2], tbl[3])
+    if WindLine.hl_data[name] then
+        return name
     end
-    table.insert(hl_data, hl)
-    return hl.name
+    colors = colors or WindLine.state.colors
+    local fg = colors[tbl[1]]
+    local bg = colors[tbl[2]]
+    if fg == nil then
+        print('WL' .. (tbl[1] or'') .. ' color is not defined ')
+    end
+    if bg == nil then
+        print('WL' .. (tbl[2] or'') .. ' color is not defined ')
+    end
+    local hl = {
+        guifg = fg,
+        name = name,
+        guibg = bg,
+        gui = tbl[3],
+    }
+    if is_runtime then
+        M.highlight(name, hl)
+    end
+    WindLine.hl_data[name] = hl
+    return name
 end
 
 M.hl_clear = function()
@@ -170,9 +185,12 @@ M.find_divider_index = function(status_line)
         end
     end
 end
-M.buf_get_var = function(bufnr,key)
-    local ok,value = pcall(vim.api.nvim_buf_get_var,bufnr,key)
-    if ok then return value end
+
+M.buf_get_var = function(bufnr, key)
+    local ok, value = pcall(vim.api.nvim_buf_get_var, bufnr, key)
+    if ok then
+        return value
+    end
     return nil
 end
 

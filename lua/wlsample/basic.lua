@@ -36,7 +36,7 @@ basic.vi_mode= {
             Command = {'black', 'yellow' },
         } ,
     text = function() return ' ' .. state.mode[1] .. ' ' end,
-    hl = function (hl_data) return hl_data[state.mode[2]] end,
+    hl = function () return state.mode[2] end,
 }
 
 basic.vi_mode_sep =  {
@@ -50,7 +50,7 @@ basic.vi_mode_sep =  {
         }
     ,
     text = function() return '' end,
-    hl = function (data) return data[state.mode[2]] end,
+    hl = function () return state.mode[2] end,
 }
 
 basic.file_name = {
@@ -85,56 +85,6 @@ local explorer = {
     always_active = true
 }
 
-
-basic.terminal_name = {
-    text = function(bufnr)
-        if bufnr == nil then return '' end
-        bufnr = tonumber(bufnr)
-        local bufname = vim.fn.expand(vim.fn.bufname(bufnr))
-        return bufname:sub(#bufname -11,#bufname)
-    end,
-    hl_colors = hl_list.Inactive
-}
-
-basic.terminal_mode =  {
-    name='terminal',
-    text = function ()
-        if
-            vim.g.statusline_winid == vim.api.nvim_get_current_win()
-            and state.mode[1] == 'TERMINAL'
-        then
-            return {
-                {' ⚡ ', function(hl_data) return hl_data[state.mode[2]] end},
-                {sep.slant_right, 'sep'}
-            }
-        end
-        return {
-            {' ⚡ ','empty'}
-        }
-    end,
-    hl_colors = {
-        sep     = {'red', 'InactiveBg'},
-        Normal  = {'ActiveFg', 'ActiveBg'   } ,
-        Command = {'white', 'red' } ,
-        empty   = {'white', 'black'},
-    },
-}
-
-
-
-local terminal = {
-    filetypes = {'toggleterm','terminal'},
-    active = {
-        basic.terminal_mode,
-        basic.terminal_name,
-        basic.divider,
-        basic.line_col_inactive,
-        {sep.slant_right_thin,{'white','InactiveBg'}},
-        basic.progress_inactive,
-    },
-    always_active = true
-}
-
 local default = {
     filetypes={'default'},
     active={
@@ -144,7 +94,6 @@ local default = {
         basic.file_name,
         {sep.slant_right,{'FilenameBg', 'black_light'}},
         basic.divider,
-        {sep.slant_right,{'ActiveBg', 'black_light'}},
         {sep.slant_right,{'black_light', 'green_light'}},
         {sep.slant_right,{'green_light', 'blue_light'}},
         {sep.slant_right,{'blue_light', 'red_light'}},
@@ -175,8 +124,7 @@ windline.setup({
     end,
     statuslines = {
         default,
-        explorer,
-        terminal
+        explorer
     }
 })
 

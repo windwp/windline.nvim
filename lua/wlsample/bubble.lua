@@ -17,8 +17,9 @@ local hl_list = {
 }
 local basic = {}
 
+local breakpoint_width = 90
 basic.divider = { b_components.divider, '' }
-basic.space = { ' ', '' }
+
 basic.file_name_inactive = { b_components.full_file_name, hl_list.Inactive }
 basic.line_col_inactive = { b_components.line_col, hl_list.Inactive }
 basic.progress_inactive = { b_components.progress, hl_list.Inactive }
@@ -53,18 +54,13 @@ basic.vi_mode = {
 
 basic.lsp_diagnos = {
     name = 'diagnostic',
-    hl_colors = {
-        red = { 'red', 'black' },
-        yellow = { 'yellow', 'black' },
-        blue = { 'blue', 'black' },
-    },
-    width = 90,
+    width = breakpoint_width,
     text = function(bufnr)
         if lsp_comps.check_lsp(bufnr) then
             return {
-                { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
-                { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
-                { lsp_comps.lsp_hint({ format = '  %s' }), 'blue' },
+                { lsp_comps.lsp_error({ format = '  %s' }), { 'red', 'black' } },
+                { lsp_comps.lsp_warning({ format = '  %s' }), { 'yellow','black' } },
+                { lsp_comps.lsp_hint({ format = '  %s' }), { 'blue' ,'black'} },
             }
         end
         return ''
@@ -73,52 +69,38 @@ basic.lsp_diagnos = {
 
 basic.file = {
     name = 'file',
-    hl_colors = {
-        default = hl_list.White,
-    },
     text = function()
         return {
-            {b_components.cache_file_icon({ default = '' }), 'default'},
-            { ' ', 'default' },
-            { b_components.cache_file_name('[No Name]', 'unique'), '' },
-            { b_components.file_modified(' '), '' },
-            { b_components.cache_file_size(), '' },
+            { b_components.cache_file_icon({ default = '' }), hl_list.White },
+            { ' ', hl_list.White },
+            { b_components.cache_file_name('[No Name]', 'unique') },
+            { b_components.file_modified(' ') },
+            { b_components.cache_file_size() },
         }
     end,
 }
 
 basic.right = {
-    hl_colors = {
-        sep_before = { 'black_light', 'black' },
-        sep_after = { 'black_light', 'black' },
-        text = { 'white', 'black_light' },
-    },
     text = function()
         return {
-            { sep.left_rounded, 'sep_before' },
-            { 'l/n', 'text' },
-            { b_components.line_col_lua, 'text' },
-            { '', 'text' },
-            { b_components.progress_lua, 'text' },
-            { sep.right_rounded, 'sep_after' },
+            { sep.left_rounded,{'black_light', 'black'} },
+            { 'l/n', {'white', 'black_light'} },
+            { b_components.line_col_lua},
+            { ''},
+            { b_components.progress_lua},
+            { sep.right_rounded, {'black_light','black'} },
         }
     end,
 }
 basic.git = {
     name = 'git',
-    width = 90,
-    hl_colors = {
-        green = { 'green', 'black' },
-        red = { 'red', 'black' },
-        blue = { 'blue', 'black' },
-    },
+    width = breakpoint_width,
     text = function(bufnr)
         if git_comps.is_git(bufnr) then
             return {
-                { ' ' },
-                { git_comps.diff_added({ format = ' %s' }), 'green' },
-                { git_comps.diff_removed({ format = '  %s' }), 'red' },
-                { git_comps.diff_changed({ format = ' 柳%s' }), 'blue' },
+                { git_comps.diff_added({ format = '  %s' }), { 'green', 'black' } },
+                { git_comps.diff_removed({ format = '  %s' }), { 'red' , 'black'} },
+                { git_comps.diff_changed({ format = ' 柳%s' }), { 'blue', 'black' } },
             }
         end
         return ''
@@ -170,7 +152,7 @@ local quickfix = {
         { '🧛 ', { 'white', 'black' } },
     },
     always_active = true,
-    show_last_status = true
+    show_last_status = true,
 }
 
 local explorer = {
@@ -182,7 +164,7 @@ local explorer = {
         { b_components.file_name(''), { 'NormalFg', 'NormalBg' } },
     },
     always_active = true,
-    show_last_status = true
+    show_last_status = true,
 }
 
 windline.setup({

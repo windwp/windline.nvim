@@ -140,6 +140,7 @@ end
 M.setup = function(opts)
     opts = vim.tbl_deep_extend('force', default_config, opts or {})
     opts.tab_template = opts.tab_template or tab_template(opts.template or {})
+    WindLine.hl_data = {}
     _G.WindLine.tabline = {
         setup_hightlight = M.setup_hightlight,
         show = M.show,

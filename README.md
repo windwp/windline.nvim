@@ -192,32 +192,39 @@ local default = {
 ```
 ![demo](https://github.com/windwp/windline.nvim/wiki/screenshot/simple_comp.png)
 
-**Every component have it's own hightlight name define in `hl_colors` function**
+**A `text` function has a bufnr and winid parameter that can be used to get data from the buffer or window**
 
-**A text function has a bufnr and winid parameter that can be used to get data from the buffer or window**
-
-
-A text function can return a group of child components
-Child component share `hl_colors` with the parent component.
+A **text** function can return a group of child components
 
 ```lua
 local lsp_comps = require('windline.components.lsp')
+
 basic.lsp_diagnos = {
     name = 'diagnostic',
     hl_colors = {
-        -- we need to define color name here to cache value
-        -- then we use it on child of group
-        red = { 'red', 'black' },
-        yellow = { 'yellow', 'black' },
-        blue = { 'blue', 'black' },
+        red_text = {'red', 'black'}
     },
     text = function(bufnr, winid, width)
         if lsp_comps.check_lsp() then
             return {
-                -- `red` is define in hl_colors or a hightlight group name
-                { lsp_comps.lsp_error({ format = '  %s' }), 'red' },
-                { lsp_comps.lsp_warning({ format = '  %s' }), 'yellow' },
-                { lsp_comps.lsp_hint({ format = '  %s' }), 'blue' },
+
+                { '[ lsp: ', 'red_text' },
+                -- red_text define in hl_colors. It make easy cache value first
+                -- because text function run multiple time on redraw
+
+                { lsp_comps.lsp_name() , 'IncSearch'},
+                -- it use a hightlight group IncSearch
+
+                -- but you can create a hightlight on child component too
+                { lsp_comps.lsp_error({ format = '  %s' }), {'red','black'} },
+
+                { lsp_comps.lsp_warning({ format = '  %s' }), {'yellow',''} },
+                -- it have same background black with the previous component
+
+                { lsp_comps.lsp_hint({ format = '  %s' }), {'', 'blue'} },
+                -- it have same foreground yellow with the previous component
+
+                { ' ] ' },
             }
         end
         return ''
@@ -227,8 +234,16 @@ basic.lsp_diagnos = {
 
 Windline doesn't have a component condition just return an empty string `''`or `nil` to
 remove it.
+
+It doesn't have seperator or padding so you can add it by create a child component.
+
+[More info](https://github.com/windwp/windline.nvim/wiki/component)
+
 **Don't do something heavy on component. It run multiple times when statusline
-rendering** if you do that you can use a cache component.
+rendering**.
+
+If you want to do that you can use a cache component.
+
 
 ## Width setting
 you can hide components by setting a minimum window width
@@ -247,16 +262,6 @@ local git_branch = {
     width = 100,
 }
 ```
-
-## Cache component
- When you have a complex function and you want to reduce a redraw time.
-[More info](https://github.com/windwp/windline.nvim/wiki/component#cache-value-on-buffer)
- You can check redraw time by run command `:WindLineBenchMark`.
-
-## Add or remove component on fly
- It make you can add some cool animation to your statusline when you press a key
- or some event happen.
-[More info](https://github.com/windwp/windline.nvim/wiki/component#add-or-remove-component)
 
 # Colors
 Windline use a terminal color. It generate from your colorscheme terminal.

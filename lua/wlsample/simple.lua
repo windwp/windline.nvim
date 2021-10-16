@@ -1,11 +1,6 @@
 local windline = require('windline')
-local helper = require('windline.helpers')
-local sep = helper.separators
 local b_components = require('windline.components.basic')
 local state = _G.WindLine.state
-
-local animation = require('wlanimation')
-local efffects = require('wlanimation.effects')
 
 local hl_list = {
     Black = { 'white', 'black' },
@@ -15,11 +10,9 @@ local hl_list = {
     Active = { 'ActiveFg', 'ActiveBg' },
 }
 local basic = {}
-
-local luffy_text = ''
 basic.divider = { b_components.divider, hl_list.Normal }
 
-local colors_mode_rev = {
+local colors_mode = {
     Normal = { 'black', 'magenta' },
     Insert = { 'black', 'green' },
     Visual = { 'black', 'yellow' },
@@ -27,21 +20,20 @@ local colors_mode_rev = {
     Command = { 'black', 'red' },
 }
 
-
 basic.vi_mode = {
     name = 'vi_mode',
-    hl_colors = colors_mode_rev,
+    hl_colors = colors_mode,
     text = function()
-        return { { luffy_text .. ' ' .. state.mode[1] .. ' ', state.mode[2] } }
+        return { { ' ' .. state.mode[1] .. ' ', state.mode[2] } }
     end,
 }
 basic.right = {
-    hl_colors = colors_mode_rev,
+    hl_colors = colors_mode,
     text = function()
         return {
             { ' ', state.mode[2] },
             { b_components.progress },
-            { ' '},
+            { ' ' },
             { b_components.line_col },
         }
     end,
@@ -51,7 +43,7 @@ local default = {
     active = {
         basic.vi_mode,
         { ' ', { 'white', 'NormalBg' } },
-        { b_components.cache_file_name('[No Name]', 'unique')},
+        { b_components.cache_file_name('[No Name]', 'unique') },
         basic.divider,
         { b_components.cache_file_type({ icon = true }), '' },
         { ' ' },
@@ -68,22 +60,9 @@ local default = {
         { b_components.progress, hl_list.Inactive },
     },
 }
--- 􏾾􏾿􏿀􏿁􏿂􏿃
+
 windline.setup({
     statuslines = {
         default,
     },
-})
--- need to use font family: Fira Code iCursive S12
--- https://github.com/windwp/windline.nvim/wiki/fonts/FiraCodeiCursiveS12-Regular.ttf
-local luffy = { '􏾾', '􏾿', '􏿀', '􏿁', '􏿂', '􏿃' }
-animation.stop_all()
-animation.basic_animation({
-    timeout = nil,
-    delay = 200,
-    interval = 150,
-    effect = efffects.list_text(luffy),
-    on_tick = function(value)
-        luffy_text = value
-    end,
 })

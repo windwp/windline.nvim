@@ -15,13 +15,13 @@ M.progress_lua = function(_,_,_, is_floatline)
     if is_floatline == nil then  return M.progress end
     local line_fraction = math.floor(vim.fn.line('.') / vim.fn.line('$') * 100)
         .. '%%'
-    return utils.str_rpad(line_fraction, 5, ' ')
+    return string.format("%5s",line_fraction)
 end
 
 M.line_col_lua = function(_, _,_,is_floatline)
     if is_floatline == nil then  return M.line_col end
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return string.format(' %s:%s ', utils.str_rpad(row, 3), utils.str_lpad(col, 2))
+    return string.format(' %3s:%-2s ', row, col)
 end
 
 

@@ -187,6 +187,7 @@ local default_config = {
 
 M.setup = function(opts)
     M.statusline_ft = {}
+    M.hl_data = {}
     opts = vim.tbl_extend('force', default_config, opts)
     themes.default_theme = opts.theme
     if opts.tabline then
@@ -199,6 +200,8 @@ M.setup = function(opts)
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)
     M.setup_event()
+    --render 1 time to make sure all child component highlight is create
+    render(vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win(), M.default_line.active)
 end
 
 M.setup_event = function()
