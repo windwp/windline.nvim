@@ -51,8 +51,7 @@ basic.lsp_diagnos = {
     text = function(bufnr)
         if lsp_comps.check_lsp(bufnr) then
             return {
-                { ' ', 'red' },
-                { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
+                { lsp_comps.lsp_error({ format = '  %s', show_zero = true }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s', show_zero = true }), 'yellow' },
                 { lsp_comps.lsp_hint({ format = '  %s', show_zero = true }), 'blue' },
             }
@@ -115,8 +114,7 @@ basic.git = {
     text = function(bufnr)
         if git_comps.is_git(bufnr) then
             return {
-                { ' ', '' },
-                { git_comps.diff_added({ format = ' %s', show_zero = true }), 'green' },
+                { git_comps.diff_added({ format = '  %s', show_zero = true }), 'green' },
                 { git_comps.diff_removed({ format = '  %s', show_zero = true }), 'red' },
                 { git_comps.diff_changed({ format = ' 柳%s', show_zero = true }), 'blue' },
             }
@@ -159,6 +157,25 @@ local explorer = {
     always_active = true,
     show_last_status = true,
 }
+
+basic.lsp_name = {
+    width = breakpoint_width,
+    name = 'lsp_name',
+    hl_colors = {
+        magenta = { 'magenta', 'black' },
+    },
+    text = function(bufnr)
+        if lsp_comps.check_lsp(bufnr) then
+            return {
+                { lsp_comps.lsp_name(), 'magenta' },
+            }
+        end
+        return {
+            { b_components.cache_file_type({icon = true}), 'magenta' },
+        }
+    end,
+}
+
 local default = {
     filetypes = { 'default' },
     active = {
@@ -168,7 +185,7 @@ local default = {
         basic.lsp_diagnos,
         basic.divider,
         basic.file_right,
-        { lsp_comps.lsp_name(), { 'magenta', 'black' }, breakpoint_width },
+        basic.lsp_name,
         basic.git,
         { git_comps.git_branch(), { 'magenta', 'black' }, breakpoint_width },
         { ' ', hl_list.Black },
