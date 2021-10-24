@@ -14,7 +14,7 @@ local d_value = {}
 --- component
 local d_action = {}
 
---- store an cache action for memo that action
+--- store an cache action for memo
 local d_one_action = {}
 
 -- state when action cache value need to update realtime
@@ -56,9 +56,7 @@ local function cache_func(auto_event, variable_name, action, loading_action, vim
     end
 
     local func = function(bufnr, winid, width)
-        if not d_value then
-            d_value = {}
-        end
+        if bufnr == nil then return end
         d_value[bufnr] = d_value[bufnr] or {}
         local buffer_v = vim_data or d_value[bufnr]
         if d_check[variable_name] == false then
