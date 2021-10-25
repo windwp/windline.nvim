@@ -172,8 +172,7 @@ basic.lsp_diagnos = {
     text = function(bufnr)
         if lsp_comps.check_lsp(bufnr) then
             return {
-                { ' ', 'red' },
-                { lsp_comps.lsp_error({ format = ' %s', show_zero = true }), 'red' },
+                { lsp_comps.lsp_error({ format = '  %s', show_zero = true }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s', show_zero = true }), 'yellow' },
                 { lsp_comps.lsp_hint({ format = '  %s', show_zero = true }), 'blue' },
             }
@@ -193,8 +192,7 @@ basic.git = {
     text = function(bufnr)
         if git_comps.is_git(bufnr) then
             return {
-                { ' ', '' },
-                { git_comps.diff_added({ format = ' %s' }), 'green' },
+                { git_comps.diff_added({ format = '  %s' }), 'green' },
                 { git_comps.diff_removed({ format = '  %s' }), 'red' },
                 { git_comps.diff_changed({ format = ' 柳%s' }), 'blue' },
             }
