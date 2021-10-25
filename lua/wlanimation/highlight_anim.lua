@@ -1,4 +1,5 @@
 local utils = require('wlanimation.utils')
+local w_utils = require('windline.utils')
 local HSL = require('wlanimation.hsl')
 
 local M = {}
@@ -27,7 +28,10 @@ local function tick(animation)
             animation:stop()
             return
         end
-        utils.highlight(value.name, fg, bg)
+        w_utils.highlight(value.name, {
+            guifg = fg and fg:to_rgb(),
+            guibg = bg and bg:to_rgb(),
+        })
         value.fg = fg
         value.bg = bg
     end
@@ -35,7 +39,10 @@ end
 
 local function stop(animation)
     for _, value in pairs(animation.__hl) do
-        utils.highlight(value.name, value.fg, value.bg)
+        w_utils.highlight(value.name, {
+            guifg = value.fg and value.fg:to_rgb(),
+            guibg = value.bg and value.bg:to_rgb(),
+        })
     end
 end
 

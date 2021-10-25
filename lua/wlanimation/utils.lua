@@ -22,10 +22,5 @@ M.get_hsl_color = function(hl)
     return fg, bg
 end
 
-M.highlight = function(group, fg, bg)
-    fg = fg and 'guifg=' .. fg:to_rgb() or 'guifg=NONE'
-    bg = bg and 'guibg=' .. bg:to_rgb() or 'guibg=NONE'
-    vim.api.nvim_command(string.format('highlight %s %s %s', group, fg, bg))
-end
 
 return M

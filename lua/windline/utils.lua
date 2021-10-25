@@ -66,14 +66,20 @@ M.hl_text = function(text, highlight)
     return string.format('%%#%s#%s', highlight, text)
 end
 
+
+local rgb2cterm = not vim.go.termguicolors and require('windline.cterm_utils').rgb2cterm
+
 M.highlight = function(group, color)
-    local gui = color.gui and 'gui=' .. color.gui or 'gui=NONE'
-    local fg = color.guifg and 'guifg=' .. color.guifg or 'guifg=NONE'
-    local bg = color.guibg and 'guibg=' .. color.guibg or 'guibg=NONE'
-    local sp = color.guisp and 'guisp=' .. color.guisp or ''
-    vim.api.nvim_command(
-        string.format('highlight %s %s %s %s %s', group, gui, fg, bg, sp)
-    )
+    if rgb2cterm then
+        color.ctermfg = color.guifg and rgb2cterm(color.guifg)
+        color.ctermbg = color.guibg and rgb2cterm(color.guibg)
+        color.cterm = color.gui and color.gui
+    end
+    local options = {}
+    for k, v in pairs(color) do
+        table.insert(options, string.format("%s=%s", k, v))
+    end
+    vim.api.nvim_command(string.format([[highlight  %s %s]], group, table.concat(options, " ")))
 end
 
 M.get_hl_name = function(c1, c2, style)
@@ -94,21 +100,22 @@ M.hl = function(tbl, colors, is_runtime)
     local fg = colors[tbl[1]]
     local bg = colors[tbl[2]]
     if fg == nil then
-        print('WL' .. (tbl[1] or'') .. ' color is not defined ')
+        print('WL' .. (tbl[1] or '') .. ' color is not defined ')
     end
     if bg == nil then
-        print('WL' .. (tbl[2] or'') .. ' color is not defined ')
+        print('WL' .. (tbl[2] or '') .. ' color is not defined ')
     end
-    local hl = {
-        guifg = fg,
-        name = name,
-        guibg = bg,
-        gui = tbl[3],
-    }
+
     if is_runtime then
-        M.highlight(name, hl)
+        M.highlight(name, {guibg = bg, guifg = fg, gui = tbl[3]})
     end
-    WindLine.hl_data[name] = hl
+
+    WindLine.hl_data[name] = {
+        name = name,
+        gui = tbl[3],
+        guifg = fg,
+        guibg = bg,
+    }
     return name
 end
 
@@ -194,15 +201,4 @@ M.buf_get_var = function(bufnr, key)
     return nil
 end
 
-M.str_lpad = function(str, len, char)
-    str = tostring(str)
-    char = char or ' '
-    return str .. string.rep(char, len - #str)
-end
-
-M.str_rpad = function(str, len, char)
-    str = tostring(str)
-    char = char or ' '
-    return string.rep(char, len - #str) .. str
-end
 return M
