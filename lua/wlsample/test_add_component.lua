@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field, undefined-global
 local windline = require('windline')
 local helper = require('windline.helpers')
 local sep = helper.separators
@@ -5,6 +6,9 @@ local b_components = require('windline.components.basic')
 local state = _G.WindLine.state
 local HSL = require('wlanimation.utils')
 
+if _G.R then
+    _G.R('windline')
+end
 local hl_list = {
     Black = { 'white', 'black' },
     White = { 'black', 'white' },
@@ -148,5 +152,46 @@ WindLine.test_remove_comp = function()
     windline.remove_component({ name = 'test', filetype = 'default' })
 end
 
-vim.api.nvim_set_keymap('n', '<leader>x', '<cmd>lua WindLine.test_add_comp()<cr>', {})
-vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>lua WindLine.test_remove_comp()<cr>', {})
+vim.api.nvim_set_keymap(
+    'n',
+    '<leader>x',
+    '<cmd>lua WindLine.test_add_comp()<cr>',
+    {}
+)
+vim.api.nvim_set_keymap(
+    'n',
+    '<leader>z',
+    '<cmd>lua WindLine.test_remove_comp()<cr>',
+    {}
+)
+
+-- test add_component auto
+WindLine.test_remove_auto = function()
+    windline.remove_auto_component({ name = 'autocmd_md', autocmd = true })
+end
+
+WindLine.test_add_auto = function()
+    windline.add_autocmd_component({
+        text = function()
+            return 'auto cmd on markdown'
+        end,
+    }, {
+        filetype = 'markdown',
+        position = 'right',
+        name = 'autocmd_md',
+    })
+end
+
+vim.api.nvim_set_keymap(
+    'n',
+    '<leader>aa',
+    '<cmd>lua WindLine.test_add_auto()<cr>',
+    {}
+)
+
+vim.api.nvim_set_keymap(
+    'n',
+    '<leader>ar',
+    '<cmd>lua WindLine.test_remove_auto()<cr>',
+    {}
+)

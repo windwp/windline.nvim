@@ -182,6 +182,7 @@ M.update_status = function()
         return
     end
 
+    windline.check_autocmd_component(bufnr)
     local line = windline.get_statusline(bufnr) or WindLine.default_line
     render_float_status(bufnr, winid, line.active)
     state.last_bufnr = bufnr

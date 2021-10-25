@@ -6,13 +6,12 @@ local themes = require('windline.themes')
 local utils = require('windline.utils')
 local Comp = require('windline.component')
 
-
 M.state = M.state
     or {
         mode = {}, -- vim mode {normal insert}
         comp = {}, -- component state it will reset on begin render
         config = {},
-        runtime_colors = {} -- some colors name added by function add_component
+        runtime_colors = {}, -- some colors name added by function add_component
     }
 
 local mode = utils.mode
@@ -104,12 +103,14 @@ end
 
 M.on_win_enter = function(bufnr, winid)
     winid = winid or vim.api.nvim_get_current_win()
+    bufnr = bufnr or vim.api.nvim_win_get_buf(winid)
     if not vim.api.nvim_win_is_valid(winid) then return false end
-    vim.api.nvim_win_set_option(winid, 'statusline', string.format(
-        '%%!v:lua.WindLine.show(%s,%s)',
-        bufnr or vim.api.nvim_win_get_buf(winid),
-        winid
-    ))
+    M.check_autocmd_component(bufnr)
+    vim.api.nvim_win_set_option(
+        winid,
+        'statusline',
+        string.format('%%!v:lua.WindLine.show(%s,%s)', bufnr, winid)
+    )
 end
 
 -- create component and init highlight first
@@ -240,17 +241,22 @@ M.add_status = function(lines)
     M.setup_hightlight()
 end
 
-
---- add component to status
---- you need define a name and a position
---- position can be an index of array or a a name of previous component
---- if position = nil then it will add at a last of statusline
+---add component to status
 ---@param component Component
 ---@param opt table {filetype = "",  position = "", kind = "active",colors_name}
----opt.position == left add  component before a first divider (%=)
----opt.position == right add component after a first divider (%=)
----opt.color_name table a modifer colors to add to a new component
+---  you need define name and position
+--   name      string
+--   position   string|number position can be an index or a name of previous component
+---     position == left add  component before a first divider (%=)
+---     position == right add component after a first divider (%=)
+---  color_name table    a modifer colors to add to a new component
+---  autocmd    boolean  It use an auto command to add component to default statusline.
 M.add_component = function(component, opt)
+    if opt.autocmd then
+        opt.autocmd = false
+        M.add_autocmd_component(component, opt)
+        return
+    end
     local line = M.get_statusline_ft(opt.filetype or '') or M.default_line
     local added = false
     local status_line = line[opt.kind or 'active']
@@ -269,7 +275,7 @@ M.add_component = function(component, opt)
             local divider_pos = utils.find_divider_index(status_line)
             if divider_pos then
                 if opt.position == 'left' then
-                    table.insert(status_line,divider_pos,component)
+                    table.insert(status_line, divider_pos, component)
                     added = true
                 else
                     table.insert(status_line, divider_pos + 1, component)
@@ -280,7 +286,7 @@ M.add_component = function(component, opt)
     end
     if added then
         if component.name and opt.colors_name then
-            M.state.runtime_colors = M.state.runtime_colors or{}
+            M.state.runtime_colors = M.state.runtime_colors or {}
             M.state.runtime_colors[component.name] = opt.colors_name
         end
         M.setup_hightlight()
@@ -302,6 +308,51 @@ M.remove_component = function(opt)
         end
     end
     M.state.runtime_colors[opt.name] = nil
+end
+
+M.add_autocmd_component = function(component, opts)
+    if not M.state.auto_comps then
+        M.state.auto_comps = {}
+    end
+    if component.name ~= opts.name or component.name == nil then
+        component.name = opts.name or component.name
+        opts.name = component.name
+    end
+    table.insert(M.state.auto_comps, {
+        component = component,
+        is_added = false,
+        opts = opts,
+    })
+end
+
+M.check_autocmd_component = function(bufnr)
+    if not M.state.auto_comps then
+        return
+    end
+    local ft = api.nvim_buf_get_option(bufnr, 'filetype')
+    for _, value in pairs(M.state.auto_comps) do
+        if value.opts.filetype == ft then
+            if not value.is_added then
+                value.is_added = true
+                M.add_component(value.component, value.opts)
+            end
+        elseif value.is_added then
+            value.is_added = false
+            M.remove_component({ name = value.opts.name })
+        end
+    end
+end
+
+M.remove_auto_component = function(opts)
+    for index, value in pairs(M.state.auto_comps) do
+        if value.opts.name == opts.name then
+            table.remove(M.state.auto_comps, index)
+            break
+        end
+    end
+    if #M.state.auto_comps == 0 then
+        M.state.auto_comps = nil
+    end
 end
 
 M.render_status = render
