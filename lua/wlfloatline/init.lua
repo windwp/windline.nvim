@@ -66,7 +66,11 @@ local create_floating_win = function()
     api.nvim_win_set_option(status_winid, 'cursorline', false)
     api.nvim_win_set_option(status_winid, 'winblend', 0)
     api.nvim_win_set_option(status_winid, 'signcolumn', 'no')
-    api.nvim_win_set_option(status_winid, 'winhighlight', 'Search:None')
+    api.nvim_win_set_option(
+        status_winid,
+        'winhighlight',
+        'NormalNC:Normal,Search:None'
+    )
     state.floatline.winid = status_winid
     state.floatline.bufnr = status_bufnr
     api.nvim_win_set_cursor(status_winid, { 1, 1 })
@@ -295,6 +299,38 @@ M.floatline_on_resize = function()
     end
 end
 
+M.floatline_hide = function()
+    vim.g.statusline_winid = vim.api.nvim_get_current_win()
+    vim.wo.statusline = windline.show(
+        vim.api.nvim_get_current_buf(),
+        vim.api.nvim_get_current_win()
+    )
+    vim.cmd('redrawstatus')
+    api.nvim_win_set_config(state.floatline.winid, {
+        relative = 'editor',
+        width = 1,
+        height = 1,
+        col = 0,
+        row = 0,
+        style = 'minimal',
+    })
+end
+
+M.floatline_on_cmd_leave = function()
+    state.floatline.is_hide = false
+    vim.wo.statusline = '%!v:lua.WindLine.floatline_show()'
+    M.floatline_on_resize()
+end
+
+M.floatline_on_cmd_enter = function()
+    state.floatline.is_hide = true
+    vim.defer_fn(function()
+        if state.floatline.is_hide then
+            M.floatline_hide()
+        end
+    end, 100)
+end
+
 M.setup = function(opts)
     opts = opts or {}
     opts = vim.tbl_deep_extend('force', default_config, opts)
@@ -306,6 +342,8 @@ M.setup = function(opts)
     WindLine.floatline_on_win_enter = M.floatline_on_win_enter
     WindLine.floatline_fix_command = M.floatline_fix_command
     WindLine.floatline_on_tabenter = M.floatline_on_tabenter
+    WindLine.floatline_on_cmd_enter = M.floatline_on_cmd_enter
+    WindLine.floatline_on_cmd_leave = M.floatline_on_cmd_leave
 
     vim.cmd([[set statusline=%!v:lua.WindLine.floatline_show()]])
 
@@ -314,7 +352,9 @@ M.setup = function(opts)
             au!
             au BufWinEnter,WinEnter * lua WindLine.floatline_on_win_enter()
             au TabEnter * lua WindLine.floatline_on_tabenter()
-            au CmdlineEnter,CmdlineLeave,VimResized * lua WindLine.floatline_on_resize()
+            au CmdlineEnter * lua WindLine.floatline_on_cmd_enter()
+            au CmdlineLeave * lua WindLine.floatline_on_cmd_leave()
+            au VimResized * lua WindLine.floatline_on_resize()
             au VimEnter * lua WindLine.on_vimenter()
             au ColorScheme * lua WindLine.on_colorscheme()
         augroup END]],

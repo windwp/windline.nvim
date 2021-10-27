@@ -103,8 +103,8 @@ end
 
 M.on_win_enter = function(bufnr, winid)
     winid = winid or vim.api.nvim_get_current_win()
-    bufnr = bufnr or vim.api.nvim_win_get_buf(winid)
     if not vim.api.nvim_win_is_valid(winid) then return false end
+    bufnr = bufnr or vim.api.nvim_win_get_buf(winid)
     M.check_autocmd_component(bufnr)
     vim.api.nvim_win_set_option(
         winid,
@@ -201,8 +201,6 @@ M.setup = function(opts)
     M.state.config.colors_name = opts.colors_name
     M.add_status(opts.statuslines)
     M.setup_event()
-    --render 1 time to make sure all child component highlight is create
-    render(vim.api.nvim_get_current_buf(), vim.api.nvim_get_current_win(), M.default_line.active)
 end
 
 M.setup_event = function()
