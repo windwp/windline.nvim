@@ -325,7 +325,7 @@ end
 M.floatline_on_cmd_enter = function()
     state.floatline.is_hide = true
     vim.defer_fn(function()
-        if state.floatline.is_hide then
+        if state.floatline and state.floatline.is_hide then
             M.floatline_hide()
         end
     end, 100)
