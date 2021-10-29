@@ -296,6 +296,7 @@ M.floatline_on_resize = function()
             row = height,
             style = 'minimal',
         })
+        api.nvim_win_set_option(state.floatline.winid, 'winblend', 0)
     end
 end
 
@@ -314,6 +315,7 @@ M.floatline_hide = function()
         row = 0,
         style = 'minimal',
     })
+    api.nvim_win_set_option(state.floatline.winid, 'winblend', 100)
 end
 
 M.floatline_on_cmd_leave = function()
