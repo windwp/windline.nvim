@@ -248,6 +248,10 @@ end
 
 M.floatline_fix_command = function(cmd)
     cmd = cmd or 'quit'
+    if api.nvim_win_get_config(0).relative ~= '' then
+        pcall(api.nvim_command, cmd)
+        return
+    end
     if check_tab_have_floatline_window() then
         close_float_win()
     end
