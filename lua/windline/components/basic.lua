@@ -151,7 +151,7 @@ M.file_icon = function(opt)
         if file_ext == "" then file_ext = nil end
         local highlight = string.format('WL%s_%s',opt.hl_colors[1], opt.hl_colors[2])
         if hl == 'DevIconDefault' then
-            return { opt.default, highlight }
+            return {{ opt.default, highlight }}
         end
         if hl then
             highlight = string.format('WL%s_%s', file_ext, opt.hl_colors[2])
@@ -159,7 +159,7 @@ M.file_icon = function(opt)
             local bg = WindLine.state.colors[opt.hl_colors[2]]
             utils.highlight(highlight, { guifg = fg, guibg = bg })
         end
-        return {icon or opt.default, highlight }
+        return {{ icon or opt.default, highlight }}
     end
 end
 
