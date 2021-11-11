@@ -241,10 +241,11 @@ It doesn't have seperator or padding so you can add it by create a child compone
 [More info](https://github.com/windwp/windline.nvim/wiki/component)
 
 **Don't do something heavy on component. It run multiple times when statusline
-rendering**.
+rendering. If you want to do that you need to use a cache component.**
 
-If you want to do that you can use a cache component.
-
+<h4>Never use a Job or run system command inside component. You need to use it
+inside cache component </h4>
+ 
 
 ## Width setting
 you can hide components by setting a minimum window width
