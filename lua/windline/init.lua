@@ -220,6 +220,7 @@ M.setup_event = function()
 end
 
 M.add_status = function(lines)
+    assert(lines ~= nil, 'You need to define a statuslines.')
     if lines.filetypes then
         table.insert(M.statusline_ft, lines)
     else
