@@ -24,6 +24,7 @@ local default_config = {
         active_color = 'blue',
         active_hl = nil,
     },
+    close_on_cmdline = false,
     skip_filetypes = {
         'fern',
         'NvimTree',
@@ -158,6 +159,9 @@ local function render_float_status(bufnr, winid, items)
 end
 
 M.update_status = function()
+    if state.floatline.is_hide then
+        return
+    end
     if
         not state.floatline.bufnr or not api.nvim_win_is_valid(state.floatline.winid)
     then
@@ -252,7 +256,7 @@ M.floatline_fix_command = function(cmd)
         pcall(api.nvim_command, cmd)
         return
     end
-    if check_tab_have_floatline_window() then
+    if check_tab_have_floatline_window() and vim.fn.tabpagenr('$') > 1 then
         close_float_win()
     end
     pcall(api.nvim_command, cmd)
@@ -283,8 +287,9 @@ local function get_layout_height(tree_layout, height)
     end
 end
 
-M.floatline_on_resize = function()
+M.floatline_on_resize = function(sub_height)
     if api.nvim_win_is_valid(state.floatline.winid) then
+        sub_height = sub_height or 0
         local layout = vim.fn.winlayout(api.nvim_get_current_tabpage())
         local tabline = vim.o.showtabline > 0 and 1 or 0
         if vim.o.showtabline == 1 then
@@ -297,44 +302,64 @@ M.floatline_on_resize = function()
             width = vim.o.columns,
             height = 1,
             col = 0,
-            row = height,
+            row = height - sub_height,
             style = 'minimal',
         })
         api.nvim_win_set_option(state.floatline.winid, 'winblend', 0)
+    else
+        create_floating_win()
     end
 end
 
-M.floatline_hide = function()
+M.floatline_hide = function(close)
     vim.g.statusline_winid = vim.api.nvim_get_current_win()
     vim.wo.statusline = windline.show(
         vim.api.nvim_get_current_buf(),
         vim.api.nvim_get_current_win()
     )
-    vim.cmd('redrawstatus')
-    api.nvim_win_set_config(state.floatline.winid, {
-        relative = 'editor',
-        width = 1,
-        height = 1,
-        col = 0,
-        row = 0,
-        style = 'minimal',
-    })
-    api.nvim_win_set_option(state.floatline.winid, 'winblend', 100)
+    if vim.o.cmdheight ~= 0 then
+        vim.cmd('redrawstatus')
+    end
+
+    if close then
+        vim.api.nvim_win_close(state.floatline.winid, true)
+    else
+        api.nvim_win_set_config(state.floatline.winid, {
+            relative = 'editor',
+            width = 1,
+            height = 1,
+            col = 0,
+            row = 0,
+            style = 'minimal',
+        })
+        api.nvim_win_set_option(state.floatline.winid, 'winblend', 100)
+    end
 end
 
 M.floatline_on_cmd_leave = function()
-    state.floatline.is_hide = false
-    vim.wo.statusline = '%!v:lua.WindLine.floatline_show()'
-    M.floatline_on_resize()
+    if state.floatline.is_hide then
+        state.floatline.is_hide = false
+        if vim.v.event.cmdtype:match('[%:%-]') or vim.o.cmdheight == 0 then
+            vim.wo.statusline = '%!v:lua.WindLine.floatline_show()'
+            M.floatline_on_resize()
+        end
+    end
 end
 
 M.floatline_on_cmd_enter = function()
-    state.floatline.is_hide = true
-    vim.defer_fn(function()
-        if state.floatline and state.floatline.is_hide then
-            M.floatline_hide()
-        end
-    end, 100)
+    if vim.o.cmdheight == 0 then
+        state.floatline.is_hide = true
+        M.floatline_on_resize(1)
+        return
+    end
+    if vim.v.event.cmdtype:match('[%:%-]') then
+        state.floatline.is_hide = true
+        vim.defer_fn(function()
+            if state.floatline and state.floatline.is_hide then
+                M.floatline_hide(state.config.close_on_cmdline)
+            end
+        end, 500)
+    end
 end
 
 M.setup = function(opts)
@@ -358,8 +383,8 @@ M.setup = function(opts)
             au!
             au BufWinEnter,WinEnter * lua WindLine.floatline_on_win_enter()
             au TabEnter * lua WindLine.floatline_on_tabenter()
-            au CmdlineEnter \: lua WindLine.floatline_on_cmd_enter()
-            au CmdlineLeave \: lua WindLine.floatline_on_cmd_leave()
+            au CmdlineEnter * lua WindLine.floatline_on_cmd_enter()
+            au CmdlineLeave * lua WindLine.floatline_on_cmd_leave()
             au VimResized * lua WindLine.floatline_on_resize()
             au VimEnter * lua WindLine.on_vimenter()
             au ColorScheme * lua WindLine.on_colorscheme()
@@ -389,17 +414,28 @@ M.setup = function(opts)
         filetypes = { 'floatline' },
         active = {
             {
-                function(_, _, width)
-                    return string.rep(state.config.ui.active_char, floor(width - 1))
-                end,
-                { state.config.ui.active_color, 'NormalBg' },
-            },
-            {
-                state.config.ui.active_char,
-                state.config.ui.active_hl or {
-                    state.config.ui.active_color,
-                    'NormalBg',
+                hl_colors = {
+                    line = { state.config.ui.active_color, 'NormalBg' },
                 },
+                text = function(_, _, width)
+                    if #vim.api.nvim_tabpage_list_wins(0) <= 2 then
+                        return { { ' ', 'Normal' } }
+                    end
+                    return {
+                        {
+                            string.rep(
+                                state.config.ui.active_char,
+                                floor(width - 1),
+                                ''
+                            ),
+                            'line',
+                        },
+                        {
+                            state.config.ui.active_char,
+                            'line',
+                        },
+                    }
+                end,
             },
         },
     }
