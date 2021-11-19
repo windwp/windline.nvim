@@ -330,7 +330,7 @@ M.check_autocmd_component = function(bufnr)
     end
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
     for _, value in pairs(M.state.auto_comps) do
-        if value.opts.filetype == ft then
+        if value.opts.filetype == ft or value.opts.filetype == '*' then
             if not value.is_added then
                 value.is_added = true
                 M.add_component(value.component, value.opts)

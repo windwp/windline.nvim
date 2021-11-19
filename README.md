@@ -49,7 +49,7 @@ It is not loaded if you don't use animations.
   A step to test floating statusline
 
   ```vim
-  " load a sample statusline (you can use any included statusline bellow)
+  " load a sample statusline (you can use any included statusline below)
   :lua require('wlsample.evil_line')
   " toggle from normal to floating statusline
   :WindLineFloatToggle

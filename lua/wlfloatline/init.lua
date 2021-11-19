@@ -174,6 +174,7 @@ M.update_status = function()
     end
     local bufnr = api.nvim_get_current_buf()
     local winid = api.nvim_get_current_win()
+    windline.check_autocmd_component(bufnr)
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
     local check_line = windline.get_statusline_ft(ft) or {}
     if
@@ -190,7 +191,6 @@ M.update_status = function()
         return
     end
 
-    windline.check_autocmd_component(bufnr)
     local line = windline.get_statusline(bufnr) or WindLine.default_line
     render_float_status(bufnr, winid, line.active)
     state.last_bufnr = bufnr
