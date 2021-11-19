@@ -232,6 +232,12 @@ basic.lsp_diagnos = {
     end,
 }
 ```
+**Don't do something complex on component. It run multiple times when statusline
+rendering. If you want to do that you need to use** [cache component](https://github.com/windwp/windline.nvim/wik/component#cache-value-on-buffer)
+
+<h4>Never use a Job or run system command inside component. You need to use it
+inside cache component </h4>
+ 
 
 Windline doesn't have a component condition just return an empty string `''`or `nil` to
 remove it.
@@ -239,14 +245,6 @@ remove it.
 It doesn't have seperator or padding so you can add it by create a child component.
 
 [More info](https://github.com/windwp/windline.nvim/wiki/component)
-
-**Don't do something heavy on component. It run multiple times when statusline
-rendering. If you want to do that you need to use a cache component.**
-
-<h4>Never use a Job or run system command inside component. You need to use it
-inside cache component </h4>
- 
-
 ## Width setting
 you can hide components by setting a minimum window width
 ```lua
