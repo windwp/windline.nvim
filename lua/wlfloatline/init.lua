@@ -9,6 +9,7 @@ local mode = utils.mode
 local Comp = require('windline.component')
 local windline = require('windline')
 local Animation = require('wlanimation.animation')
+local cache_utils = require('windline.cache_utils')
 local api = vim.api
 local namespace = api.nvim_create_namespace('WindLine.floatline_status')
 local floor = math.floor
@@ -287,6 +288,28 @@ local function get_layout_height(tree_layout, height)
     end
 end
 
+local function check_tree_node(node, winid)
+    if node[1] == 'col' then
+        -- only check last node
+        return check_tree_node(node[2][#node[2]],winid)
+    elseif node[1] == 'row' then
+        for _, v in ipairs(node[2]) do
+            if check_tree_node(v, winid) then
+                return true
+            end
+        end
+        return false
+    elseif node[1] == 'leaf' then
+        return node[2] == winid
+    end
+end
+
+local check_is_bottom_win = function(winid)
+    winid = winid or api.nvim_get_current_win()
+    local layout = vim.fn.winlayout(api.nvim_get_current_tabpage())
+    return check_tree_node(layout, winid)
+end
+
 M.floatline_on_resize = function(sub_height)
     if api.nvim_win_is_valid(state.floatline.winid) then
         sub_height = sub_height or 0
@@ -409,6 +432,11 @@ M.setup = function(opts)
     state.config = vim.tbl_extend('force', opts, state.config)
     state.floatline = state.floatline or {}
     local floatline = windline.get_statusline_ft('floatline')
+    local check_bottom = cache_utils.cache_on_buffer(
+        'BufEnter,WinEnter',
+        'windline_dash',
+        check_is_bottom_win
+    )
 
     local default_floatline = {
         filetypes = { 'floatline' },
@@ -417,8 +445,8 @@ M.setup = function(opts)
                 hl_colors = {
                     line = { state.config.ui.active_color, 'NormalBg' },
                 },
-                text = function(_, _, width)
-                    if #vim.api.nvim_tabpage_list_wins(0) <= 2 then
+                text = function(_, winid, width)
+                    if check_bottom(winid) then
                         return { { ' ', 'Normal' } }
                     end
                     return {
