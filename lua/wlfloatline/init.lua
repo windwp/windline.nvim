@@ -125,7 +125,7 @@ local function render_float_status(bufnr, winid, items)
     -- calculate first to get statusline width
     for _, group in ipairs(state.text_groups) do
         full_status_width = full_status_width
-            + vim.fn.strdisplaywidth(group.text or '')
+            + vim.api.nvim_strwidth(group.text or '')
     end
     local last_group = nil
     for _, group in ipairs(state.text_groups) do
@@ -363,7 +363,7 @@ M.floatline_on_cmd_leave = function()
     if state.floatline.is_hide then
         state.floatline.is_hide = false
         if vim.v.event.cmdtype:match('[%:%-]') or vim.o.cmdheight == 0 then
-            vim.wo.statusline = '%!v:lua.WindLine.floatline_show()'
+            M.floatline_on_win_enter()
             M.floatline_on_resize()
         end
     end
