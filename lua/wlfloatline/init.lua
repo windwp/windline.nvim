@@ -264,8 +264,8 @@ M.floatline_fix_command = function(cmd)
 end
 
 M.floatline_on_tabenter = function()
-    close_float_win()
     create_floating_win()
+    M.update_status()
 end
 
 local function get_layout_height(tree_layout, height)
