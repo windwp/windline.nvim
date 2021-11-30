@@ -47,7 +47,8 @@ M.git_rev = function(opt)
     return cache_utils.one_call_func('git_rev', function()
         local default = {
             interval = 100000,
-            format = ' ⇡%s⇣%s',
+            format = ' %s⇣%s⇡ ',
+            format_index = { 1, 2 },
         }
         opt = vim.tbl_extend('force', default, opt or {})
         local git_rev = git_rev_text(opt)
@@ -55,7 +56,11 @@ M.git_rev = function(opt)
         return function()
             local rev = git_rev()
             if rev and (rev[1] > 0 or rev[2] > 0) then
-                return string.format(opt.format, rev[2], rev[1])
+                return string.format(
+                    opt.format,
+                    rev[opt.format_index[1]],
+                    rev[opt.format_index[2]]
+                )
             end
             return ''
         end

@@ -147,7 +147,6 @@ M.setup = function(opts)
     }
     state.tabline = opts
     if opts.colors then
---
         M.setup_hightlight(opts.colors)
         utils.hl_create()
     end

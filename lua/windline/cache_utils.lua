@@ -119,6 +119,9 @@ end
 
 ---@param reset_action function call to delete some value on reset
 M.add_reset_func = function(variable_name, reset_action)
+    if not M.reset_actions then
+        M.reset_actions = {}
+    end
     if not M.reset_actions[variable_name] then
         M.reset_actions[variable_name] = reset_action
     end
