@@ -102,7 +102,12 @@ require('wlsample.airline')
 require('wlsample.airline_anim')
 ```
 ---
-
+### [vscode](./lua/wlsample/vscode.lua)
+![vscode](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/vscode.png)
+```lua
+require('wlsample.vscode')
+```
+---
 ### [basic animation](./lua/wlsample/basic.lua)
 ![basic animation](https://github.com/windwp/windline.nvim/wiki/screenshot/demo_basic.gif)
 ```lua
