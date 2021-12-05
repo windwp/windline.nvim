@@ -21,7 +21,7 @@ end
 M.line_col_lua = function(_, _,_,is_floatline)
     if is_floatline == nil then  return M.line_col end
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return string.format(' %3s:%-2s ', row, col)
+    return string.format(' %3s:%-2s ', row, col + 1)
 end
 
 

@@ -90,7 +90,7 @@ basic.file = {
 
 local line_col = function()
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return string.format(' Ln %3s, Col %-2s ', row, col)
+    return string.format(' Ln %3s, Col %-2s ', row, col + 1)
 end
 
 local spaces = function()
