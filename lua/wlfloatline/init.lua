@@ -79,9 +79,14 @@ local create_floating_win = function()
     api.nvim_set_current_win(cur_winid)
 end
 
-local function render_comp(comp, bufnr, winid, width)
+local function render_comp(comp, bufnr, winid, width, th_id)
     local hl_data = comp.hl_data or {}
     local childs = comp.text(bufnr, winid, width, true)
+    if th_id ~= state.thread_id then
+        -- when text running too long and another loop change thread_id
+        return false
+    end
+    local result = {}
     if type(childs) == 'table' then
         for _, child in pairs(childs) do
             local text, hl = child[1], child[2]
@@ -92,33 +97,41 @@ local function render_comp(comp, bufnr, winid, width)
                 hl = hl_data[hl] or hl
             end
             if text and text ~= '' then
-                table.insert(state.text_groups, {
+                table.insert(result, {
                     text = text:gsub('%%%%', '%%'),
                     hl = comp:make_hl(hl, hl_data.default),
                 })
             end
         end
-        return
+        return result
     end
     if childs and childs ~= '' then
-        table.insert(state.text_groups, {
+        table.insert(result, {
             text = childs:gsub('%%%%', '%%'),
             hl = comp:make_hl(comp.hl, hl_data.default),
         })
     end
+
+    return result
 end
 
 local function render_float_status(bufnr, winid, items)
-    state.text_groups = {}
     state.comp = {}
     state.mode = mode()
     Comp.reset()
     local total_width = vim.o.columns
     local status = ''
     local cur_position = 0
+    state.text_groups = {}
+    state.thread_id = state.thread_id + 1
     for _, comp in pairs(items) do
         if comp.width == nil or comp.width < total_width then
-            render_comp(comp, bufnr, winid, total_width)
+            local hl = render_comp(comp, bufnr, winid, total_width, state.thread_id)
+            if hl then
+                for _, item in pairs(hl) do
+                    table.insert(state.text_groups, item)
+                end
+            end
         end
     end
     local full_status_width = 0
@@ -291,7 +304,7 @@ end
 local function check_tree_node(node, winid)
     if node[1] == 'col' then
         -- only check last node
-        return check_tree_node(node[2][#node[2]],winid)
+        return check_tree_node(node[2][#node[2]], winid)
     elseif node[1] == 'row' then
         for _, v in ipairs(node[2]) do
             if check_tree_node(v, winid) then
@@ -401,6 +414,7 @@ M.setup = function(opts)
 
     vim.cmd([[set statusline=%!v:lua.WindLine.floatline_show()]])
 
+    state.thread_id = 0
     api.nvim_exec(
         [[augroup WindLine
             au!
