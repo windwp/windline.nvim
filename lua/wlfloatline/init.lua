@@ -79,9 +79,14 @@ local create_floating_win = function()
     api.nvim_set_current_win(cur_winid)
 end
 
-local function render_comp(comp, bufnr, winid, width)
+local function render_comp(comp, bufnr, winid, width, th_id)
     local hl_data = comp.hl_data or {}
     local childs = comp.text(bufnr, winid, width, true)
+    if th_id ~= state.thread_id then
+        -- when text running too long and another loop change thread_id
+        return false
+    end
+    local result = {}
     if type(childs) == 'table' then
         for _, child in pairs(childs) do
             local text, hl = child[1], child[2]
@@ -92,33 +97,45 @@ local function render_comp(comp, bufnr, winid, width)
                 hl = hl_data[hl] or hl
             end
             if text and text ~= '' then
-                table.insert(state.text_groups, {
+                table.insert(result, {
                     text = text:gsub('%%%%', '%%'),
                     hl = comp:make_hl(hl, hl_data.default),
+                    item = comp.name,
                 })
             end
         end
-        return
+        return result
     end
     if childs and childs ~= '' then
-        table.insert(state.text_groups, {
+        table.insert(result, {
             text = childs:gsub('%%%%', '%%'),
             hl = comp:make_hl(comp.hl, hl_data.default),
+            name = comp.name,
         })
     end
+
+    return result
 end
 
-local function render_float_status(bufnr, winid, items)
-    state.text_groups = {}
+local function render_float_status(bufnr, winid, items, th_id)
     state.comp = {}
     state.mode = mode()
     Comp.reset()
     local total_width = vim.o.columns
     local status = ''
     local cur_position = 0
+    state.text_groups = {}
     for _, comp in pairs(items) do
         if comp.width == nil or comp.width < total_width then
-            render_comp(comp, bufnr, winid, total_width)
+            local hl = render_comp(comp, bufnr, winid, total_width, th_id)
+            if hl then
+                for _, item in pairs(hl) do
+                    table.insert(state.text_groups, item)
+                end
+            else
+                state.text_groups = {}
+                return false
+            end
         end
     end
     local full_status_width = 0
@@ -157,10 +174,11 @@ local function render_float_status(bufnr, winid, items)
     end
 
     state.floatline.status = status
+    return true
 end
 
-M.update_status = function()
-    if state.floatline.is_hide then
+M.update_status = function(th_id)
+    if state.floatline.is_hide and not state.is_focus then
         return
     end
     if
@@ -193,16 +211,21 @@ M.update_status = function()
     end
 
     local line = windline.get_statusline(bufnr) or WindLine.default_line
-    render_float_status(bufnr, winid, line.active)
-    state.last_bufnr = bufnr
-    state.last_winid = winid
-    vim.api.nvim_buf_set_lines(
-        state.floatline.bufnr,
-        0,
-        1,
-        false,
-        { state.floatline.status }
-    )
+    state.text_groups = {}
+    if
+        state.thread_id == th_id
+        and render_float_status(bufnr, winid, line.active, th_id)
+    then
+        state.last_bufnr = bufnr
+        state.last_winid = winid
+        vim.api.nvim_buf_set_lines(
+            state.floatline.bufnr,
+            0,
+            1,
+            false,
+            { state.floatline.status }
+        )
+    end
 end
 
 M.floatline_show = function(bufnr, winid)
@@ -223,6 +246,9 @@ M.floatline_show = function(bufnr, winid)
 end
 
 M.floatline_on_win_enter = function(bufnr, winid)
+    if not state.is_focus then
+        M.on_focus(true)
+    end
     bufnr = bufnr or vim.api.nvim_get_current_buf()
     winid = winid or vim.api.nvim_get_current_win()
     if not vim.api.nvim_win_is_valid(winid) then
@@ -291,7 +317,7 @@ end
 local function check_tree_node(node, winid)
     if node[1] == 'col' then
         -- only check last node
-        return check_tree_node(node[2][#node[2]],winid)
+        return check_tree_node(node[2][#node[2]], winid)
     elseif node[1] == 'row' then
         for _, v in ipairs(node[2]) do
             if check_tree_node(v, winid) then
@@ -385,30 +411,41 @@ M.floatline_on_cmd_enter = function()
     end
 end
 
+M.on_focus = function(is_focus)
+    if not state.floatline.runner and state.is_focus ~= is_focus then
+        return
+    end
+    state.is_focus = is_focus
+    if is_focus then
+        state.floatline.runner:run()
+    else
+        state.floatline.runner:stop(true)
+    end
+end
+
 M.setup = function(opts)
     opts = opts or {}
     opts = vim.tbl_deep_extend('force', default_config, opts)
     opts.statuslines = nil
     -- overide default WindLine event
     WindLine.floatline_disable = M.disable
-    WindLine.floatline_on_resize = M.floatline_on_resize
     WindLine.floatline_show = M.floatline_show
-    WindLine.floatline_on_win_enter = M.floatline_on_win_enter
+    WindLine.floatline_on_resize = M.floatline_on_resize
     WindLine.floatline_fix_command = M.floatline_fix_command
-    WindLine.floatline_on_tabenter = M.floatline_on_tabenter
-    WindLine.floatline_on_cmd_enter = M.floatline_on_cmd_enter
-    WindLine.floatline_on_cmd_leave = M.floatline_on_cmd_leave
 
     vim.cmd([[set statusline=%!v:lua.WindLine.floatline_show()]])
 
+    state.thread_id = 0
     api.nvim_exec(
         [[augroup WindLine
             au!
-            au BufWinEnter,WinEnter * lua WindLine.floatline_on_win_enter()
-            au TabEnter * lua WindLine.floatline_on_tabenter()
-            au CmdlineEnter * lua WindLine.floatline_on_cmd_enter()
-            au CmdlineLeave * lua WindLine.floatline_on_cmd_leave()
-            au VimResized * lua WindLine.floatline_on_resize()
+            au BufWinEnter,WinEnter * lua require('wlfloatline').floatline_on_win_enter()
+            au TabEnter * lua require('wlfloatline').floatline_on_tabenter()
+            au CmdlineEnter * lua require('wlfloatline').floatline_on_cmd_enter()
+            au CmdlineLeave * lua require('wlfloatline').floatline_on_cmd_leave()
+            au FocusGained * lua require('wlfloatline').on_focus(true)
+            au FocusLost * lua require('wlfloatline').on_focus(false)
+            au VimResized * lua require('wlfloatline').floatline_on_resize()
             au VimEnter * lua WindLine.on_vimenter()
             au ColorScheme * lua WindLine.on_colorscheme()
         augroup END]],
@@ -526,9 +563,13 @@ M.start_runner = function()
         delay = 200,
         type = 'blank',
         interval = state.config.interval,
-        tick = M.update_status,
+        tick = function()
+            state.thread_id = state.thread_id < 1000 and state.thread_id + 1 or 1
+            M.update_status(state.thread_id)
+        end,
         manage = false,
     })
+    state.is_focus = true
     runner:run()
     state.floatline.runner = runner
 end
