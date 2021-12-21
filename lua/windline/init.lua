@@ -300,13 +300,14 @@ M.remove_component = function(opt)
     local line = M.get_statusline_ft(opt.filetype) or M.default_line
 
     local status_line = line[opt.kind or 'active']
-    for index, comp in ipairs(status_line) do
+    M.state.runtime_colors[opt.name] = nil
+    for index, comp in pairs(status_line) do
         if comp.name and comp.name == opt.name then
             table.remove(status_line, index)
-            break
+            return true
         end
     end
-    M.state.runtime_colors[opt.name] = nil
+    return false
 end
 
 M.add_autocmd_component = function(component, opts)
@@ -329,7 +330,7 @@ M.check_autocmd_component = function(bufnr)
         return
     end
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
-    for _, value in pairs(M.state.auto_comps) do
+    for index, value in pairs(M.state.auto_comps) do
         if value.opts.filetype == ft or value.opts.filetype == '*' then
             if not value.is_added then
                 value.is_added = true
@@ -337,7 +338,10 @@ M.check_autocmd_component = function(bufnr)
             end
         elseif value.is_added then
             value.is_added = false
-            M.remove_component({ name = value.opts.name })
+            if not M.remove_component({ name = value.opts.name }) then
+                --it can't remove so we need to remove auto event
+                M.state.auto_comps[index] = nil
+            end
         end
     end
 end
