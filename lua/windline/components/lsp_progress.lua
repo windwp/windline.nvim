@@ -48,26 +48,30 @@ M.lsp_progress = function(opts)
     end
     vim.lsp.handlers['$/progress'] = handler
 
-    return function()
+    return function(_, _, _, is_float)
         local text = ''
         local is_have_msg = true
+        local percentmsg = is_float and '%' or '%%'
         for _, client in pairs(clients) do
             local remove_progress = {}
             local is_has_progress = #client.progress > 0
             for key_p, progress in pairs(client.progress) do
                 if not progress.is_done and progress.message and is_have_msg then
                     is_have_msg = false
-                    -- stylua: ignore
                     text = text
                         .. string.format(
-                            '%s%s %s %%',
+                            '%s%s %s%s',
                             opts.show_server_name and (' ' .. client.name .. ' ') or ' ',
                             progress.message,
-                            progress.percentage
+                            progress.percentage,
+                            percentmsg
                         )
                 end
                 -- delay 1 second to remove progress
-                if progress.is_done and vim.loop.hrtime() - 1e9 > progress.hrtime then
+                if
+                    progress.is_done and vim.loop.hrtime() - 1e9
+                        > progress.hrtime
+                then
                     table.insert(remove_progress, key_p)
                 end
             end
