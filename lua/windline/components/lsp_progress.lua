@@ -60,11 +60,10 @@ M.lsp_progress = function(opts)
                     is_have_msg = false
                     text = text
                         .. string.format(
-                            '%s%s %s%s',
+                            '%s%s %s',
                             opts.show_server_name and (' ' .. client.name .. ' ') or ' ',
                             progress.message,
-                            progress.percentage,
-                            percentmsg
+                            progress.percentage~= 0 and progress.percentage .. percentmsg  or ''
                         )
                 end
                 -- delay 1 second to remove progress
