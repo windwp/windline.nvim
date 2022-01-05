@@ -134,8 +134,9 @@ M.hl_create = function()
     end
 end
 
-M.get_unique_bufname = function(bufnr)
-    local bufname = vim.fn.bufname(bufnr)
+M.get_unique_bufname = function(bufnr, max_length)
+    max_length = max_length or 24
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
     local all_bufers = vim.tbl_filter(function(buffer)
         return buffer.listed == 1 and buffer.name ~= bufname
     end, vim.fn.getbufinfo())
@@ -163,7 +164,11 @@ M.get_unique_bufname = function(bufnr)
         end
         position = position + 1
     end
-    return string.reverse(string.sub(tmp_name, 1, position))
+    local name = string.reverse(string.sub(tmp_name, 1, position))
+    if #name > max_length then
+        return vim.fn.pathshorten(name)
+    end
+    return name
 end
 
 M.update_check = function(check, message)

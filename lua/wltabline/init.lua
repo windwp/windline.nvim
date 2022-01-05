@@ -2,6 +2,7 @@ local themes = require('windline.themes')
 local windline = require('windline')
 local helper = require('windline.helpers')
 local utils = require('windline.utils')
+local cache_utils = require('windline.cache_utils')
 
 local separators = helper.separators
 local M = {}
@@ -30,6 +31,11 @@ M.setup_hightlight = function(colors)
 end
 
 local last_tab_name = {}
+local get_tab_name = cache_utils.cache_on_buffer(
+    'BufEnter',
+    'wltabline_name',
+    utils.get_unique_bufname
+)
 
 M.tab_name = function(num)
     local buflist = vim.fn.tabpagebuflist(num)
@@ -37,7 +43,7 @@ M.tab_name = function(num)
 
     if buflist[winnr] ~= nil then
         if vim.fn.buflisted(buflist[winnr]) == 1 then
-            local bufname = utils.get_unique_bufname(buflist[winnr])
+            local bufname = get_tab_name(buflist[winnr])
             if bufname == '' then
                 bufname = 'ツ'
             end
