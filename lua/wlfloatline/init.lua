@@ -203,8 +203,8 @@ M.update_status = function(th_id)
             and not check_line.floatline_show_float
         )
     then
-        bufnr = state.last_bufnr
-        winid = state.last_winid
+        bufnr = state.last_bufnr or bufnr
+        winid = state.last_winid or winid
     end
     if not api.nvim_win_is_valid(winid) or not api.nvim_buf_is_valid(bufnr) then
         return
