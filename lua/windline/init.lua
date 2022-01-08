@@ -23,6 +23,7 @@ local render = function(bufnr, winid, items, cache)
     M.state.mode = mode()
     Comp.reset()
     local status = ''
+    winid = winid or 0
     local win_width = api.nvim_win_is_valid(winid) and api.nvim_win_get_width(winid)
     for _, comp in pairs(items) do
         if win_width and (comp.width == nil or comp.width < win_width) then
