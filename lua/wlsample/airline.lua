@@ -79,15 +79,13 @@ basic.section_a = {
     end,
 }
 
-local get_git_branch = git_comps.git_branch()
 
 basic.section_b = {
     hl_colors = airline_colors.b,
-    text = function(_,_, width)
-        local branch_name = get_git_branch()
-        if width > width_breakpoint and #branch_name > 1 then
+    text = function(bufnr,_, width)
+        if width > width_breakpoint and git_comps.is_git(bufnr) then
             return {
-                { branch_name , state.mode[2] },
+                { git_comps.git_branch() , state.mode[2] },
                 { ' ', '' },
                 { sep.right_filled, state.mode[2] .. 'Sep' },
             }
