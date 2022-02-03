@@ -29,8 +29,8 @@ local function tick(animation)
             return
         end
         w_utils.highlight(value.name, {
-            guifg = fg and fg:to_rgb(),
-            guibg = bg and bg:to_rgb(),
+            fg = fg and fg:to_rgb(),
+            bg = bg and bg:to_rgb(),
         })
         value.fg = fg
         value.bg = bg
@@ -40,8 +40,8 @@ end
 local function stop(animation)
     for _, value in pairs(animation.__hl) do
         w_utils.highlight(value.name, {
-            guifg = value.fg and value.fg:to_rgb(),
-            guibg = value.bg and value.bg:to_rgb(),
+            fg = value.fg and value.fg:to_rgb(),
+            bg = value.bg and value.bg:to_rgb(),
         })
     end
 end

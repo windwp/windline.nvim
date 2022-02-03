@@ -66,20 +66,37 @@ M.hl_text = function(text, highlight)
     return string.format('%%#%s#%s', highlight, text)
 end
 
+local api = vim.api
+local rgb2cterm = not vim.go.termguicolors
+    and require('windline.cterm_utils').rgb2cterm
 
-local rgb2cterm = not vim.go.termguicolors and require('windline.cterm_utils').rgb2cterm
-
-M.highlight = function(group, color)
-    if rgb2cterm then
-        color.ctermfg = color.guifg and rgb2cterm(color.guifg)
-        color.ctermbg = color.guibg and rgb2cterm(color.guibg)
-        color.cterm = color.gui and color.gui
+if vim.version().minor >= 8 then
+    M.highlight = function(group, color)
+        if rgb2cterm then
+            color.ctermfg = color.fg and rgb2cterm(color.fg)
+            color.ctermbg = color.bg and rgb2cterm(color.bg)
+        end
+        api.nvim_set_hl(0, group, color)
     end
-    local options = {}
-    for k, v in pairs(color) do
-        table.insert(options, string.format("%s=%s", k, v))
+else
+    M.highlight = function(group, color)
+        local c = {
+            guifg = color.fg,
+            guibg = color.bg,
+            gui = color.bold and 'bold',
+        }
+        if rgb2cterm then
+            c.ctermfg = color.fg and rgb2cterm(color.fg)
+            c.ctermbg = color.bg and rgb2cterm(color.bg)
+        end
+        local options = {}
+        for k, v in pairs(c) do
+            table.insert(options, string.format('%s=%s', k, v))
+        end
+        vim.api.nvim_command(
+            string.format([[highlight  %s %s]], group, table.concat(options, ' '))
+        )
     end
-    vim.api.nvim_command(string.format([[highlight  %s %s]], group, table.concat(options, " ")))
 end
 
 M.get_hl_name = function(c1, c2, style)
@@ -105,17 +122,20 @@ M.hl = function(tbl, colors, is_runtime)
     if bg == nil then
         print('WL' .. (tbl[2] or '') .. ' color is not defined ')
     end
-
-    if is_runtime then
-        M.highlight(name, {guibg = bg, guifg = fg, gui = tbl[3]})
+    local style = {
+        name = name,
+        bg = bg,
+        fg = fg,
+    }
+    if tbl[3] then
+        style[string.lower(tbl[3])] = true
     end
 
-    WindLine.hl_data[name] = {
-        name = name,
-        gui = tbl[3],
-        guifg = fg,
-        guibg = bg,
-    }
+    if is_runtime then
+        M.highlight(name, style)
+    end
+
+    WindLine.hl_data[name] = style
     return name
 end
 
@@ -125,12 +145,8 @@ end
 
 M.hl_create = function()
     local hl_data = _G.WindLine.hl_data
-    for _, value in pairs(hl_data) do
-        M.highlight(value.name, {
-            guifg = value.guifg,
-            guibg = value.guibg,
-            gui = value.gui,
-        })
+    for name, value in pairs(hl_data) do
+        M.highlight(name, value)
     end
 end
 

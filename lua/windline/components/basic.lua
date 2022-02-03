@@ -157,7 +157,7 @@ M.file_icon = function(opt)
             highlight = string.format('WL%s_%s', file_ext, opt.hl_colors[2])
             local fg = themes.get_hl_color(hl)
             local bg = WindLine.state.colors[opt.hl_colors[2]]
-            utils.highlight(highlight, { guifg = fg, guibg = bg })
+            utils.highlight(highlight, { fg = fg, bg = bg })
         end
         return {icon or opt.default, highlight }
     end

@@ -1,12 +1,6 @@
 local hsl = require('wlanimation.hsl')
+local get_hl_color = require('windline.themes').get_hl_color
 local M = {}
-
-M.get_hl_color = function(hl)
-    local cmd = vim.api.nvim_exec('highlight ' .. hl, true)
-    local _, _, bg = string.find(cmd, "guibg%=(%#%w*)")
-    local _, _, fg = string.find(cmd, "guifg%=(%#%w*)")
-    return fg, bg
-end
 
 ---@return HSL
 M.rgb_to_hsl = function(rgb)
@@ -15,7 +9,7 @@ M.rgb_to_hsl = function(rgb)
 end
 
 M.get_hsl_color = function(hl)
-    local c1, c2 = M.get_hl_color(hl)
+    local c1, c2 = get_hl_color(hl)
     local fg, bg
     if c1 then fg = M.rgb_to_hsl(c1) end
     if c2 then bg = M.rgb_to_hsl(c2) end
