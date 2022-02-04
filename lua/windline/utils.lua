@@ -70,7 +70,7 @@ local api = vim.api
 local rgb2cterm = not vim.go.termguicolors
     and require('windline.cterm_utils').rgb2cterm
 
-if vim.version().minor >= 8 then
+if vim.version().minor >= 7 then
     M.highlight = function(group, color)
         if rgb2cterm then
             color.ctermfg = color.fg and rgb2cterm(color.fg)
