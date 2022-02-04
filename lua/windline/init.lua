@@ -205,7 +205,6 @@ M.setup = function(opts)
 end
 
 M.setup_event = function()
-    vim.opt.laststatus = 2
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
     api.nvim_exec(
         [[augroup WindLine
