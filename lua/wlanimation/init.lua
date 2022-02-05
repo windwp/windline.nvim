@@ -43,18 +43,18 @@ M.animation = function(opts)
     end
 
     for _, effect in pairs(opts.data) do
-        for _, value in pairs(hl_data) do
-            if string.match(value.name, 'WL' .. effect[1]) then
+        for name, _ in pairs(hl_data) do
+            if string.match(name, 'WL' .. effect[1]) then
                 addAnimation({
                     color = effect[1],
-                    name = value.name,
+                    name = name,
                     fg_effect = effect[2](),
                 })
             end
-            if string.match(value.name, '_' .. effect[1]) then
+            if string.match(name, '_' .. effect[1]) then
                 addAnimation({
                     color = effect[1],
-                    name = value.name,
+                    name = name,
                     bg_effect = effect[2](),
                 })
             end

@@ -123,7 +123,6 @@ M.hl = function(tbl, colors, is_runtime)
         print('WL' .. (tbl[2] or '') .. ' color is not defined ')
     end
     local style = {
-        name = name,
         bg = bg,
         fg = fg,
     }
