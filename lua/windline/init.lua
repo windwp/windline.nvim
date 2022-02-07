@@ -17,6 +17,7 @@ M.state = M.state
 local mode = utils.mode
 
 M.statusline_ft = {}
+M.get_status_width = api.nvim_win_get_width
 
 local render = function(bufnr, winid, items, cache)
     M.state.comp = {} --reset component data
@@ -24,7 +25,7 @@ local render = function(bufnr, winid, items, cache)
     Comp.reset()
     local status = ''
     winid = winid or 0
-    local win_width = api.nvim_win_is_valid(winid) and api.nvim_win_get_width(winid)
+    local win_width = api.nvim_win_is_valid(winid) and M.get_status_width(winid)
     for _, comp in pairs(items) do
         if win_width and (comp.width == nil or comp.width < win_width) then
             status = status .. comp:render(bufnr, winid, win_width)
@@ -49,7 +50,7 @@ M.get_statusline = function(bufnr)
     return M.get_statusline_ft(ft)
 end
 
-M.show = function(bufnr, winid)
+M.show_normal = function(bufnr, winid)
     bufnr = bufnr or api.nvim_get_current_buf()
     local line = M.get_statusline(bufnr)
     local cur_win = api.nvim_get_current_win()
@@ -100,6 +101,33 @@ M.show = function(bufnr, winid)
         M.last_win = winid
     end
     return render(bufnr, winid, M.default_line.active, true)
+end
+
+M.show = M.show_normal
+
+M.show_global = function (bufnr, winid)
+    bufnr = bufnr or api.nvim_get_current_buf()
+    winid = winid or api.nvim_get_current_win()
+    local ft = api.nvim_buf_get_option(bufnr, 'filetype')
+    local check_line = M.get_statusline_ft(ft) or {}
+
+    if
+        utils.is_in_table(M.state.config.global_skip_filetypes, ft)
+        or (
+            api.nvim_win_get_config(winid).relative ~= ''
+            and not check_line.global_show_float
+        )
+    then
+        bufnr = M.state.last_bufnr or bufnr
+        winid = M.state.last_winid or winid
+    end
+    if not api.nvim_win_is_valid(winid) or not api.nvim_buf_is_valid(bufnr) then
+        return M.state.cache_status
+    end
+    local line = M.get_statusline(bufnr) or WindLine.default_line
+    M.state.last_bufnr = bufnr
+    M.state.last_winid = winid
+    return render(bufnr, winid, line.active, true)
 end
 
 M.on_win_enter = function(bufnr, winid)
@@ -188,7 +216,6 @@ local default_config = {
 }
 
 M.setup = function(opts)
-    M.statusline_ft = {}
     M.hl_data = {}
     opts = vim.tbl_extend('force', default_config, opts)
     themes.default_theme = opts.theme
@@ -200,8 +227,25 @@ M.setup = function(opts)
     if M.anim_reset then M.anim_reset() end
 
     M.state.config.colors_name = opts.colors_name
+    M.state.config.global_skip_filetypes = opts.global_skip_filetypes or {
+        'NvimTree',
+        'lir',
+    }
     M.add_status(opts.statuslines)
+    M.on_set_laststatus()
     M.setup_event()
+end
+
+M.on_set_laststatus = function ()
+    if vim.go.laststatus == 3 then
+        M.show = M.show_global
+        M.get_status_width = function(_)
+            return vim.o.columns
+        end
+    else
+        M.show = M.show_normal
+        M.get_status_width = api.nvim_win_get_width
+    end
 end
 
 M.setup_event = function()
@@ -212,6 +256,7 @@ M.setup_event = function()
             au BufWinEnter,WinEnter * lua WindLine.on_win_enter()
             au VimEnter * lua WindLine.on_vimenter()
             au ColorScheme * lua WindLine.on_colorscheme()
+            au OptionSet laststatus lua WindLine.on_set_laststatus() 
         augroup END]],
         false
     )

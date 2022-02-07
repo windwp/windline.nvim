@@ -3,7 +3,6 @@ Animation statusline, floating window statusline. Use lua + luv make some ðŸ”¥ðŸ
 
 **Features**:
 
- * floating window statusline
  * custom status line for every file type
  * built-in animation library
  * change colors with your colorscheme
@@ -163,12 +162,6 @@ local explorer = {
     always_active = true,
     --- It will display a last window statusline even that window should inactive
     show_last_status = true
-
-    -- setting for floatline
-    -- display statusline to that filetype.If that filetype on floating window
-    floatline_show_float = false
-    -- display both on floatline and default statusline
-    floatline_show_both = false
 }
 
 ```
