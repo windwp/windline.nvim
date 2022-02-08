@@ -248,12 +248,18 @@ M.on_set_laststatus = function ()
     end
 end
 
+M.on_ft = function ()
+    local bufnr = vim.api.nvim_get_current_buf()
+    M.check_autocmd_component(bufnr)
+end
+
 M.setup_event = function()
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
     api.nvim_exec(
         [[augroup WindLine
             au!
             au BufWinEnter,WinEnter * lua WindLine.on_win_enter()
+            au FileType * lua WindLine.on_ft()
             au VimEnter * lua WindLine.on_vimenter()
             au ColorScheme * lua WindLine.on_colorscheme()
             au OptionSet laststatus lua WindLine.on_set_laststatus() 
@@ -363,11 +369,11 @@ M.add_autocmd_component = function(component, opts)
         component.name = opts.name or component.name
         opts.name = component.name
     end
-    table.insert(M.state.auto_comps, {
+    M.state.auto_comps[component.name]={
         component = component,
         is_added = false,
         opts = opts,
-    })
+    }
 end
 
 M.check_autocmd_component = function(bufnr)
