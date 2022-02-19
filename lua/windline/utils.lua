@@ -99,6 +99,18 @@ else
     end
 end
 
+M.get_color = function (colors, name)
+    local c = colors[name]
+    if c == nil then
+        print('WL' .. (name or '') .. ' color is not defined ')
+        return
+    end
+    if string.lower(c) == 'none' then
+        c = nil
+    end
+    return c
+end
+
 M.get_hl_name = function(c1, c2, style)
     local name = string.format('WL%s_%s', c1 or '', c2 or '')
     if style == 'bold' then
@@ -114,14 +126,9 @@ M.hl = function(tbl, colors, is_runtime)
         return name
     end
     colors = colors or WindLine.state.colors
-    local fg = colors[tbl[1]]
-    local bg = colors[tbl[2]]
-    if fg == nil then
-        print('WL' .. (tbl[1] or '') .. ' color is not defined ')
-    end
-    if bg == nil then
-        print('WL' .. (tbl[2] or '') .. ' color is not defined ')
-    end
+    local fg = M.get_color(colors,tbl[1])
+    local bg = M.get_color(colors,tbl[2])
+
     local style = {
         bg = bg,
         fg = fg,
