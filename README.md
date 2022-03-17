@@ -7,34 +7,20 @@ Animation statusline, floating window statusline. Use lua + luv make some 🔥�
  * built-in animation library
  * change colors with your colorscheme
  * fast and powerful customization
+ * support global statusline
 
 ## demo
 
-Displaying two different animated status line (markdown and lua file types).
-
 ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
+Displaying two different animated status line (markdown and lua file types).
 
 Displaying a float statusline on bottom
 ![floating statusline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/floating_window.gif)
-# Intro
 
+# Intro
 Windline supports having a different status line per file type.
 `terminal,nvimtree,qf,help,spectre,lsptrouble,diffview,lspoutline`.
-Plugins can define their own status line as well.
 It also supports displaying a different status line on **inactive windows**
-
-```lua
-
-local yourstatus = {
-    filetypes = {'lspcrazy'},
-    active = {
-        {' lspcrazy ', {'white', 'black'} },
-        {function() return 'crazy' end ,{'black', 'red'} },
-    },
-    always_active = true
-}
-
-```
 
 We offer a built-in animations and color library for status line.
 I know it is not useful but why not :).
@@ -42,18 +28,6 @@ I know it is not useful but why not :).
 It is not loaded if you don't use animations.
 
  ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
-
-# Floating window statusline
-
-  A step to test floating statusline
-
-  ```vim
-  " load a sample statusline (you can use any included statusline below)
-  :lua require('wlsample.evil_line')
-  " toggle from normal to floating statusline
-  :WindLineFloatToggle
-  ```
-  [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
 
 # Setup
 
@@ -374,6 +348,33 @@ animation.animation({
     interval = 100,
 })
 ```
+## Global statusline setting
+```lua
+windline.setup({
+  -- hide that filetype on global statusline
+    global_skip_filetypes = {
+        'NvimTree',
+        'lir',
+    }
+})
+
+```
+
+If that filetype display on floating window (popup).It will always
+hiding.You can change that behavior create a custome statusline
+```lua
+local telescope = {
+    filetypes = {'TelescopePrompt'},
+    active = {
+        {'  ', {'white', 'black'} },
+    },
+    --- for global statusline (laststatus = 3). 
+    --- by default it skip all floating window on global statusline but you can
+    --- change it here
+    global_show_float = false
+}
+```
+
 ## Benchmark
 A command to benchmark current status line by rendering it 10.000 time.
 `:WindLineBenchMark`
@@ -383,3 +384,17 @@ A command to benchmark current status line by rendering it 10.000 time.
 
 ## Document
 [wiki](https://github.com/windwp/windline.nvim/wiki/)
+
+# Floating window statusline (Deprecated)
+__If you are using nvim 0.7 you should use set laststatus=3 to enable global
+statusline__
+
+ A step to test floating statusline
+
+  ```vim
+  " load a sample statusline (you can use any included statusline below)
+  :lua require('wlsample.evil_line')
+  " toggle from normal to floating statusline
+  :WindLineFloatToggle
+  ```
+  [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
