@@ -188,9 +188,10 @@ M.get_colors = function(reload)
     if not reload and M.state.colors then return M.state.colors end
     local colors = themes.load_theme()
     colors = M.state.config.colors_name(colors) or colors
+    -- use it to update modify colors on dynamic component when ColorScheme happen
     if M.state.runtime_colors then
         for _, func_color in pairs(M.state.runtime_colors) do
-            colors = func_color(colors) or colors
+            colors = vim.tbl_extend("force", colors, func_color(colors))
         end
     end
     M.state.colors = colors
