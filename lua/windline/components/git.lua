@@ -12,7 +12,7 @@ end
 M.is_git = function(bufnr)
     state.comp.git_dict = utils.buf_get_var(bufnr, 'gitsigns_status_dict')
     local git_dict = state.comp.git_dict
-    if git_dict and git_dict.head and #git_dict.head > 0 then
+    if git_dict and git_dict.head then
         return true
     end
     return false
@@ -23,7 +23,7 @@ M.git_branch = function(opt)
     return function(bufnr)
         local git_dict = state.comp.git_dict
             or utils.buf_get_var(bufnr, 'gitsigns_status_dict')
-        if git_dict and git_dict.head and #git_dict.head > 0 then
+        if git_dict and git_dict.head then
             state.git_branch = git_dict.head
             local icon = opt.icon or '  '
             return icon .. git_dict.head
@@ -38,7 +38,7 @@ M.diff_added = function(opt)
     return function(bufnr)
         local git_dict = state.comp.git_dict
             or utils.buf_get_var(bufnr, 'gitsigns_status_dict')
-        if git_dict and git_dict.head and #git_dict.head > 0 then
+        if git_dict and git_dict.head then
             local value = git_dict.added or 0
             if value > 0 or value == 0 and opt.show_zero == true then
                 return string.format(format, value)
@@ -71,7 +71,7 @@ M.diff_changed = function(opt)
     return function(bufnr)
         local git_dict = state.comp.git_dict
             or utils.buf_get_var(bufnr, 'gitsigns_status_dict')
-        if git_dict and git_dict.head and #git_dict.head > 0 then
+        if git_dict and git_dict.head then
             local value = git_dict.changed or 0
             if value > 0 or value == 0 and opt.show_zero == true then
                 return string.format(format, value)

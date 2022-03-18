@@ -50,26 +50,29 @@ M.lsp_progress = function(opts)
 
     return function(_, _, _, is_float)
         local text = ''
-        local is_have_msg = true
         local percentmsg = is_float and '%' or '%%'
         for _, client in pairs(clients) do
             local remove_progress = {}
-            local is_has_progress = #client.progress > 0
+            local is_have_msg = true
             for key_p, progress in pairs(client.progress) do
                 if not progress.is_done and progress.message and is_have_msg then
                     is_have_msg = false
                     text = text
                         .. string.format(
                             '%s%s %s',
-                            opts.show_server_name and (' ' .. client.name .. ' ') or ' ',
+                            opts.show_server_name
+                                    and (' ' .. client.name .. ' ')
+                                or ' ',
                             progress.message,
-                            progress.percentage~= 0 and progress.percentage .. percentmsg  or ''
+                            progress.percentage ~= 0
+                                    and progress.percentage .. percentmsg
+                                or ''
                         )
                 end
                 -- delay 1 second to remove progress
                 if
-                    progress.is_done and vim.loop.hrtime() - 1e9
-                        > progress.hrtime
+                    progress.is_done
+                    and vim.loop.hrtime() - 1e9 > progress.hrtime
                 then
                     table.insert(remove_progress, key_p)
                 end
@@ -77,7 +80,7 @@ M.lsp_progress = function(opts)
             for _, key_p in ipairs(remove_progress) do
                 client.progress[key_p] = nil
             end
-            if is_has_progress and #client.progress == 0 then
+            if is_have_msg then
                 clients[client.name] = nil
             end
         end
