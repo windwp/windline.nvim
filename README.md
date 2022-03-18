@@ -1,21 +1,18 @@
 # Windline
-Animation statusline, floating window statusline. Use lua + luv make some 🔥🔥🔥
+Animation statusline. Use lua + luv make some 🔥🔥🔥
 
 **Features**:
 
- * custom status line for every file type
+ * custom statusline for every file type
  * built-in animation library
  * change colors with your colorscheme
  * fast and powerful customization
- * support global statusline
+ * custommize display of global statusline
 
 ## demo
 
-![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
+![demo](https://github.com/windwp/windline.nvim/wiki/screenshot/mutli_filetype.gif)
 Displaying two different animated status line (markdown and lua file types).
-
-Displaying a float statusline on bottom
-![floating statusline](https://raw.githubusercontent.com/wiki/windwp/windline.nvim/screenshot/floating_window.gif)
 
 # Intro
 Windline supports having a different status line per file type.
@@ -27,7 +24,8 @@ I know it is not useful but why not :).
 
 It is not loaded if you don't use animations.
 
- ![Mutlifiletype](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
+![demo](https://github.com/windwp/windline.nvim/wiki/screenshot/windline-notify.gif)
+
 
 # Setup
 
@@ -385,16 +383,8 @@ A command to benchmark current status line by rendering it 10.000 time.
 ## Document
 [wiki](https://github.com/windwp/windline.nvim/wiki/)
 
-# Floating window statusline (Deprecated)
-__If you are using nvim 0.7 you should use set laststatus=3 to enable global
+## Floating window statusline (Deprecated)
+__If you are using nvim > 0.7 you should use set laststatus=3 to enable global
 statusline__
 
- A step to test floating statusline
-
-  ```vim
-  " load a sample statusline (you can use any included statusline below)
-  :lua require('wlsample.evil_line')
-  " toggle from normal to floating statusline
-  :WindLineFloatToggle
-  ```
-  [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
+ [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
