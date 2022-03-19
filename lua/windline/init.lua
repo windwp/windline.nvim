@@ -111,18 +111,22 @@ M.show_global = function (bufnr, winid)
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
     local check_line = M.get_statusline_ft(ft) or {}
 
-    if
-        utils.is_in_table(M.state.config.global_skip_filetypes, ft)
-        or (
-            api.nvim_win_get_config(winid).relative ~= ''
-            and not check_line.global_show_float
-        )
-    then
-        bufnr = M.state.last_bufnr or bufnr
-        winid = M.state.last_winid or winid
-    end
-    if not api.nvim_win_is_valid(winid) or not api.nvim_buf_is_valid(bufnr) then
-        return M.state.cache_status
+    if vim.g.statusline_winid == winid then
+        if
+            utils.is_in_table(M.state.config.global_skip_filetypes, ft)
+            or (
+                api.nvim_win_get_config(winid).relative ~= ''
+                and not check_line.global_show_float
+            )
+        then
+            bufnr = M.state.last_bufnr or bufnr
+            winid = M.state.last_winid or winid
+        end
+        if not api.nvim_win_is_valid(winid) or not api.nvim_buf_is_valid(bufnr) then
+            return M.state.cache_status
+        end
+    else
+        return M.show_normal(bufnr, winid)
     end
     local line = M.get_statusline(bufnr) or WindLine.default_line
     M.state.last_bufnr = bufnr
