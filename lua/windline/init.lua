@@ -1,5 +1,6 @@
 local api = vim.api
-local M = _G.WindLine or {}
+---@class WindLine
+local M = {}
 _G.WindLine = _G.WindLine or M
 
 local themes = require('windline.themes')

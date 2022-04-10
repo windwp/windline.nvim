@@ -55,7 +55,6 @@ M.file_name = function(default, modify)
     end
 end
 
----@return any
 M.cache_file_name = function(default, modify)
     return cache_utils.cache_on_buffer('BufEnter', 'WL_filename', M.file_name(default, modify))
 end
@@ -78,7 +77,6 @@ M.file_type = function(opt)
     end
 end
 
----@return any
 M.cache_file_type = function(opt)
     return cache_utils.cache_on_buffer('FileType', 'WL_filetype', M.file_type(opt))
 end
@@ -105,7 +103,6 @@ M.file_size = function()
     end
 end
 
----@return any
 M.cache_file_size = function()
     return cache_utils.cache_on_buffer('BufWritePost', 'WL_filesize', M.file_size())
 end
