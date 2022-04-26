@@ -83,23 +83,41 @@ end
 
 M.file_size = function()
     return function()
-        local file = fn.expand('%:p')
-        if string.len(file) == 0 then
+        local path = vim.api.nvim_buf_get_name(0)
+
+        if string.len(path) == 0 then
             return ''
         end
-        local suffix = { 'b', 'k', 'M', 'G', 'T', 'P', 'E' }
+
+        local size = vim.fn.getfsize(path)
+
+        if size < 1 then
+            return ''
+        end
+
+        local suffixes = {
+            'B',
+            'kB',
+            'MB',
+            'GB',
+            'TB',
+            'PB',
+            'EB',
+        }
+
         local index = 1
 
-        local fsize = fn.getfsize(file)
-        if fsize < 1 then
-            return ''
-        end
-        while fsize > 1024 and index < 7 do
-            fsize = fsize / 1024
+        while
+            size >= 1000
+            and index < #suffixes
+        do
+            size = size / 1000
             index = index + 1
         end
 
-        return string.format('%.2f', fsize) .. suffix[index]
+        local rounded_size = math.ceil(size * 100 - 0.5) / 100
+
+        return rounded_size .. suffixes[index]
     end
 end
 
