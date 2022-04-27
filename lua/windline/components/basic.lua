@@ -81,7 +81,30 @@ M.cache_file_type = function(opt)
     return cache_utils.cache_on_buffer('FileType', 'WL_filetype', M.file_type(opt))
 end
 
-M.file_size = function()
+M.file_size = function(opt)
+    opt = opt or {}
+
+    local unit_factor = opt.base == nil and 1000
+        or opt.base == 10 and 1000
+        or opt.base == 2 and 1024
+
+    local clamped_precision = opt.precision == nil and 2
+        or opt.precision < 0 and 0
+        or opt.precision > 16 and 16
+        or opt.precision
+
+    local precision_factor = math.pow(10, clamped_precision)
+
+    local suffixes = {
+        'B',
+        'kB',
+        'MB',
+        'GB',
+        'TB',
+        'PB',
+        'EB',
+    }
+
     return function()
         local path = vim.api.nvim_buf_get_name(0)
 
@@ -95,34 +118,24 @@ M.file_size = function()
             return ''
         end
 
-        local suffixes = {
-            'B',
-            'kB',
-            'MB',
-            'GB',
-            'TB',
-            'PB',
-            'EB',
-        }
-
         local index = 1
 
         while
-            size >= 1000
+            size >= unit_factor
             and index < #suffixes
         do
-            size = size / 1000
+            size = size / unit_factor
             index = index + 1
         end
 
-        local rounded_size = math.ceil(size * 100 - 0.5) / 100
+        local rounded_size = math.ceil(size * precision_factor - 0.5) / precision_factor
 
         return rounded_size .. suffixes[index]
     end
 end
 
-M.cache_file_size = function()
-    return cache_utils.cache_on_buffer('BufWritePost', 'WL_filesize', M.file_size())
+M.cache_file_size = function(opt)
+    return cache_utils.cache_on_buffer('BufWritePost', 'WL_filesize', M.file_size(opt))
 end
 
 local format_icons = {
