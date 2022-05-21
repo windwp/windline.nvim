@@ -17,14 +17,6 @@ local get_diagnostics_count = function(bufnr)
         count[vim.diagnostic.severity.HINT]
 end
 
-local get_lsp_diagnostics_count = function(bufnr)
-    local error = vim.lsp.diagnostic.get_count(bufnr, [[Error]])
-    local warning = vim.lsp.diagnostic.get_count(bufnr, [[Warning]])
-    local information = vim.lsp.diagnostic.get_count(bufnr, [[Hint]])
-    local hint = vim.lsp.diagnostic.get_count(bufnr, [[Hint]])
-    return error, warning, information, hint
-end
-
 local function is_lsp(bufnr)
     return next(vim.lsp.buf_get_clients(bufnr)) ~= nil
 end
@@ -50,9 +42,7 @@ M.check_custom_lsp = function(opt)
 
     return function(bufnr)
         if state.comp.lsp == nil and lsp_check(bufnr) then
-            local lsp_count = vim.diagnostic and get_diagnostics_count
-                or get_lsp_diagnostics_count
-            local error, warning, information, hint = lsp_count(bufnr)
+            local error, warning, information, hint = get_diagnostics_count(bufnr)
             state.comp.lsp_error = error
             state.comp.lsp_warning = warning
             state.comp.lsp_information = information

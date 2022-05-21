@@ -4,6 +4,8 @@
 ---@field is_not_group boolean hl_colors only have {fg,bg} not a group {{fg,bg}}
 ---@field hl_data table a runtime table highlight group name
 ---@field text function
+---@filed click function handle click even on component
+---@field click_id number index of click function
 ---@field hl function
 ---@field created boolean
 local Comp = {}
@@ -23,6 +25,13 @@ local render_text = function(text, highlight)
     end
     last_hl = highlight
     return string.format('%%#%s#%s', highlight, text)
+end
+
+local render_click = function(text, click_id)
+    if click_id then
+        return string.format('%%%s@v:lua.WindLine.on_click@%s%%X', click_id, text)
+    end
+    return text
 end
 
 function Comp.create(params)
@@ -124,11 +133,12 @@ function Comp:render(bufnr, winid, width)
             if type(hl) == 'string' then
                 hl = hl_data[hl] or hl
             end
-            result = result .. render_text(text, self:make_hl(hl))
+            result = result
+                .. render_click(render_text(text, self:make_hl(hl)), child[3])
         end
-        return result
+        return render_click(result, self.click)
     end
-    return render_text(childs, self:make_hl(self.hl))
+    return render_click(render_text(childs, self:make_hl(self.hl)), self.click)
 end
 
 return {

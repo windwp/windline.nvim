@@ -6,9 +6,6 @@ local b_components = require('windline.components.basic')
 local state = _G.WindLine.state
 local HSL = require('wlanimation.utils')
 
-if _G.R then
-    _G.R('windline')
-end
 local hl_list = {
     Black = { 'white', 'black' },
     White = { 'black', 'white' },
@@ -58,12 +55,29 @@ basic.section_z = {
     end,
 }
 
+local language = 'EN'
+basic.language = {
+    text = function()
+        return {
+            { 'LANG: ', '' },
+            {
+                language,
+                '',
+                windline.make_click('change_language', function()
+                    language = language == 'EN' and 'US' or 'EN'
+                end),
+            },
+        }
+    end,
+}
+
 local default = {
     filetypes = { 'default' },
     active = {
         basic.section_a,
         basic.divider,
         basic.section_z,
+        basic.language,
     },
     inactive = {},
 }

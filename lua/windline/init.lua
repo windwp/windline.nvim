@@ -6,6 +6,7 @@ _G.WindLine = _G.WindLine or M
 local themes = require('windline.themes')
 local utils = require('windline.utils')
 local Comp = require('windline.component')
+local click_utils = require('windline.click_utils')
 
 M.state = M.state
     or {
@@ -106,7 +107,7 @@ end
 
 M.show = M.show_normal
 
-M.show_global = function (bufnr, winid)
+M.show_global = function(bufnr, winid)
     bufnr = bufnr or api.nvim_get_current_buf()
     winid = winid or api.nvim_get_current_win()
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
@@ -155,6 +156,7 @@ M.create_comp_list = function(comps_list, colors)
             if not value.created then
                 comp = Comp.create(value)
                 comps_list[key] = comp
+                comp.click = click_utils.add_click_listerner(comp.click)
             end
             comp:setup_hl(colors)
         end
@@ -223,6 +225,7 @@ local default_config = {
 
 M.setup = function(opts)
     M.hl_data = {}
+    click_utils.clear()
     opts = vim.tbl_extend('force', default_config, opts)
     themes.default_theme = opts.theme
     if opts.tabline then
@@ -375,7 +378,7 @@ M.add_autocmd_component = function(component, opts)
         component.name = opts.name or component.name
         opts.name = component.name
     end
-    M.state.auto_comps[component.name]={
+    M.state.auto_comps[component.name] = {
         component = component,
         is_added = false,
         opts = opts,
@@ -415,5 +418,7 @@ M.remove_auto_component = function(opts)
     end
 end
 
+M.on_click = click_utils.click_handler
+M.make_click = click_utils.make_click
 M.render_status = render
 return M

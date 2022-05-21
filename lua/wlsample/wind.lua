@@ -100,6 +100,62 @@ basic.file_name = {
     hl_colors = { 'FilenameFg', 'FilenameBg' },
 }
 
+local status_color = ''
+local change_color = function()
+    local anim_colors = {
+        '#90CAF9',
+        '#64B5F6',
+        '#42A5F5',
+        '#2196F3',
+        '#1E88E5',
+        '#1976D2',
+        '#1565C0',
+        '#0D47A1',
+    }
+    if status_color == 'blue' then
+        anim_colors = {
+            '#F9FBE7',
+            '#F0F4C3',
+            '#E6EE9C',
+            '#DCE775',
+            '#D4E157',
+            '#CDDC39',
+            '#C0CA33',
+            '#AFB42B',
+        }
+        status_color = 'yellow'
+    else
+        status_color = 'blue'
+    end
+
+    animation.stop_all()
+    animation.animation({
+        data = {
+            { 'waveleft1', efffects.list_color(anim_colors, 6) },
+            { 'waveleft2', efffects.list_color(anim_colors, 5) },
+            { 'waveleft3', efffects.list_color(anim_colors, 4) },
+            { 'waveleft4', efffects.list_color(anim_colors, 3) },
+            { 'waveleft5', efffects.list_color(anim_colors, 2) },
+        },
+        timeout = 100,
+        delay = 200,
+        interval = 150,
+    })
+
+    animation.animation({
+        data = {
+            { 'waveright1', efffects.list_color(anim_colors, 2) },
+            { 'waveright2', efffects.list_color(anim_colors, 3) },
+            { 'waveright3', efffects.list_color(anim_colors, 4) },
+            { 'waveright4', efffects.list_color(anim_colors, 5) },
+            { 'waveright5', efffects.list_color(anim_colors, 6) },
+        },
+        timeout = 100,
+        delay = 200,
+        interval = 150,
+    })
+end
+
 local wave_left = {
     text = function()
         return {
@@ -111,6 +167,7 @@ local wave_left = {
             { sep.right_rounded .. ' ', { 'waveleft5', 'wavedefault' } },
         }
     end,
+    click = change_color,
 }
 
 local wave_right = {
@@ -124,6 +181,7 @@ local wave_right = {
             { ' ' .. sep.left_rounded, { 'black', 'waveright5' } },
         }
     end,
+    click = change_color,
 }
 
 local default = {
@@ -152,7 +210,7 @@ local default = {
 
 windline.setup({
     colors_name = function(colors)
-        colors.FilenameFg = colors.white_light
+        colors.FilenameFg = colors.white
         colors.FilenameBg = colors.black_light
 
         colors.wavedefault = colors.white_light
@@ -173,39 +231,7 @@ windline.setup({
         default,
     },
 })
-local blue_colors = {
-    '#90CAF9',
-    '#64B5F6',
-    '#42A5F5',
-    '#2196F3',
-    '#1E88E5',
-    '#1976D2',
-    '#1565C0',
-    '#0D47A1',
-}
 
-animation.animation({
-    data = {
-        { 'waveleft1', efffects.list_color(blue_colors, 6) },
-        { 'waveleft2', efffects.list_color(blue_colors, 5) },
-        { 'waveleft3', efffects.list_color(blue_colors, 4) },
-        { 'waveleft4', efffects.list_color(blue_colors, 3) },
-        { 'waveleft5', efffects.list_color(blue_colors, 2) },
-    },
-    timeout = 100,
-    delay = 200,
-    interval = 150,
-})
-
-animation.animation({
-    data = {
-        { 'waveright1', efffects.list_color(blue_colors, 2) },
-        { 'waveright2', efffects.list_color(blue_colors, 3) },
-        { 'waveright3', efffects.list_color(blue_colors, 4) },
-        { 'waveright4', efffects.list_color(blue_colors, 5) },
-        { 'waveright5', efffects.list_color(blue_colors, 6) },
-    },
-    timeout = 100,
-    delay = 200,
-    interval = 150,
-})
+vim.defer_fn(function()
+    change_color()
+end, 100)

@@ -57,7 +57,7 @@ basic.file_name = {
     hl_colors = {'FilenameFg', 'FilenameBg'}
 }
 
-
+local sep_arrow_left = sep.right_filled
 
 local arrow_left={
     hl_colors = {
@@ -70,16 +70,20 @@ local arrow_left={
     },
     text = function()
         return {
-            {sep.right_filled .. '  ', 'arrow_blue1'},
-            {sep.right_filled .. '  ', 'arrow_blue2'},
-            {sep.right_filled .. '  ', 'arrow_blue3'},
-            {sep.right_filled .. '  ', 'arrow_blue4'},
-            {sep.right_filled .. '  ', 'arrow_blue5'},
-            {sep.right_filled .. '  ', 'arrow_blue6'},
+            {sep_arrow_left .. '  ', 'arrow_blue1'},
+            {sep_arrow_left .. '  ', 'arrow_blue2'},
+            {sep_arrow_left .. '  ', 'arrow_blue3'},
+            {sep_arrow_left .. '  ', 'arrow_blue4'},
+            {sep_arrow_left .. '  ', 'arrow_blue5'},
+            {sep_arrow_left .. '  ', 'arrow_blue6'},
         }
+    end,
+    click = function ()
+        sep_arrow_left = 
+        sep_arrow_left == sep.right_filled and sep.right_rounded or sep.right_filled
     end
 }
-
+local sep_arrow_right = sep.left_filled
 local arrow_right={
     hl_colors = {
         arrow_blue1 = {'arrowright1', 'arrowwhite'},
@@ -91,13 +95,17 @@ local arrow_right={
     },
     text = function()
         return {
-            {'  '..sep.left_filled , 'arrow_blue1'},
-            {'  '..sep.left_filled , 'arrow_blue2'},
-            {'  '..sep.left_filled , 'arrow_blue3'},
-            {'  '..sep.left_filled , 'arrow_blue4'},
-            {'  '..sep.left_filled , 'arrow_blue5'},
+            {'  '..sep_arrow_right , 'arrow_blue1'},
+            {'  '..sep_arrow_right , 'arrow_blue2'},
+            {'  '..sep_arrow_right , 'arrow_blue3'},
+            {'  '..sep_arrow_right , 'arrow_blue4'},
+            {'  '..sep_arrow_right , 'arrow_blue5'},
             {'  '..sep.slant_left , 'arrow_blue6'},
         }
+    end,
+    click = function ()
+        sep_arrow_right = 
+        sep_arrow_right == sep.left_filled and sep.left_rounded or sep.left_filled
     end
 }
 
@@ -129,6 +137,7 @@ local default = {
 
 
 local wave_left={
+    name = "wave_left",
     hl_colors = {
         wave_blue1 = {'black_light', 'waveleft1'},
         wave_blue2 = {'waveleft1', 'waveleft2'},
@@ -146,10 +155,13 @@ local wave_left={
             {sep.right_rounded .. ' ', 'wave_blue5'},
             {sep.right_rounded .. ' ', 'wave_blue6'},
         }
-    end
+    end,
 }
 
+
+local sep_right= sep.left_rounded
 local wave_right={
+    name = "wave_right",
     hl_colors = {
         wave_blue1 = {'waveright1', 'black_light'},
         wave_blue2 = {'waveright2', 'waveright1'},
@@ -160,13 +172,17 @@ local wave_right={
     },
     text = function()
         return {
-            {' '..sep.left_rounded , 'wave_blue1'},
-            {' '..sep.left_rounded , 'wave_blue2'},
-            {' '..sep.left_rounded , 'wave_blue3'},
-            {' '..sep.left_rounded , 'wave_blue4'},
-            {' '..sep.left_rounded , 'wave_blue5'},
-            {' '..sep.left_rounded , 'wave_blue6'},
+            {' '..sep_right , 'wave_blue1'},
+            {' '..sep_right , 'wave_blue2'},
+            {' '..sep_right , 'wave_blue3'},
+            {' '..sep_right , 'wave_blue4'},
+            {' '..sep_right , 'wave_blue5'},
+            {' '..sep_right , 'wave_blue6'},
         }
+    end,
+    click = function ()
+        print("click is not working now")
+        sep_right = sep.right_rounded
     end
 }
 
