@@ -8,6 +8,7 @@ local utils = require('windline.utils')
 local Comp = require('windline.component')
 local click_utils = require('windline.click_utils')
 
+local is_use_winbar = false
 M.state = M.state
     or {
         mode = {}, -- vim mode {normal insert}
@@ -136,6 +137,21 @@ M.show_global = function(bufnr, winid)
     return render(bufnr, winid, line.active, true)
 end
 
+M.show_ft = function (bufnr, winid, filetype)
+    bufnr = bufnr or api.nvim_get_current_buf()
+    winid = winid or api.nvim_get_current_win()
+    local line = M.get_statusline_ft(filetype)
+
+    if vim.api.nvim_get_current_win() == winid then
+        return render(bufnr, winid, line.active)
+    end
+    return render(bufnr, winid, line.inactive or line.active)
+end
+
+M.show_winbar = function (bufnr, winid)
+  return  M.show_ft(bufnr,winid,'winbar')
+end
+
 M.on_win_enter = function(bufnr, winid)
     winid = winid or vim.api.nvim_get_current_win()
     if not vim.api.nvim_win_is_valid(winid) then return false end
@@ -146,6 +162,19 @@ M.on_win_enter = function(bufnr, winid)
         'statusline',
         string.format('%%!v:lua.WindLine.show(%s,%s)', bufnr, winid)
     )
+    if is_use_winbar then
+        if vim.api.nvim_win_get_config(winid).relative == '' then
+            vim.api.nvim_win_set_option(
+                winid,
+                'winbar',
+                string.format(
+                    '%%!v:lua.WindLine.show_winbar(%s,%s)',
+                    bufnr,
+                    winid
+                )
+            )
+        end
+    end
 end
 
 -- create component and init highlight first
@@ -156,7 +185,7 @@ M.create_comp_list = function(comps_list, colors)
             if not value.created then
                 comp = Comp.create(value)
                 comps_list[key] = comp
-                comp.click = click_utils.add_click_listerner(comp.click)
+                comp.click = click_utils.add_click_listerner(comp.click or value.click)
             end
             comp:setup_hl(colors)
         end
@@ -294,6 +323,9 @@ M.add_status = function(lines)
         if utils.is_in_table(cline.filetypes, 'default') then
             M.default_line = cline
             return false
+        end
+        if utils.is_in_table(cline.filetypes,'winbar') then
+            is_use_winbar = true
         end
         return true
     end, M.statusline_ft)
