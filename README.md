@@ -373,6 +373,14 @@ local telescope = {
 }
 ```
 
+
+## winbar
+
+[view](https://github.com/windwp/windline.nvim/wiki/Winbar)
+## Click
+
+[view](https://github.com/windwp/windline.nvim/wiki/Click)
+
 ## Benchmark
 A command to benchmark current status line by rendering it 10.000 time.
 `:WindLineBenchMark`

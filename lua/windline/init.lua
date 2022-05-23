@@ -8,7 +8,6 @@ local utils = require('windline.utils')
 local Comp = require('windline.component')
 local click_utils = require('windline.click_utils')
 
-local is_use_winbar = false
 M.state = M.state
     or {
         mode = {}, -- vim mode {normal insert}
@@ -137,7 +136,7 @@ M.show_global = function(bufnr, winid)
     return render(bufnr, winid, line.active, true)
 end
 
-M.show_ft = function (bufnr, winid, filetype)
+M.show_ft = function(bufnr, winid, filetype)
     bufnr = bufnr or api.nvim_get_current_buf()
     winid = winid or api.nvim_get_current_win()
     local line = M.get_statusline_ft(filetype)
@@ -145,11 +144,12 @@ M.show_ft = function (bufnr, winid, filetype)
     if vim.api.nvim_get_current_win() == winid then
         return render(bufnr, winid, line.active)
     end
+
     return render(bufnr, winid, line.inactive or line.active)
 end
 
-M.show_winbar = function (bufnr, winid)
-  return  M.show_ft(bufnr,winid,'winbar')
+M.show_winbar = function(bufnr, winid)
+    return M.show_ft(bufnr, winid, 'winbar')
 end
 
 M.on_win_enter = function(bufnr, winid)
@@ -162,17 +162,25 @@ M.on_win_enter = function(bufnr, winid)
         'statusline',
         string.format('%%!v:lua.WindLine.show(%s,%s)', bufnr, winid)
     )
-    if is_use_winbar then
-        if vim.api.nvim_win_get_config(winid).relative == '' then
-            vim.api.nvim_win_set_option(
-                winid,
-                'winbar',
-                string.format(
-                    '%%!v:lua.WindLine.show_winbar(%s,%s)',
-                    bufnr,
-                    winid
-                )
-            )
+    local winbar = M.get_statusline_ft('winbar')
+    if winbar then
+        local list_win = vim.api.nvim_tabpage_list_wins(vim.api.nvim_get_current_tabpage())
+        for _, i_winid in pairs(list_win) do
+            if vim.api.nvim_win_get_config(i_winid).relative == '' then
+                if not winbar.enable or winbar.enable(i_winid) and i_winid == winid then
+                    vim.api.nvim_win_set_option(
+                        winid,
+                        'winbar',
+                        string.format(
+                            '%%!v:lua.WindLine.show_winbar(%s,%s)',
+                            bufnr,
+                            winid
+                        )
+                    )
+                else
+                    vim.api.nvim_win_set_option(i_winid, 'winbar', '')
+                end
+            end
         end
     end
 end
@@ -186,6 +194,7 @@ M.create_comp_list = function(comps_list, colors)
                 comp = Comp.create(value)
                 comps_list[key] = comp
                 comp.click = click_utils.add_click_listerner(comp.click or value.click)
+
             end
             comp:setup_hl(colors)
         end
@@ -227,7 +236,7 @@ M.get_colors = function(reload)
     -- use it to update modify colors on dynamic component when ColorScheme happen
     if M.state.runtime_colors then
         for _, func_color in pairs(M.state.runtime_colors) do
-            colors = vim.tbl_extend("force", colors, func_color(colors))
+            colors = vim.tbl_extend('force', colors, func_color(colors))
         end
     end
     M.state.colors = colors
@@ -242,6 +251,23 @@ end
 M.on_vimenter = function()
     themes.clear_cache()
     M.on_colorscheme()
+end
+
+M.on_set_laststatus = function()
+    if vim.go.laststatus == 3 then
+        M.show = M.show_global
+        M.get_status_width = function(_)
+            return vim.o.columns
+        end
+    else
+        M.show = M.show_normal
+        M.get_status_width = api.nvim_win_get_width
+    end
+end
+
+M.on_ft = function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    M.check_autocmd_component(bufnr)
 end
 
 ---@class WLConfig
@@ -274,22 +300,6 @@ M.setup = function(opts)
     M.setup_event()
 end
 
-M.on_set_laststatus = function ()
-    if vim.go.laststatus == 3 then
-        M.show = M.show_global
-        M.get_status_width = function(_)
-            return vim.o.columns
-        end
-    else
-        M.show = M.show_normal
-        M.get_status_width = api.nvim_win_get_width
-    end
-end
-
-M.on_ft = function ()
-    local bufnr = vim.api.nvim_get_current_buf()
-    M.check_autocmd_component(bufnr)
-end
 
 M.setup_event = function()
     vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
@@ -308,14 +318,24 @@ M.setup_event = function()
     api.nvim_exec("command! -nargs=* WindLineFloatToggle lua require('wlfloatline').toggle()", false)
 end
 
+M.remove_status_by_ft = function (filetypes)
+    for _, ft in pairs(filetypes) do
+        M.statusline_ft = vim.tbl_filter(function (cline)
+            return not utils.is_in_table(cline.filetypes, ft)
+        end,M.statusline_ft)
+    end
+end
+
 M.add_status = function(lines)
     assert(lines ~= nil, 'You need to define a statuslines.')
-    if lines.filetypes then
-        table.insert(M.statusline_ft, lines)
-    else
-        for _, value in pairs(lines) do
-            if value.filetypes then
-                table.insert(M.statusline_ft, value)
+    if lines and lines.filetypes then
+        lines = { lines }
+    end
+    for _, value in pairs(lines) do
+        if value.filetypes then
+            table.insert(M.statusline_ft, value)
+            if value.colors_name then
+                M.state.runtime_colors[value.filetypes[1]] = value.colors_name
             end
         end
     end
@@ -324,12 +344,17 @@ M.add_status = function(lines)
             M.default_line = cline
             return false
         end
-        if utils.is_in_table(cline.filetypes,'winbar') then
-            is_use_winbar = true
-        end
         return true
     end, M.statusline_ft)
     M.setup_hightlight()
+end
+
+--- dynamic change color it will not change the color with event ColorScheme
+M.change_colors = function(colors)
+    for key, value in pairs(colors) do
+        M.state.colors[key] = value
+    end
+    M.setup_hightlight(M.state.colors)
 end
 
 ---add component to status
