@@ -1,12 +1,17 @@
-
 local M = {}
+local function bench(iterations, f, ...)
+  local start_time = vim.loop.hrtime()
+  for _ = 1, iterations do
+    f(...)
+  end
+  return (vim.loop.hrtime() - start_time) / 1E9
+end
 --- a benchmark current statusline. it need plenary.nvim
 M.benchmark = function()
     local Comp = require('windline.component')
     local windline = require('windline')
     local api = vim.api
     local num = 1e4
-    local bench = require('plenary.profile').benchmark
     local statusline = ''
     local bufnr = api.nvim_get_current_buf()
     local winid = api.nvim_get_current_win()
