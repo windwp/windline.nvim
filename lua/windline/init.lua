@@ -117,7 +117,7 @@ M.show_global = function(bufnr, winid)
         if
             utils.is_in_table(M.state.config.global_skip_filetypes, ft)
             or (
-                api.nvim_win_get_config(winid).relative ~= ''
+            api.nvim_win_get_config(winid).relative ~= ''
                 and not check_line.global_show_float
             )
         then
@@ -165,9 +165,10 @@ M.on_win_enter = function(bufnr, winid)
     local winbar = M.get_statusline_ft('winbar')
     if winbar then
         local list_win = vim.api.nvim_tabpage_list_wins(vim.api.nvim_get_current_tabpage())
+        -- it need to re set winbar on all another window
         for _, i_winid in pairs(list_win) do
-            if vim.api.nvim_win_get_config(i_winid).relative == '' then
-                if not winbar.enable or winbar.enable(i_winid) and i_winid == winid then
+            if not winbar.enable or winbar.enable(bufnr, winid) and i_winid == winid then
+                if vim.api.nvim_win_get_config(winid).relative == '' then
                     vim.api.nvim_win_set_option(
                         winid,
                         'winbar',
@@ -177,9 +178,9 @@ M.on_win_enter = function(bufnr, winid)
                             winid
                         )
                     )
-                else
-                    vim.api.nvim_win_set_option(i_winid, 'winbar', '')
                 end
+            else
+                vim.api.nvim_win_set_option(i_winid, 'winbar', '')
             end
         end
     end
@@ -318,11 +319,11 @@ M.setup_event = function()
     api.nvim_exec("command! -nargs=* WindLineFloatToggle lua require('wlfloatline').toggle()", false)
 end
 
-M.remove_status_by_ft = function (filetypes)
+M.remove_status_by_ft = function(filetypes)
     for _, ft in pairs(filetypes) do
-        M.statusline_ft = vim.tbl_filter(function (cline)
+        M.statusline_ft = vim.tbl_filter(function(cline)
             return not utils.is_in_table(cline.filetypes, ft)
-        end,M.statusline_ft)
+        end, M.statusline_ft)
     end
 end
 
@@ -365,7 +366,7 @@ end
 --   position   string|number position can be an index or a name of previous component
 ---     position == left add  component before a first divider (%=)
 ---     position == right add component after a first divider (%=)
----  color_name table    a modifer colors to add to a new component
+---  colors_name table    a modifer colors to add to a new component
 ---  autocmd    boolean  It use an auto command to add component to default statusline.
 M.add_component = function(component, opt)
     if opt.autocmd then
@@ -407,7 +408,7 @@ M.add_component = function(component, opt)
         end
         M.setup_hightlight()
     else
-        vim.api.nvim_echo({{string.format("Cant' find a position %s",opt.position),'ErrorMsg'}},true,{})
+        vim.api.nvim_echo({ { string.format("Cant' find a position %s", opt.position), 'ErrorMsg' } }, true, {})
     end
 end
 
