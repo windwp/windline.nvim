@@ -20,6 +20,7 @@ local state = WindLine.state
 
 local default_config = {
     interval = 300,
+    is_nocmdheight = false,
     ui = {
         active_char = '▁',
         active_color = 'blue',
@@ -386,6 +387,10 @@ M.floatline_hide = function(close)
 end
 
 M.floatline_on_cmd_leave = function()
+    if state.config.is_nocmdheight then
+        M.floatline_on_resize(-1)
+        return
+    end
     if state.floatline.is_hide then
         state.floatline.is_hide = false
         if vim.v.event.cmdtype:match('[%:%-]') or vim.o.cmdheight == 0 then
@@ -396,9 +401,10 @@ M.floatline_on_cmd_leave = function()
 end
 
 M.floatline_on_cmd_enter = function()
-    if vim.o.cmdheight == 0 then
+    if state.config.is_nocmdheight then
         state.floatline.is_hide = true
-        M.floatline_on_resize(1)
+        M.floatline_on_resize(0)
+        vim.cmd("redraw")
         return
     end
     if vim.v.event.cmdtype:match('[%:%-]') then
@@ -432,6 +438,9 @@ M.setup = function(opts)
     WindLine.floatline_show = M.floatline_show
     WindLine.floatline_on_resize = M.floatline_on_resize
     WindLine.floatline_fix_command = M.floatline_fix_command
+    if vim.o.cmdheight == 0 then
+        state.config.is_nocmdheight = true
+    end
 
     vim.cmd([[set statusline=%!v:lua.WindLine.floatline_show()]])
 
