@@ -27,6 +27,9 @@ local function color_distance(r1, g1, b1, r2, g2, b2)
 end
 
 local function rgb2cterm(hex_color)
+    if type(hex_color) == "number" then
+        return
+    end
     local r = tonumber(hex_color:sub(2, 3), 16)
     local g = tonumber(hex_color:sub(4, 5), 16)
     local b = tonumber(hex_color:sub(6, 7), 16)
@@ -36,6 +39,7 @@ local function rgb2cterm(hex_color)
     local dist2 = color_distance(r, g, b, r2, g2, b2)
     return dist1 < dist2 and idx1 or idx2
 end
-return{
+
+return {
     rgb2cterm = rgb2cterm
 }
