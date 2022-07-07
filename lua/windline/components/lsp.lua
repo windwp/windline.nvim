@@ -17,8 +17,9 @@ local get_diagnostics_count = function(bufnr)
         count[vim.diagnostic.severity.HINT]
 end
 
+
 local function is_lsp(bufnr)
-    return next(vim.lsp.buf_get_clients(bufnr)) ~= nil
+    return next(vim.lsp.get_active_clients({ bufnr = bufnr or vim.api.nvim_get_current_buf })) ~= nil
 end
 
 local lsp_client_names = function(bufnr, opt)
@@ -27,7 +28,7 @@ local lsp_client_names = function(bufnr, opt)
     local icon = opt.icon or ' '
     local sep = opt.separator or '|'
 
-    for _, client in pairs(vim.lsp.buf_get_clients(bufnr or 0)) do
+    for _, client in pairs(vim.lsp.get_active_clients({ bufnr = bufnr or vim.api.nvim_get_current_buf() })) do
         clients[#clients + 1] = client.name
     end
     if next(clients) then
@@ -54,10 +55,6 @@ M.check_custom_lsp = function(opt)
             else
                 state.comp.lsp = 2
             end
-        else
-            state.comp.lsp_error = 0
-            state.comp.lsp_warning = 0
-            state.comp.lsp_hint = 0
         end
         return state.comp.lsp ~= nil
     end
