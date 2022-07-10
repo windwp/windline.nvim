@@ -19,7 +19,7 @@ end
 
 
 local function is_lsp(bufnr)
-    return next(vim.lsp.get_active_clients({ bufnr = bufnr or vim.api.nvim_get_current_buf })) ~= nil
+    return next(vim.lsp.get_active_clients({ bufnr = bufnr or vim.api.nvim_get_current_buf() })) ~= nil
 end
 
 local lsp_client_names = function(bufnr, opt)
