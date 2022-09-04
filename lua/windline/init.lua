@@ -26,10 +26,11 @@ local render = function(bufnr, winid, items, cache)
     M.state.mode = mode()
     Comp.reset()
     local status = ''
-    winid = winid or 0
-    local win_width = api.nvim_win_is_valid(winid) and M.get_status_width(winid)
+    winid = winid and api.nvim_win_is_valid(winid) and winid
+        or api.nvim_get_current_win()
+    local win_width = M.get_status_width(winid) or 0
     for _, comp in pairs(items) do
-        if win_width and (comp.width == nil or comp.width < win_width) then
+        if comp.width == nil or comp.width < win_width then
             status = status .. comp:render(bufnr, winid, win_width)
         end
     end
@@ -59,8 +60,7 @@ M.show_normal = function(bufnr, winid)
 
     if vim.g.statusline_winid ~= cur_win then
         -- in active
-        if
-            M.last_win == vim.g.statusline_winid
+        if M.last_win == vim.g.statusline_winid
             and api.nvim_win_get_config(cur_win).relative ~= ''
         then
             M.state.last_status_win = nil
@@ -109,13 +109,13 @@ M.show = M.show_normal
 
 M.show_global = function(bufnr, winid)
     bufnr = bufnr or api.nvim_get_current_buf()
-    winid = winid or api.nvim_get_current_win()
+    winid = winid and api.nvim_win_is_valid(winid) and winid
+        or api.nvim_get_current_win()
     local ft = api.nvim_buf_get_option(bufnr, 'filetype')
     local check_line = M.get_statusline_ft(ft) or {}
 
     if vim.g.statusline_winid == winid then
-        if
-            utils.is_in_table(M.state.config.global_skip_filetypes, ft)
+        if utils.is_in_table(M.state.config.global_skip_filetypes, ft)
             or (
             api.nvim_win_get_config(winid).relative ~= ''
                 and not check_line.global_show_float
