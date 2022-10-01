@@ -42,13 +42,11 @@ M.clear_cache = function()
     cache_theme = {}
 end
 
-M.get_hl_color = function(hl)
-    local cmd = vim.api.nvim_exec('highlight ' .. hl, true)
-    local _, _, bg = string.find(cmd, 'guibg%=(%#%w*)')
-    local _, _, fg = string.find(cmd, 'guifg%=(%#%w*)')
-    if string.match(cmd, 'gui%=reverse') then
-        return bg, fg
-    end
+M.get_hl_color = function(group_name)
+    local ok, hl = pcall(vim.api.nvim_get_hl_by_name, group_name, true)
+    if not ok then return nil, nil end
+    local fg = hl.foreground and '#' .. bit.tohex(hl.foreground, 6)
+    local bg = hl.background and '#' .. bit.tohex(hl.background, 6)
     return fg, bg
 end
 
