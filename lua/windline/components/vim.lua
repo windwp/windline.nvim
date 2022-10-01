@@ -27,16 +27,17 @@ local setup_search_count = function()
     end
     is_sc_setup = true
 
-    vim.api.nvim_exec(
-        [[
-        aug WLSearchLens
-            au!
-            au BufEnter * lua require('windline.components.vim').cmdl_search_enter()
-            au CmdlineLeave [/\?] lua require('windline.components.vim').cmdl_search_leave()
-        aug END
-    ]],
-        false
-    )
+    local group = vim.api.nvim_create_augroup("WLSearchLens", { clear = true })
+    vim.api.nvim_create_autocmd("BufEnter", {
+        group = group,
+        pattern = "*",
+        callback = M.cmdl_search_enter
+    })
+    vim.api.nvim_create_autocmd("CmdlineLeave", {
+        group = group,
+        pattern = "[/\\?]",
+        callback = M.cmdl_search_leave
+    })
 end
 
 M.search_count = function(opt)

@@ -109,12 +109,10 @@ M.on_vimenter = function()
 end
 M.stop_all = Animation.stop_all
 
-vim.api.nvim_exec(
-    [[augroup WLAnimation
-    au!
-    au VimEnter * lua require('wlanimation').on_vimenter()
-    augroup END]],
-    false
-)
+vim.api.nvim_create_autocmd("VimEnter", {
+    group = vim.api.nvim_create_augroup("WLAnimation", { clear = true }),
+    pattern = "*",
+    command = "lua require('wlanimation').on_vimenter()"
+})
 
 return M

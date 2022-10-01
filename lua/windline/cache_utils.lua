@@ -2,6 +2,7 @@
 --- it save data on buffer and only update when event happen
 
 local M = {}
+local api = vim.api
 
 --- store an auto events if value equal false mean it need to update in a next call
 --- it doesn't update on autocmd it update when statusline call a render so if
@@ -38,21 +39,13 @@ local function cache_func(auto_event, variable_name, action, loading_action, vim
     if d_check[variable_name] == nil then
         d_check[variable_name] = false
         local target = auto_event:match('User') and '' or '*'
-        vim.api.nvim_exec(
-            string.format(
-                [[
-                augroup WL%s
-                au!
-                au %s %s lua WindLine.cache_buffer_cb('%s')
-                augroup END
-                ]],
-                variable_name,
-                auto_event,
-                target,
-                variable_name
-            ),
-            false
-        )
+        api.nvim_create_autocmd(auto_event, {
+            group = api.nvim_create_augroup('WL' .. variable_name, { clear = true }),
+            pattern = target,
+            callback = function()
+                WindLine.cache_buffer_cb(variable_name)
+            end
+        })
     end
 
     local func = function(bufnr, winid, width)
@@ -96,12 +89,12 @@ end
 ---@param action function action to do on buffer
 ---@return function(bufnr, winr)
 M.cache_on_global = function(auto_event, global_variable_name, action)
-   return cache_func(auto_event, global_variable_name, action, nil, vim.g)
+    return cache_func(auto_event, global_variable_name, action, nil, vim.g)
 end
 
 M.cache_buffer_cb = function(identifier)
     d_check[identifier] = false
-    local bufnr = vim.api.nvim_get_current_buf()
+    local bufnr = api.nvim_get_current_buf()
     if d_value[bufnr] then
         d_value[bufnr] = {}
     end
@@ -149,4 +142,4 @@ M.set_cache_buffer = function(bufnr, variable_name, value)
 end
 
 _G.WindLine.cache_buffer_cb = M.cache_buffer_cb
-return  M
+return M

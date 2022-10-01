@@ -303,20 +303,36 @@ end
 
 
 M.setup_event = function()
-    vim.cmd([[set statusline=%!v:lua.WindLine.show()]])
-    api.nvim_exec(
-        [[augroup WindLine
-            au!
-            au BufWinEnter,WinEnter * lua WindLine.on_win_enter()
-            au FileType * lua WindLine.on_ft()
-            au VimEnter * lua WindLine.on_vimenter()
-            au ColorScheme * lua WindLine.on_colorscheme()
-            au OptionSet laststatus lua WindLine.on_set_laststatus() 
-        augroup END]],
-        false
-    )
-    api.nvim_exec("command! -nargs=* WindLineBenchmark lua require('windline.benchmark').benchmark()", false)
-    api.nvim_exec("command! -nargs=* WindLineFloatToggle lua require('wlfloatline').toggle()", false)
+    vim.opt.statusline = "%!v:lua.WindLine.show()"
+    local group = api.nvim_create_augroup("WindLine", { clear = true })
+    api.nvim_create_autocmd("BufWinEnter,WinEnter", {
+        group = group,
+        pattern = "*",
+        callback = function() M.on_win_enter() end
+    })
+    api.nvim_create_autocmd("FileType", {
+        group = group,
+        pattern = "*",
+        callback = function() M.on_ft() end
+    })
+    api.nvim_create_autocmd("VimEnter", {
+        group = group,
+        pattern = "*",
+        callback = function() M.on_vimenter() end
+    })
+    api.nvim_create_autocmd("ColorScheme", {
+        group = group,
+        pattern = "*",
+        callback = function() M.on_colorscheme() end
+    })
+    api.nvim_create_autocmd("OptionSet", {
+        group = group,
+        pattern = "laststatus",
+        callback = function() M.on_set_laststatus() end
+    })
+    api.nvim_create_user_command("WindLineBenchmark", "lua require('windline.benchmark').benchmark()", {})
+    api.nvim_create_user_command("WindLineFloatToggle", "lua require('wlfloatline').toggle()", {})
+
 end
 
 M.remove_status_by_ft = function(filetypes)
