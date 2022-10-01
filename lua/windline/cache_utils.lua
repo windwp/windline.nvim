@@ -26,7 +26,7 @@ M.LOADING_STATE = 9999
 --- event on another buffer is fine
 --- some event like FileType don't work on autocommands with buffer
 
----@param auto_event string event when buffer value change
+---@param auto_event string|table event when buffer value change
 ---@param variable_name string value will save on vim_data
 ---@param action function action to do on buffer
 ---@param loading_action function when value equal state LOADING_STATE
@@ -74,7 +74,7 @@ end
 
 --- reduce call function on render status line
 --- it cache value on buffer variable and calculte when event change
----@param auto_event string event when buffer value change
+---@param auto_event string|table event when buffer value change
 ---@param buf_variable_name string it will save cache on vim.b[variable_name]
 ---@param action function action to do on buffer
 ---@return function(bufnr, winr)
@@ -84,7 +84,7 @@ end
 
 --- reduce call function on render status line
 --- it cache value on global variable and calculte when event change
----@param auto_event string event when buffer value change
+---@param auto_event string|table event when buffer value change
 ---@param global_variable_name string it will save cache on vim.g[variable_name]
 ---@param action function action to do on buffer
 ---@return function(bufnr, winr)

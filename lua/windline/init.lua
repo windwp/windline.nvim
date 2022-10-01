@@ -305,7 +305,7 @@ end
 M.setup_event = function()
     vim.opt.statusline = "%!v:lua.WindLine.show()"
     local group = api.nvim_create_augroup("WindLine", { clear = true })
-    api.nvim_create_autocmd("BufWinEnter,WinEnter", {
+    api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
         group = group,
         pattern = "*",
         callback = function() M.on_win_enter() end
