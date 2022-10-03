@@ -405,6 +405,7 @@ M.add_component = function(component, opt)
             end
         end
         if not added then
+            M.state.mode = mode()
             local divider_pos = utils.find_divider_index(status_line)
             if divider_pos then
                 if opt.position == 'left' then
