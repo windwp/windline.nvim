@@ -28,7 +28,7 @@ end
 
 local function rgb2cterm(hex_color)
     if type(hex_color) == "number" then
-        return
+        return hex_color
     end
     local r = tonumber(hex_color:sub(2, 3), 16)
     local g = tonumber(hex_color:sub(4, 5), 16)

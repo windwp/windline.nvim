@@ -70,36 +70,15 @@ local api = vim.api
 local rgb2cterm = not vim.go.termguicolors
     and require('windline.cterm_utils').rgb2cterm
 
-if vim.version().minor >= 7 then
-    M.highlight = function(group, color)
-        if rgb2cterm then
-            color.ctermfg = color.fg and rgb2cterm(color.fg)
-            color.ctermbg = color.bg and rgb2cterm(color.bg)
-        end
-        api.nvim_set_hl(0, group, color)
+M.highlight = function(group, color)
+    if rgb2cterm then
+        color.ctermfg = color.fg and rgb2cterm(color.fg)
+        color.ctermbg = color.bg and rgb2cterm(color.bg)
     end
-else
-    M.highlight = function(group, color)
-        local c = {
-            guifg = color.fg,
-            guibg = color.bg,
-            gui = color.bold and 'bold',
-        }
-        if rgb2cterm then
-            c.ctermfg = color.fg and rgb2cterm(color.fg)
-            c.ctermbg = color.bg and rgb2cterm(color.bg)
-        end
-        local options = {}
-        for k, v in pairs(c) do
-            table.insert(options, string.format('%s=%s', k, v))
-        end
-        vim.api.nvim_command(
-            string.format([[highlight  %s %s]], group, table.concat(options, ' '))
-        )
-    end
+    api.nvim_set_hl(0, group, color)
 end
 
-M.get_color = function (colors, name)
+M.get_color = function(colors, name)
     local c = colors[name]
     if c == nil then
         print('WL' .. (name or '') .. ' color is not defined ')
@@ -126,8 +105,8 @@ M.hl = function(tbl, colors, is_runtime)
         return name
     end
     colors = colors or WindLine.state.colors
-    local fg = M.get_color(colors,tbl[1])
-    local bg = M.get_color(colors,tbl[2])
+    local fg = M.get_color(colors, tbl[1])
+    local bg = M.get_color(colors, tbl[2])
 
     local style = {
         bg = bg,
