@@ -195,7 +195,6 @@ M.create_comp_list = function(comps_list, colors)
                 comp = Comp.create(value)
                 comps_list[key] = comp
                 comp.click = click_utils.add_click_listerner(comp.click or value.click)
-
             end
             comp:setup_hl(colors)
         end
@@ -422,8 +421,9 @@ M.add_component = function(component, opt)
         if component.name and opt.colors_name then
             M.state.runtime_colors = M.state.runtime_colors or {}
             M.state.runtime_colors[component.name] = opt.colors_name
+            M.state.colors = vim.tbl_extend('force', M.state.colors, opt.colors_name(M.state.colors))
         end
-        M.setup_hightlight()
+        M.setup_hightlight(M.state.colors)
     else
         vim.api.nvim_echo({ { string.format("Cant' find a position %s", opt.position), 'ErrorMsg' } }, true, {})
     end
