@@ -381,6 +381,7 @@ end
 --   position   string|number position can be an index or a name of previous component
 ---     position == left add  component before a first divider (%=)
 ---     position == right add component after a first divider (%=)
+---  auto_remove auto remove old component with same name
 ---  colors_name table    a modifer colors to add to a new component
 ---  autocmd    boolean  It use an auto command to add component to default statusline.
 M.add_component = function(component, opt)
@@ -388,6 +389,9 @@ M.add_component = function(component, opt)
         opt.autocmd = false
         M.add_autocmd_component(component, opt)
         return
+    end
+    if opt.auto_remove then
+        M.remove_component(opt)
     end
     local line = M.get_statusline_ft(opt.filetype or '') or M.default_line
     local added = false
@@ -453,6 +457,10 @@ M.add_autocmd_component = function(component, opts)
         component.name = opts.name or component.name
         opts.name = component.name
     end
+    if opts.auto_remove then
+        M.remove_auto_component(opts)
+        M.remove_component(opts)
+    end
     M.state.auto_comps[component.name] = {
         component = component,
         is_added = false,
@@ -482,12 +490,9 @@ M.check_autocmd_component = function(bufnr)
 end
 
 M.remove_auto_component = function(opts)
-    for index, value in pairs(M.state.auto_comps) do
-        if value.opts.name == opts.name then
-            table.remove(M.state.auto_comps, index)
-            break
-        end
-    end
+    M.state.auto_comps = vim.tbl_filter(function(value)
+        return value.opts.name ~= opts.name
+    end, M.state.auto_comps)
     if #M.state.auto_comps == 0 then
         M.state.auto_comps = nil
     end

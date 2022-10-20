@@ -141,5 +141,12 @@ M.set_cache_buffer = function(bufnr, variable_name, value)
     d_value[bufnr][variable_name] = value
 end
 
+M.get_cache_buffer = function(bufnr, variable_name)
+    if not d_value[bufnr] then
+        d_value[bufnr] = {}
+    end
+    return d_value[bufnr][variable_name]
+end
+
 _G.WindLine.cache_buffer_cb = M.cache_buffer_cb
 return M
