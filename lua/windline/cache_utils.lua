@@ -38,7 +38,17 @@ local function cache_func(auto_event, variable_name, action, loading_action, vim
     end
     if d_check[variable_name] == nil then
         d_check[variable_name] = false
-        local target = auto_event:match('User') and '' or '*'
+        local target = '*'
+        if type(auto_event) == 'string' then
+            target = auto_event:match('User') and ''
+        else
+            for _, ev in ipairs(auto_event) do
+                if ev:match('User') then
+                    target = ''
+                    break
+                end
+            end
+        end
         api.nvim_create_autocmd(auto_event, {
             group = api.nvim_create_augroup('WL' .. variable_name, { clear = true }),
             pattern = target,
