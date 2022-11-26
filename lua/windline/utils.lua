@@ -137,17 +137,20 @@ end
 
 M.get_unique_bufname = function(bufnr, max_length)
     max_length = max_length or 24
-    local bufname = vim.api.nvim_buf_get_name(bufnr)
-    local all_bufers = vim.tbl_filter(function(buffer)
-        return buffer.listed == 1 and buffer.name ~= bufname
-    end, vim.fn.getbufinfo())
-    local all_name = vim.tbl_map(function(buffer)
-        return string.reverse(buffer.name)
-    end, all_bufers)
-    local tmp_name = string.reverse(bufname)
+    local reverse_names = {}
+    for _, ibufnr in ipairs(api.nvim_list_bufs()) do
+        if ibufnr ~= bufnr and api.nvim_buf_is_loaded(ibufnr) then
+            local listted = api.nvim_buf_get_option(ibufnr, "buflisted")
+            if listted then
+                reverse_names[#reverse_names + 1] = string.reverse(api.nvim_buf_get_name(ibufnr))
+            end
+        end
+    end
+
+    local tmp_name = string.reverse(api.nvim_buf_get_name(bufnr))
     local position = 1
-    if #all_name > 1 then
-        for _, other_name in pairs(all_name) do
+    if #reverse_names > 1 then
+        for _, other_name in pairs(reverse_names) do
             for i = 1, #tmp_name do
                 if tmp_name:sub(i, i) ~= other_name:sub(i, i) then
                     if i > position then
