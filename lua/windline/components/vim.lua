@@ -4,18 +4,14 @@ local M = {}
 M.cmdl_search_leave = function()
     -- need to wait cmd finish search to get last search pattern
     vim.defer_fn(function()
-        local pattern = vim.fn.getreg('/')
-        pcall(vim.fn.searchcount, { pattern = pattern })
+        pcall(vim.fn.searchcount, { recompute = 1 })
     end, 10)
 end
 
 M.cmdl_search_enter = function()
     -- recompute when change to new buffer
     if vim.v.hlsearch == 1 and vim.api.nvim_win_get_config(0).relative == '' then
-        local pattern = vim.fn.getreg('/')
-        if pattern and #pattern > 1 then
-            pcall(vim.fn.searchcount, { pattern = pattern })
-        end
+        pcall(vim.fn.searchcount, { recompute = 1 })
     end
 end
 
