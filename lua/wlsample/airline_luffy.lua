@@ -141,10 +141,11 @@ animation.stop_all()
 animation.basic_animation({
     timeout = nil,
     delay = 200,
-    interval = 150,
+    interval = 200,
     effect = efffects.list_text(luffy),
     on_tick = function(value)
         luffy_text = value
+        vim.cmd.redrawstatus()
     end
 })
 

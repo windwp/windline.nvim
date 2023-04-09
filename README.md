@@ -97,6 +97,13 @@ require('wlsample.wind')
 ### [luffy](./lua/wlsample/airline_luffy.lua)
 ![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
 
+### [cava]
+![cava animation](https://github.com/windwp/windline.nvim/wiki/screenshot/cava.gif)
+```lua
+-- only support linux it need install cava
+lua require("windline.components.cava").toggle()
+```
+
 ```lua
 require('wlsample.airline_luffy')
 ```
@@ -390,9 +397,3 @@ A command to benchmark current status line by rendering it 10.000 time.
 
 ## Document
 [wiki](https://github.com/windwp/windline.nvim/wiki/)
-
-## Floating window statusline (Deprecated)
-__If you are using nvim > 0.7 you should use set laststatus=3 to enable global
-statusline__
-
- [MoreInfo](https://github.com/windwp/windline.nvim/wiki/Floating-statusline)
