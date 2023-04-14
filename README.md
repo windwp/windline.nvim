@@ -97,16 +97,18 @@ require('wlsample.wind')
 ### [luffy](./lua/wlsample/airline_luffy.lua)
 ![luffy animation](https://github.com/windwp/windline.nvim/wiki/screenshot/airline_luffy.gif)
 
+```lua
+require('wlsample.airline_luffy')
+```
+
 ### [cava]
 ![cava animation](https://github.com/windwp/windline.nvim/wiki/screenshot/cava.gif)
+
 ```lua
 -- only support linux it need install cava
 lua require("windline.components.cava").toggle()
 ```
 
-```lua
-require('wlsample.airline_luffy')
-```
 
 Remember windline can display  a different status line per file type,
 so you can have bubble line for markdown or latex file, and airline
