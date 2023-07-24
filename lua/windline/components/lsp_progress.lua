@@ -34,7 +34,7 @@ M.lsp_progress = function(opts)
                 if val.kind == 'begin' then
                     progess.message = opts.message.commenced
                     progess.title = val.title and (val.title .. ' ') or ''
-                elseif val.kind == 'report' then
+                elseif val.kind == 'report' and val.message then
                     progess.message = progess.title .. val.message
                     progess.percentage = val.percentage or 0
                 elseif val.kind == 'end' then

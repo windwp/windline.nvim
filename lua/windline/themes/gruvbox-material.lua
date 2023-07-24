@@ -23,8 +23,8 @@ local colors = {
     ActiveFg      = '#928b95',
     ActiveBg      = '#282828',
 
-    TabSelectionBg= "#b8bb26",
-    TabSelectionFg= "#282828"
+    TabSelectionBg= "#3c3836",
+    TabSelectionFg= "#fabd2f"
 }
 
 
