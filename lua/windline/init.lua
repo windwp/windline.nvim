@@ -287,7 +287,6 @@ M.setup = function(opts)
         require('wltabline').setup(opts.tabline)
     end
     require('windline.cache_utils').reset()
-    if M.state.floatline then WindLine.floatline_disable() end
     if M.anim_reset then M.anim_reset() end
 
     M.state.config.colors_name = opts.colors_name
@@ -330,7 +329,6 @@ M.setup_event = function()
         callback = function() M.on_set_laststatus() end
     })
     api.nvim_create_user_command("WindLineBenchmark", "lua require('windline.benchmark').benchmark()", {})
-    api.nvim_create_user_command("WindLineFloatToggle", "lua require('wlfloatline').toggle()", {})
 
 end
 

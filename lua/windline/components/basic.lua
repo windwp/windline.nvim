@@ -11,15 +11,15 @@ M.line_col = [[ %3l:%-2c ]]
 M.progress = [[%3p%%]]
 M.full_file_name = '%f'
 
-M.progress_lua = function(_,_,_, is_floatline)
-    if is_floatline == nil then  return M.progress end
+M.progress_lua = function(_,_,_, is_global)
+    if is_global == nil then  return M.progress end
     local line_fraction = math.floor(vim.fn.line('.') / vim.fn.line('$') * 100)
         .. '%%'
     return string.format("%5s",line_fraction)
 end
 
-M.line_col_lua = function(_, _,_,is_floatline)
-    if is_floatline == nil then  return M.line_col end
+M.line_col_lua = function(_, _,_,is_global)
+    if is_global == nil then  return M.line_col end
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
     return string.format(' %3s:%-2s ', row, col + 1)
 end
