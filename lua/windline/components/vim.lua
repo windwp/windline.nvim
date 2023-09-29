@@ -55,7 +55,7 @@ M.search_count = function(opt)
             return ''
         end
 
-        if result.incomplete == 1 then -- timed out
+        if result.incomplete == 1 then     -- timed out
             return ' ?/?? '
         elseif result.incomplete == 2 then -- max count exceeded
             if result.total > result.maxcount and result.current > result.maxcount then
@@ -67,4 +67,19 @@ M.search_count = function(opt)
         return string.format(' %d/%d ', result.current or '', result.total or '')
     end
 end
+
+local state = _G.WindLine.state
+M.selection_count = function(format)
+    return function()
+        if state.mode[2] == 'Visual' then
+            local _, ls, cs = unpack(vim.fn.getpos('v'))
+            local _, le, ce = unpack(vim.fn.getpos('.'))
+            if le - ls ~= 0 then
+                return string.format(format or " %s ", math.abs(le - ls) + 1)
+            end
+            return string.format(format or " %s ", math.abs(ce - cs) + 1)
+        end
+    end
+end
+
 return M
