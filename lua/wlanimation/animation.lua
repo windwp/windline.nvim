@@ -1,7 +1,7 @@
 ---@diagnostic disable: undefined-field
-local utils = require('wlanimation.utils')
 local hl_anim = require('wlanimation.highlight_anim')
 local basic_anim = require('wlanimation.basic_anim')
+local uv = vim.uv or vim.loop
 
 ---@class AnimationOption
 ---@field type string 'basic' 'highlight' or 'blank'
@@ -64,9 +64,9 @@ function Animation:run()
         self:stop(true)
     end
     self.is_run = true
-    local timer = vim.loop.new_timer()
+    local timer = uv.new_timer()
     local tick = self.__tick
-    local start_time = vim.loop.hrtime()
+    local start_time = uv.hrtime()
     timer:start(
         self.delay,
         self.interval,
@@ -74,7 +74,7 @@ function Animation:run()
             if not self.is_run then
                 return
             end
-            local ctime = vim.loop.hrtime()
+            local ctime = uv.hrtime()
             if self.timeout and ctime > start_time + self.timeout then
                 self:stop()
                 return
@@ -93,7 +93,7 @@ function Animation:stop(is_not_remove)
     self.is_run = false
     if self.__timer then
         self.__timer:stop()
-        vim.loop.timer_stop(self.__timer)
+        uv.timer_stop(self.__timer)
     end
     self.__timer = nil
     if self.__stop then

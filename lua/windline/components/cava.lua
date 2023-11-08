@@ -1,7 +1,7 @@
 ---@diagnostic disable: need-check-nil
 local windline = require('windline')
 local cava_text = "OK"
-local uv = vim.loop
+local uv = vim.uv or vim.loop
 if _G._cava_stop then
     _G._cava_stop()
 end

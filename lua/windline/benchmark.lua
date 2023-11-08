@@ -1,10 +1,11 @@
 local M = {}
+local uv = vim.uv or vim.loop
 local function bench(iterations, f, ...)
-  local start_time = vim.loop.hrtime()
+  local start_time = uv.hrtime()
   for _ = 1, iterations do
     f(...)
   end
-  return (vim.loop.hrtime() - start_time) / 1E9
+  return (uv.hrtime() - start_time) / 1E9
 end
 --- a benchmark current statusline. it need plenary.nvim
 M.benchmark = function()

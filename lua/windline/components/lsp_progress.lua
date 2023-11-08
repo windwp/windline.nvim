@@ -1,4 +1,5 @@
 local M = {}
+local uv = vim.uv or vim.loop
 
 M.lsp_progress = function(opts)
     -- stylua: ignore
@@ -39,7 +40,7 @@ M.lsp_progress = function(opts)
                     progess.percentage = val.percentage or 0
                 elseif val.kind == 'end' then
                     progess.percentage = 100
-                    progess.hrtime = vim.loop.hrtime()
+                    progess.hrtime = uv.hrtime()
                     progess.is_done = true
                     progess.message = opts.message.completed
                 end
@@ -72,7 +73,7 @@ M.lsp_progress = function(opts)
                 -- delay 1 second to remove progress
                 if
                     progress.is_done
-                    and vim.loop.hrtime() - 1e9 > progress.hrtime
+                    and uv.hrtime() - 1e9 > progress.hrtime
                 then
                     table.insert(remove_progress, key_p)
                 end

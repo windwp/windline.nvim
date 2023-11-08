@@ -1,4 +1,5 @@
 local cache_utils = require('windline.cache_utils')
+local uv = vim.uv or vim.loop
 local uv_utils = require('windline.components.utils')
 
 local M = {}
@@ -10,7 +11,7 @@ M.git_result = { 0, 0 }
 ---@return function
 local git_rev_text = function(opt)
     opt = vim.tbl_extend('force', { interval = opt.interval }, opt or {})
-    local timer = vim.loop.new_timer()
+    local timer = uv.new_timer()
     timer:start(200, opt.interval, vim.schedule_wrap(M.git_rev_update))
     cache_utils.add_reset_func('git_rev_ext', function()
         timer:stop()

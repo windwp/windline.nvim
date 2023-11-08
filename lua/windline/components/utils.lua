@@ -1,4 +1,4 @@
-local uv = vim.loop
+local uv = vim.uv or vim.loop
 local M = {}
 M.uv_run = function(cmd, action)
     local args = vim.split(cmd, ' ')
@@ -17,7 +17,7 @@ M.uv_run = function(cmd, action)
         table.remove(args, 1),
         {
             args = args,
-            cwd = vim.loop.cwd(),
+            cwd = uv.cwd(),
             stdio = {
                 nil,
                 stdout,
