@@ -71,7 +71,7 @@ basic.lsp_diagnos = {
                 { ' ', 'red' },
                 { lsp_comps.lsp_error({ format = ' %s', show_zero = false }), 'red' },
                 { lsp_comps.lsp_warning({ format = '  %s', show_zero = false }), 'yellow' },
-                { lsp_comps.lsp_hint({ format = '  %s', show_zero = false }), 'blue' },
+                { lsp_comps.lsp_hint({ format = '  %s', show_zero = false }), 'blue' },
             }
         end
         return { ' ', 'red' }

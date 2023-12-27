@@ -3,7 +3,7 @@ local cache_utils = require('windline.cache_utils')
 
 M.virtualenv = function(opt)
     opt = opt or {}
-    local format = opt.format or '廬%s'
+    local format = opt.format or ' 󰞀 %s'
     local conda_format = opt.conda_format or format
     return function(bufnr)
         local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')

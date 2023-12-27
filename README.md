@@ -201,7 +201,7 @@ basic.lsp_diagnos = {
                 { lsp_comps.lsp_warning({ format = '  %s' }), {'yellow',''} },
                 -- it have same background black with the previous component
 
-                { lsp_comps.lsp_hint({ format = '  %s' }), {'', 'blue'} },
+                { lsp_comps.lsp_hint({ format = '  %s' }), {'', 'blue'} },
                 -- it have same foreground yellow with the previous component
 
                 { ' ] ' },
