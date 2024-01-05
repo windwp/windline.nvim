@@ -10,8 +10,8 @@ local click_utils = require('windline.click_utils')
 
 M.state = M.state
     or {
-        mode = {}, -- vim mode {normal insert}
-        comp = {}, -- component state it will reset on begin render
+        mode = {},           -- vim mode {normal insert}
+        comp = {},           -- component state it will reset on begin render
         config = {},
         runtime_colors = {}, -- some colors name added by function add_component
     }
@@ -117,7 +117,7 @@ M.show_global = function(bufnr, winid)
     if vim.g.statusline_winid == winid then
         if utils.is_in_table(M.state.config.global_skip_filetypes, ft)
             or (
-            api.nvim_win_get_config(winid).relative ~= ''
+                api.nvim_win_get_config(winid).relative ~= ''
                 and not check_line.global_show_float
             )
         then
@@ -239,6 +239,9 @@ M.get_colors = function(reload)
             colors = vim.tbl_extend('force', colors, func_color(colors))
         end
     end
+    for key, c in ipairs(colors) do
+        colors[key] = string.lower(c)
+    end
     M.state.colors = colors
     assert(colors ~= nil, 'a colors_name on setup function should return a value')
     return colors
@@ -329,7 +332,6 @@ M.setup_event = function()
         callback = function() M.on_set_laststatus() end
     })
     api.nvim_create_user_command("WindLineBenchmark", "lua require('windline.benchmark').benchmark()", {})
-
 end
 
 M.remove_status_by_ft = function(filetypes)
@@ -380,7 +382,7 @@ end
 ---     position == left add  component before a first divider (%=)
 ---     position == right add component after a first divider (%=)
 ---  auto_remove auto remove old component with same name
----  colors_name table    a modifer colors to add to a new component
+---  colors_name table    a modifier colors to add to a new component
 ---  autocmd    boolean  It use an auto command to add component to default statusline.
 M.add_component = function(component, opt)
     if opt.autocmd then
@@ -427,7 +429,7 @@ M.add_component = function(component, opt)
         end
         M.setup_hightlight(M.state.colors)
     else
-        vim.api.nvim_echo({ { string.format("Cant' find a position %s", opt.position), 'ErrorMsg' } }, true, {})
+        vim.api.nvim_echo({ { string.format("Can't find a position %s", opt.position), 'ErrorMsg' } }, true, {})
     end
 end
 

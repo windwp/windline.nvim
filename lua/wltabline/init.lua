@@ -84,15 +84,15 @@ end
 -- stylua: ignore
 local default_config = {
     template = {
-        select        = { '',                           { 'NormalFg', 'NormalBg', 'bold' } },
+        select        = { '', { 'NormalFg', 'NormalBg', 'bold' } },
         select_start  = { separators.block_thin .. ' ', { 'blue', 'NormalBg' } },
-        select_end    = { ' ',                          { 'NormalFg', 'NormalBg' } },
-        select_fill   = { ' ',                          { 'NormalFg', 'NormalBg' } },
-        normal        = { '',                           { 'TabLineFg', 'TabLineBg' } },
-        normal_start  = { ' ',                          { 'TabLineFg', 'TabLineBg' } },
-        normal_end    = { ' ',                          { 'TabLineFg', 'TabLineBg' } },
-        normal_select = { ' ',                          { 'TabLineFg', 'TabLineBg' } },
-        normal_last   = { ' ',                          { 'TabLineFg', 'TabLineBg' } },
+        select_end    = { ' ', { 'NormalFg', 'NormalBg' } },
+        select_fill   = { ' ', { 'NormalFg', 'NormalBg' } },
+        normal        = { '', { 'TabLineFg', 'TabLineBg' } },
+        normal_start  = { ' ', { 'TabLineFg', 'TabLineBg' } },
+        normal_end    = { ' ', { 'TabLineFg', 'TabLineBg' } },
+        normal_select = { ' ', { 'TabLineFg', 'TabLineBg' } },
+        normal_last   = { ' ', { 'TabLineFg', 'TabLineBg' } },
     },
     click = true,
     tab_end = {
@@ -100,7 +100,7 @@ local default_config = {
     },
 }
 
-local tab_template = function(template)
+M.tab_template = function(template)
     local hl_colors = {}
     local sep_text = {}
     for key, value in pairs(template) do
@@ -118,9 +118,9 @@ local tab_template = function(template)
                     hl_end = 'select_last'
                 end
                 return {
-                    { sep_text.select_start, 'select_start' },
+                    { sep_text.select_start,      'select_start' },
                     { M.tab_name(data.tab_index), 'select' },
-                    { text_end, hl_end },
+                    { text_end,                   hl_end },
                 }
             else
                 local hl_end = 'normal_end'
@@ -134,9 +134,9 @@ local tab_template = function(template)
                     hl_end = 'normal_select'
                 end
                 return {
-                    { text_start, 'normal_start' },
+                    { text_start,                 'normal_start' },
                     { M.tab_name(data.tab_index), 'normal' },
-                    { text_end, hl_end },
+                    { text_end,                   hl_end },
                 }
             end
         end,
@@ -145,7 +145,7 @@ end
 
 M.setup = function(opts)
     opts = vim.tbl_deep_extend('force', default_config, opts or {})
-    opts.tab_template = opts.tab_template or tab_template(opts.template or {})
+    opts.tab_template = opts.tab_template or M.tab_template(opts.template or {})
     WindLine.hl_data = {}
     _G.WindLine.tabline = {
         setup_hightlight = M.setup_hightlight,
@@ -156,7 +156,7 @@ M.setup = function(opts)
         M.setup_hightlight(opts.colors)
         utils.hl_create()
     end
-    vim.cmd([[set tabline=%!v:lua.WindLine.tabline.show()]])
+    vim.opt.tabline = '%!v:lua.WindLine.tabline.show()'
 end
 
 return M
