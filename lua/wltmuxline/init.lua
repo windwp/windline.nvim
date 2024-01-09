@@ -23,6 +23,7 @@ local uv = vim.uv or vim.loop
 local default_config = {
     autocmd = { "BufEnter", "TabEnter" },
     is_run = true,
+    first_run = false,
     statuslines = {}
 }
 
@@ -84,12 +85,6 @@ M.stop = function()
     end
 end
 
-M.tmux_set = function()
-    for _, line in pairs(tmux_state.statuslines) do
-        line.setup()
-    end
-    M.update()
-end
 
 M.tmux_restore = function()
     for _, line in pairs(tmux_state.statuslines) do
@@ -97,6 +92,25 @@ M.tmux_restore = function()
     end
 end
 
+---@param line tmux_line
+local function run_cmd(line)
+    line.original = vim.fn.systemlist(
+        string.format([[sh -c 'tmux display-message -p "#{%s}"']], line.tmux))[1]
+    local tmux_set_command = string.format([[tmux set -g %s '#(cat #{socket_path}-\#{session_id}-%s)']],
+        line.tmux, line.tmux)
+    vim.fn.system(tmux_set_command);
+end
+
+M.tmux_set = function()
+    if not M.first_run then
+        M.first_run = true
+        return
+    end
+    for _, line in pairs(tmux_state.statuslines) do
+        run_cmd(line)
+    end
+    M.update()
+end
 ---@param line tmux_line
 ---@param colors table
 local function init_tmux(line, colors)
@@ -110,21 +124,13 @@ local function init_tmux(line, colors)
         end
     end
 
-    local original = vim.fn.systemlist(
-        string.format([[sh -c 'tmux display-message -p "#{%s}"']], line.tmux))[1]
-
     local session_id = vim.env.TMUX:match(',(%d*)$')
     local tmux_pipe = vim.env.TMUX:match('/tmp/tmux%-%d*/default')
     local pipe_path = string.format('%s-$%s-%s', tmux_pipe, session_id, line.tmux)
-    local function setup()
-        local tmux_set_command = string.format([[tmux set -g %s '#(cat #{socket_path}-\#{session_id}-%s)']],
-            line.tmux, line.tmux)
-        vim.fn.systemlist(tmux_set_command);
-    end
     local function restore(verify)
-        if verify then
-            local check = vim.fn.readfile(pipe_path, '', 1)
-            if check and check[1] ~= line.last_status then
+        if verify and line.last_status then
+            local check, value = pcall(vim.fn.readfile, pipe_path, '', 1)
+            if check and value and value[1] ~= line.last_status then
                 return
             end
         end
@@ -141,13 +147,12 @@ local function init_tmux(line, colors)
     local job = uv.spawn("bash",
         { cwd = uv.cwd(), stdio = { stdin }, args = { "-c", job_script } }
     )
-    setup()
+
     if not job then return end
-    line.original = original
+    run_cmd(line)
     line.stdin = stdin
     line.job = job
     line.restore = vim.schedule_wrap(restore)
-    line.setup = vim.schedule_wrap(setup)
     line.shutdown = function()
         if stdin and stdin.is_active then stdin:close() end
         if job and job.is_active then job:close() end
