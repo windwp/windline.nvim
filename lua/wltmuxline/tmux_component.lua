@@ -78,8 +78,9 @@ return {
     ---@return tmux_component
     create = function(...)
         local cmp = base_component.create(...)
+        -- deepcopy because the it will modify the same component on nvim status
         ---@diagnostic disable-next-line: return-type-mismatch
-        return setmetatable(cmp, { __index = tmux_component })
+        return setmetatable(vim.deepcopy(cmp), { __index = tmux_component })
     end,
     reset = function() last_hl = {} end
 }

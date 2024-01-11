@@ -30,6 +30,7 @@ local default_config = {
 ---@type tmux_config
 ---@diagnostic disable-next-line: missing-fields
 local tmux_state = {}
+local wline_state = WindLine.state
 
 ---@param line tmux_line
 local function render_tabline(line)
@@ -57,6 +58,10 @@ local function render_status_line(line)
     local winid = api.nvim_get_current_win()
     local bufnr = api.nvim_get_current_buf()
     local win_width = vim.o.columns
+    if api.nvim_win_get_config(winid).relative ~= '' then
+        bufnr = wline_state.last_bufnr or bufnr
+        winid = wline_state.last_winid or winid
+    end
     for _, comp in pairs(line.active) do
         status = status .. comp:render(bufnr, winid, win_width)
     end
@@ -94,8 +99,11 @@ end
 
 ---@param line tmux_line
 local function run_cmd(line)
-    line.original = vim.fn.systemlist(
+    local original = vim.fn.systemlist(
         string.format([[sh -c 'tmux display-message -p "#{%s}"']], line.tmux))[1]
+    if not original:match('socket_path') then
+        line.original = original
+    end
     local tmux_set_command = string.format([[tmux set -g %s '#(cat #{socket_path}-\#{session_id}-%s)']],
         line.tmux, line.tmux)
     vim.fn.system(tmux_set_command);
@@ -134,8 +142,10 @@ local function init_tmux(line, colors)
                 return
             end
         end
-        pcall(vim.fn.system,
-            string.format('tmux set -g %s %s', line.tmux, vim.fn.shellescape(line.original)))
+        if line.original then
+            pcall(vim.fn.system,
+                string.format('tmux set -g %s %s', line.tmux, vim.fn.shellescape(line.original)))
+        end
     end
 
     local stdin = uv.new_pipe(false)
@@ -203,7 +213,6 @@ M.setup = function(opts)
         callback = function()
             local colors = require('windline').get_colors()
             for _, line in pairs(tmux_state.statuslines) do
-                if (line.component) then line.component:setup_hl(colors) end
                 if (line.active) then
                     for _, comp in pairs(line.active) do
                         comp:setup_hl(colors)
