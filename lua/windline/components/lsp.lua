@@ -31,7 +31,7 @@ end
 
 local function is_lsp(bufnr, opt)
     opt = opt or {}
-    local hide_server_names = opt.hide_server_names or { 'copilot' }
+    local hide_server_names = opt.hide_server_names or { 'copilot', 'null-ls' }
     local clients = {}
     for _, client in pairs(get_lsp_client(bufnr)) do
         if not utils.is_in_table(hide_server_names, client.name) then
