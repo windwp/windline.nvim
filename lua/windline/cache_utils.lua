@@ -38,20 +38,21 @@ local function cache_func(auto_event, variable_name, action, loading_action, vim
     end
     if d_check[variable_name] == nil then
         d_check[variable_name] = false
-        local target = '*'
+        local pattern = '*'
         if type(auto_event) == 'string' then
-            target = auto_event:match('User') and ''
+            if auto_event:match('User') then
+                pattern = auto_event:gsub('User ','')
+                auto_event = 'User'
+            end
         else
-            for _, ev in ipairs(auto_event) do
-                if ev:match('User') then
-                    target = ''
-                    break
-                end
+            if auto_event[1]:match('User') then
+                pattern = auto_event[1]:gsub('User ', '')
+                auto_event = 'User'
             end
         end
         api.nvim_create_autocmd(auto_event, {
             group = api.nvim_create_augroup('WL' .. variable_name, { clear = true }),
-            pattern = target,
+            pattern = pattern,
             callback = function()
                 WindLine.cache_buffer_cb(variable_name)
             end
