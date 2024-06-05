@@ -43,7 +43,7 @@ M.clear_cache = function()
 end
 
 M.get_hl_color = function(group_name)
-    local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = group_name })
+    local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = group_name, link = false})
     if not ok then return nil, nil end
     local fg = hl.fg and '#' .. bit.tohex(hl.fg, 6)
     local bg = hl.bg and '#' .. bit.tohex(hl.bg, 6)
