@@ -101,7 +101,7 @@ end
 local function run_cmd(line)
     local original = vim.fn.systemlist(
         string.format([[sh -c 'tmux display-message -p "#{%s}"']], line.tmux))[1]
-    if not original:match('socket_path') then
+    if original and not original:match('socket_path') then
         line.original = original
     end
     local tmux_set_command = string.format([[tmux set -g %s '#(cat #{socket_path}-\#{session_id}-%s)']],
