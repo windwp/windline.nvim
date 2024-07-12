@@ -4,8 +4,17 @@ local M = {}
 
 ---@return HSL
 M.rgb_to_hsl = function(rgb)
-    local h, s, l = hsl.rgb_string_to_hsl(rgb)
-    return hsl.new(h, s, l, rgb)
+    if rgb == nil or #rgb ~= 7 then return hsl.new(0, 0, 0, '') end
+    return hsl.new(rgb)
+end
+
+---@return string
+M.shade_or_tint = function(rgb, value)
+    if rgb == nil or #rgb ~= 7 then return rgb end
+    if vim.o.background == 'light' then
+        return hsl.new(rgb):shade(value):to_rgb()
+    end
+    return hsl.new(rgb):tint(value):to_rgb()
 end
 
 M.get_hsl_color = function(hl)
