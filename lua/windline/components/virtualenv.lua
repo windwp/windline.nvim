@@ -8,13 +8,14 @@ M.virtualenv = function(opt)
     return function(bufnr)
         local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
         if filetype == 'python' then
-            local venv = os.getenv('CONDA_DEFAULT_ENV')
-            if venv ~= nil then
-                return string.format(conda_format, vim.fn.fnamemodify(venv, ':t'))
-            end
             venv = os.getenv('VIRTUAL_ENV')
             if venv ~= nil then
                 return string.format(format, vim.fn.fnamemodify(venv, ':t'))
+            end
+
+            local venv = os.getenv('CONDA_DEFAULT_ENV')
+            if venv ~= nil then
+                return string.format(conda_format, vim.fn.fnamemodify(venv, ':t'))
             end
             return ''
         end

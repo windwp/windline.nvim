@@ -2,15 +2,14 @@
 local windline = require('windline')
 local cava_text = "OK"
 local uv = vim.uv or vim.loop
-if _G._cava_stop then
-    _G._cava_stop()
+
+local function system_stop()
+    if _G._cava_stop then _G._cava_stop() end
 end
 
 vim.api.nvim_create_autocmd("VimLeave", {
     pattern = "*",
-    callback = function()
-        vim.fn.system({ "pkill", '-9', "cava" })
-    end
+    callback = system_stop
 })
 local create_cava_colors = function(colors)
     local HSL = require('wlanimation.utils')
@@ -25,6 +24,7 @@ local create_cava_colors = function(colors)
 end
 
 local bars = { "▁", "▂", "▃", "▄", "▅", "▆", "▇", "█" }
+local result = {}
 local cava_comp = {
     name = "cava",
     hl_colors = {
@@ -38,12 +38,12 @@ local cava_comp = {
         cava8 = { "cava8", "NormalBg" },
     },
     text = function()
-        local result = {}
-        for i = 1, 60, 2 do
-            local c = tonumber(cava_text:sub(i, i))
+        for i = 1, 30, 1 do
+            local index = i * 2 - 1
+            local c = tonumber(cava_text:sub(index, index))
             if c then
                 c = c + 1
-                result[#result + 1] = { bars[c], "cava" .. c }
+                result[i] = { bars[c], "cava" .. c }
             end
         end
         -- result[#result+1] = {"%="}
@@ -59,7 +59,6 @@ local function run_cava()
     local sourced_file = require('plenary.debug_utils').sourced_filepath()
     local plugin_directory = vim.fn.fnamemodify(sourced_file, ':h:h:h:h')
 
-    vim.fn.system({ "pkill", '-9', "cava" })
     local cava_path = vim.fn.expand(plugin_directory .. "/scripts/cava.sh")
     local stdin = uv.new_pipe(false)
     local stdout = uv.new_pipe(false)
@@ -87,11 +86,11 @@ local function run_cava()
     end
 end
 
+
 local M = {}
-M.is_stop = true
 
 M.toggle = function()
-    if M.is_stop then
+    if not _G._cava_stop then
         run_cava()
         windline.add_component(cava_comp, {
             name = "cava",
@@ -100,13 +99,10 @@ M.toggle = function()
             colors_name = create_cava_colors
         })
     else
-        vim.fn.system({ "pkill", '-9', "cava" })
-        if _G._cava_stop then
-            _G._cava_stop()
-        end
+        system_stop()
         windline.remove_component(cava_comp)
+        vim.cmd.redrawstatus()
     end
-    M.is_stop = not M.is_stop
 end
 -- M.toggle()
 return M
