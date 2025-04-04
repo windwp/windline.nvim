@@ -21,7 +21,7 @@ local uv = vim.uv or vim.loop
 ---@field is_run boolean
 ---@field statuslines tmux_line[]
 local default_config = {
-    autocmd = { "BufEnter", "TabEnter" },
+    autocmd = { "BufEnter", "TabEnter", "TabClosed" },
     is_run = true,
     first_run = false,
     statuslines = {}
