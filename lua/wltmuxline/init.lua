@@ -104,7 +104,7 @@ local function run_cmd(line)
     if original and not original:match('socket_path') then
         line.original = original
     end
-    local tmux_set_command = string.format([[tmux set -g %s '#(cat #{socket_path}-\#{session_id}-%s)']],
+    local tmux_set_command = string.format([[tmux set  %s '#(cat #{socket_path}-\#{session_id}-%s)']],
         line.tmux, line.tmux)
     vim.fn.system(tmux_set_command);
 end
@@ -144,7 +144,7 @@ local function init_tmux(line, colors)
         end
         if line.original then
             pcall(vim.fn.system,
-                string.format('tmux set -g %s %s', line.tmux, vim.fn.shellescape(line.original)))
+                string.format('tmux set %s %s', line.tmux, vim.fn.shellescape(line.original)))
         end
     end
 
